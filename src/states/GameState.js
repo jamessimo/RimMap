@@ -588,6 +588,11 @@ class GameState extends Phaser.State {
       thingSprite.events.onInputDown.add(this.thingCallback, thingSprite);
       thingSprite.anchor.setTo(0, 1);
 
+      //If large thing (solor panels) NEED TO INVESTIGATE
+      if(thingSprite.width > 64){
+        thingSprite.anchor.setTo(0.25, 0.75);
+      }
+
       thingSprite.angle = 90;
 
       this.stuffGridLayer.add(thingSprite);
