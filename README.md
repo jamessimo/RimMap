@@ -37,8 +37,3 @@ A webapp that lets you view your Rimworld maps in a web browser
 
 ### (1.0.0)
 * Initial commit
-
-
-## License
-
-This project is released under the MIT License.
