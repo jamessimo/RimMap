@@ -1,0 +1,27 @@
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+  margin: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #14171a;
+  color: #f9f9f9;
+}
+
+#blackout {
+  display: none;
+  background-color: rgba(0,0,0,0.4);
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+
+}
