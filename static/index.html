@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
-	<title>Phaser with a sprinkle of ES6 Dust!</title>
+	<title>Rimmap - Webbased Rimworld map viewer!</title>
 	<link rel="stylesheet" href="styles/main.css">
 </head>
+
 <body>
-	<div id="blackout"></div>
+	<div id="blackout">
+		<h1>Loading...</h1>
+	</div>
 	<div id="content">
 		Upload your Rimworld save! (b18)<br/>
 
 		<input type="file" id="file_input" accept=".rws" onchange="uploadSave(this);" /><br/>
-		Windows save location<br/>
-		Mac save location<br/>
-		Linux save location<br/>
 		<div id="window"></div>
+		<div id="ui">
+
+			<label class="switch">
+				<input id="stuffCheckbox" name="stuffCheckbox" type="checkbox" onchange="toggleStuff()" checked />
+			  <span class="slider round"></span>
+			</label> Map meta data
+		</div>
 
 	</div>
 	<script src="scripts/phaser.min.js"></script>
 	<script src="scripts/game.js"></script>
 	<script>
+		let toggleStuff = function() {
+			document.getElementById("blackout").style.display = "block";
+			if (document.getElementById('stuffCheckbox').checked) {
+				setTimeout(() => {
+					document.getElementById("blackout").style.display = "none";
+					Phaser.GAMES[0].state.callbackContext.renderStuff();
+				}, 1000);
+			} else {
+				setTimeout(() => {
+					document.getElementById("blackout").style.display = "none";
+					Phaser.GAMES[0].state.callbackContext.destoryStuff();
+				}, 1000);
+			}
+		}
 
-		let uploadSave = function(input){
+		let uploadSave = function(input) {
 			var file = input.files[0];
 			if (file) {
 				var reader = new FileReader();
@@ -55,45 +77,45 @@
 		};
 
 		function xmlToJson(xml) {
-      // Create the return object
-      var obj = {};
+			// Create the return object
+			var obj = {};
 
-      if (xml.nodeType == 1) { // element
-        // do attributes
-        if (xml.attributes.length > 0) {
-          obj["@attributes"] = {};
-          for (var j = 0; j < xml.attributes.length; j++) {
-            var attribute = xml.attributes.item(j);
-            obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-          }
-        }
-      } else if (xml.nodeType == 3) { // text
-        obj = xml.nodeValue;
-      }
+			if (xml.nodeType == 1) { // element
+				// do attributes
+				if (xml.attributes.length > 0) {
+					obj["@attributes"] = {};
+					for (var j = 0; j < xml.attributes.length; j++) {
+						var attribute = xml.attributes.item(j);
+						obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+					}
+				}
+			} else if (xml.nodeType == 3) { // text
+				obj = xml.nodeValue;
+			}
 
-      // do children
-      // If just one text node inside
-      if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
-        obj = xml.childNodes[0].nodeValue;
-      } else if (xml.hasChildNodes()) {
-        for (var i = 0; i < xml.childNodes.length; i++) {
-          var item = xml.childNodes.item(i);
-          var nodeName = item.nodeName;
-          if (typeof(obj[nodeName]) == "undefined") {
-            obj[nodeName] = xmlToJson(item);
-          } else {
-            if (typeof(obj[nodeName].push) == "undefined") {
-              var old = obj[nodeName];
-              obj[nodeName] = [];
-              obj[nodeName].push(old);
-            }
-            obj[nodeName].push(xmlToJson(item));
-          }
-        }
-      }
-      return obj;
-    }
-
+			// do children
+			// If just one text node inside
+			if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
+				obj = xml.childNodes[0].nodeValue;
+			} else if (xml.hasChildNodes()) {
+				for (var i = 0; i < xml.childNodes.length; i++) {
+					var item = xml.childNodes.item(i);
+					var nodeName = item.nodeName;
+					if (typeof(obj[nodeName]) == "undefined") {
+						obj[nodeName] = xmlToJson(item);
+					} else {
+						if (typeof(obj[nodeName].push) == "undefined") {
+							var old = obj[nodeName];
+							obj[nodeName] = [];
+							obj[nodeName].push(old);
+						}
+						obj[nodeName].push(xmlToJson(item));
+					}
+				}
+			}
+			return obj;
+		}
 	</script>
 </body>
+
 </html>
