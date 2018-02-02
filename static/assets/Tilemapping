@@ -1,10 +1,10 @@
 /*2 - concrete
 235 - paved
 70 - wood
-246 - metal
-37 - silver
-199 - gold
-101 - sterile
+246 - metal //
+37 - silver //
+199 - gold //
+101 - sterile//
 174 - red
 232 - green
 202 - blue
@@ -42,7 +42,6 @@
 212 - shallow moving water
 56 -  rough sandstone
 246 - rough hewn sandstone
-
 154 -  smooth sandstone
 222 - rough granite
 116 - rough hewn granite
