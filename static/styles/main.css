@@ -15,6 +15,11 @@ body {
   background-color: #14171a;
   color: #f9f9f9;
   font-family: Arial;
+  overflow: hidden;
+}
+
+#content{
+  position: relative;
 }
 
 #blackout {
@@ -25,6 +30,7 @@ body {
   margin: auto;
   width: 100%;
   height: 100%;
+  z-index: 9001;
 }
 
 #blackout h1{
@@ -32,125 +38,93 @@ body {
   margin: auto;
   text-align: center;
   position: relative;
-  top: 360px;
+  top: -260px;
 }
-
-#ui{
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width:1024px;
-      pointer-events: none;
-      display: none;
-}
-
-#filegroup {
-  top: 40%;
+.sk-folding-cube {
+  margin: 320px auto;
+  width: 40px;
+  height: 40px;
+  background: transparent;
   position: relative;
-  text-align: center;
+  -webkit-transform: rotateZ(45deg);
+          transform: rotateZ(45deg);
 }
 
-#file_input {
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  pointer-events: all;
-
-}
-#filegroup label {
-  height:100px;
-  width: 100px;
-  font-size: 1.25em;
-  font-weight: 700;
-  color: white;
-  display: inline-block;
-  cursor: pointer;
-}
-
-
-#filegroup:hover #dlSvg{
-  fill: #ff0000;
-}
-
-
-
-#ui .switch{
-  position: absolute;
-    bottom: 8%;
-    left: 4%;
-}
-#ui  #roofSwitch{
-    left: 12%;
-}
-#ui  #resourceSwitch{
-  left: 18%;
-
-}
-
-/* The switch - the box around the slider */
-.switch {
+.sk-folding-cube .sk-cube {
+  float: left;
+  width: 50%;
+  height: 50%;
   position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-      pointer-events: all;
+  -webkit-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+          transform: scale(1.1);
 }
-
-.switch label {
-  padding-left: 75px;
-    display: block;
-    width: 100px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {display:none;}
-
-/* The slider */
-.slider {
+.sk-folding-cube .sk-cube:before {
+  content: '';
   position: absolute;
-  cursor: pointer;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  width: 100%;
+  height: 100%;
+  background-color: #f9f9f9;
+  -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
+          animation: sk-foldCubeAngle 2.4s infinite linear both;
+  -webkit-transform-origin: 100% 100%;
+      -ms-transform-origin: 100% 100%;
+          transform-origin: 100% 100%;
+}
+.sk-folding-cube .sk-cube2 {
+  -webkit-transform: scale(1.1) rotateZ(90deg);
+          transform: scale(1.1) rotateZ(90deg);
+}
+.sk-folding-cube .sk-cube3 {
+  -webkit-transform: scale(1.1) rotateZ(180deg);
+          transform: scale(1.1) rotateZ(180deg);
+}
+.sk-folding-cube .sk-cube4 {
+  -webkit-transform: scale(1.1) rotateZ(270deg);
+          transform: scale(1.1) rotateZ(270deg);
+}
+.sk-folding-cube .sk-cube2:before {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+}
+.sk-folding-cube .sk-cube3:before {
+  -webkit-animation-delay: 0.6s;
+          animation-delay: 0.6s;
+}
+.sk-folding-cube .sk-cube4:before {
+  -webkit-animation-delay: 0.9s;
+          animation-delay: 0.9s;
+}
+@-webkit-keyframes sk-foldCubeAngle {
+  0%, 10% {
+    -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+    opacity: 0;
+  } 25%, 75% {
+    -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+    opacity: 1;
+  } 90%, 100% {
+    -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+    opacity: 0;
+  }
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
+@keyframes sk-foldCubeAngle {
+  0%, 10% {
+    -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+    opacity: 0;
+  } 25%, 75% {
+    -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+    opacity: 1;
+  } 90%, 100% {
+    -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+    opacity: 0;
+  }
 }

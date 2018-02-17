@@ -1,6 +1,7 @@
 var del = require('del');
 var gulp = require('gulp');
 var less = require('gulp-less');
+
 var path = require('path');
 var argv = require('yargs').argv;
 var gutil = require('gulp-util');
@@ -11,6 +12,7 @@ var gulpif = require('gulp-if');
 var exorcist = require('exorcist');
 var babelify = require('babelify');
 var browserify = require('browserify');
+var lessify = require('lessify');
 var browserSync = require('browser-sync');
 
 /**
@@ -54,7 +56,7 @@ function logBuildMode() {
  */
 function cleanBuild() {
     if (!keepFiles) {
-        del(['build/**/*.*']);
+        del([BUILD_PATH + '/**/*.*']);
     } else {
         keepFiles = false;
     }
@@ -76,6 +78,11 @@ function copyStatic() {
 function copyPhaser() {
 
     var srcList = ['phaser.min.js'];
+
+    buildLess();
+
+    del([BUILD_PATH + '/**/*.less']);
+
 
     if (!isProduction()) {
         srcList.push('phaser.map', 'phaser.js');
@@ -102,6 +109,7 @@ function copyPhaser() {
 function build() {
 
     var sourcemapPath = SCRIPTS_PATH + '/' + OUTPUT_FILE + '.map';
+
     logBuildMode();
 
     return browserify({
@@ -126,13 +134,21 @@ function build() {
         .pipe(buffer())
         .pipe(gulpif(isProduction(), uglify()))
         .pipe(gulp.dest(SCRIPTS_PATH));
-
 }
 
 /**
  * Starts the Browsersync server.
  * Watches for file changes in the 'src' folder.
  */
+
+ function buildLess(){
+   gutil.log(gutil.colors.blue('building less'));
+
+   return gulp.src('./**/*.less')
+   .pipe(less())
+   .pipe(gulp.dest('./'));
+
+ }
 function serve() {
 
     var options = {
@@ -153,6 +169,7 @@ function serve() {
     });
 
 }
+
 
 gulp.task('cleanBuild', cleanBuild);
 gulp.task('copyStatic', ['cleanBuild'], copyStatic);
