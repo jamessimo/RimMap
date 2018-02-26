@@ -1,5 +1,5 @@
 # RimMap
-A webapp that lets you view your Rimworld maps in a web browser
+A webapp that lets you view your Rimworld maps in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
 
 
 ## Current Features
