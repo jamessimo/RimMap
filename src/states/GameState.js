@@ -237,7 +237,6 @@ class GameState extends Phaser.State {
 
     this.renderWalls();
 
-
     this.renderMountain();
 
     this.markerInit();
@@ -290,7 +289,6 @@ class GameState extends Phaser.State {
 
     let outputGroup = this.game.add.group();
 
-
     let groupPosX = 0;
     let groupPosY = this.mapInfo.height;
 
@@ -316,7 +314,7 @@ class GameState extends Phaser.State {
         this.loadingDelta++;
         group.position.y = groupPosY;
 
-      //  console.log('Rendering chunk ' + groupPosX+ '-' + groupPosY);
+        //  console.log('Rendering chunk ' + groupPosX+ '-' + groupPosY);
 
         //  console.log('Chunkpos ' + (i * CHUNK_WIDTH) + '-' + (j* CHUNK_HEIGHT));
 
