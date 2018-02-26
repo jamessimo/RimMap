@@ -144,9 +144,9 @@ function build() {
  function buildLess(){
    gutil.log(gutil.colors.blue('building less'));
 
-   return gulp.src('./**/*.less')
+   return gulp.src('static/styles/*.less')
    .pipe(less())
-   .pipe(gulp.dest('./'));
+   .pipe(gulp.dest(BUILD_PATH + '/styles'));
 
  }
 function serve() {
@@ -167,7 +167,6 @@ function serve() {
     gulp.watch(STATIC_PATH + '/**/*', ['watch-static']).on('change', function() {
         keepFiles = true;
     });
-
 }
 
 

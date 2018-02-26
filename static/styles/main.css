@@ -39,7 +39,19 @@ body {
   text-align: center;
   position: relative;
   top: -260px;
+
 }
+#blackout i{
+  color: white;
+  margin: auto;
+  text-align: center;
+  position: relative;
+  top: -250px;
+  width: 100%;
+  display: block;
+}
+
+
 .sk-folding-cube {
   margin: 320px auto;
   width: 40px;

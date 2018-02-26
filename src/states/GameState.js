@@ -32,6 +32,63 @@ class GameState extends Phaser.State {
     this.JADE = 0x438347;
 
 
+    this.ALPACA =
+    this.ALPHABEAVER =
+    this.FOXARCTIC =
+    this.WOLFARCTIC =
+    this.BOOMALOPE =
+    this.BOOMRAT =
+    this.CAPYBARA =
+    this.CARIBOU =
+    this.CASSOWARY =
+    this.CAT =
+    this.CHICKEN =
+    this.CHINCHILLA =
+    this.COBRA =
+    this.COUGAR =
+    this.COW =
+    this.DEER =
+    this.DROMEDARY =
+    this.ELEPHANT =
+    this.ELK =
+    this.EMU =
+    this.FOXFENNEC =
+    this.GAZELLE =
+    this.GRIZZLYBEAR =
+    this.HARE =
+    this.HUSKY =
+    this.IBEX =
+    this.IGUANA =
+    this.LABRADORRETRIEVER =
+    this.LYNX =
+    this.MEGASCARAB =
+    this.MEGASLOTH =
+    this.MEGASPIDER =
+    this.MONKEY =
+    this.MUFFALO =
+    this.OSTRICH =
+    this.PANTHER =
+    this.PIG =
+    this.POLARBEAR =
+    this.RACCOON =
+    this.RAT =
+    this.FOXRED =
+    this.RHINOCEROS =
+    this.SNOWHARE =
+    this.SPELOPEDE =
+    this.SQUIRREL =
+    this.THRUMBO =
+    this.WOLFTIMBER =
+    this.TORTOISE =
+    this.TURKEY =
+    this.WARG =
+    this.WILDBOAR =
+    this.YORKSHIRETERRIER =
+    this.DEVILSTRAND =
+    this.CLOTH = 0xff00ff;
+
+
+
 
     this.TILESIZE = 64;
 
@@ -65,6 +122,12 @@ class GameState extends Phaser.State {
       this.roofGridLayer =
       this.currentBounds =
       this.marker = null;
+
+      this.loadingDelta = 0;
+      this.loadingTotal = 10;
+
+      this.cameraCenterTest = {x : 0, y : 0};
+
     this.rockGrid = [];
     this.game.forceSingleUpdate = false;
     this.game.stage.backgroundColor = '#14171a';
@@ -78,6 +141,9 @@ class GameState extends Phaser.State {
       this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
       //this.getTileProperties();
     }
+
+    this.cameraCenterTest.x = this.game.camera.width/2;
+    this.cameraCenterTest.y = this.game.camera.height/2;
     //ZOOM
     if (this.cursors !== null) {
       if (this.cursors.up.isDown) {
@@ -94,23 +160,29 @@ class GameState extends Phaser.State {
   }
 
   render() {
-    this.game.debug.text(this.game.time.fps || '--', 2, 14, "#00ff00");
+    this.game.debug.text(this.game.time.fps || '--', 2, 44, "#00ff00");
+  //  this.game.debug.text(this.loadingDelta || '--', 2, 44, "#ff0000");
+
   }
 
   loadWorld(json) {
+
+    this.loadingDelta = 1;
+    //SETUP LOADING
+
     console.log('File In Phaser');
 
     let rawSizes = null;
     //FETCH META DATA
     //IF MANY MAPS
-    if(json.savegame.game.maps.li.length){
+    if (json.savegame.game.maps.li.length) {
       json.savegame.game.maps.li = json.savegame.game.maps.li[0];
-    }else{
     }
 
 
 
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
+
     let sizes = this.getPosition(rawSizes);
     this.worldSize.x = sizes[0];
     this.worldSize.y = sizes[2];
@@ -118,6 +190,9 @@ class GameState extends Phaser.State {
 
     console.log(this.worldSize.x + " x " + this.worldSize.y);
 
+  //  console.log(json.savegame.game.maps.li);
+
+    this.loadingDelta++;
 
     this.mapInfo.width = this.TILESIZE * this.worldSize.x;
     this.mapInfo.height = this.TILESIZE * this.worldSize.y;
@@ -152,6 +227,7 @@ class GameState extends Phaser.State {
         this.rockGrid[i][j] = 0;
       }
     }
+    this.loadingDelta++;
 
     //RENDER TILEMAP
 
@@ -161,7 +237,6 @@ class GameState extends Phaser.State {
 
     this.renderWalls();
 
-    this.renderResourceTileMap();
 
     this.renderMountain();
 
@@ -173,14 +248,17 @@ class GameState extends Phaser.State {
     this.rocksLayer = this.renderBitmap(this.rocksGridLayer);
     this.mountainsLayer.destroy();
 
-    this.resourcesLayer = this.renderBitmap(this.resourcesHighlightGroup);
-
-    this.resourcesLayer.alpha = 0;
 
     this.game.world.setBounds(0, 0, this.mapInfo.width, this.mapInfo.height);
 
     this.game.camera.x = this.mapInfo.width / 2;
     this.game.camera.y = this.mapInfo.height / 2;
+
+
+    this.cameraCenterTest = this.game.add.sprite(
+      this.game.camera.width/2,   this.game.camera.height/2,
+      'tile'
+    );
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.plusKey = this.game.input.keyboard.addKey(Phaser.Keyboard.EQUALS).onDown.add(function() {
@@ -194,30 +272,84 @@ class GameState extends Phaser.State {
       }
     }, this);
     this.game.input.onDown.add(this.getTileProperties, this);
+    this.loadingDelta++;
   };
 
+  loadingMapInit(){
+
+  }
+
+  loadingTick(percent,text){
+
+  }
+
   renderBitmap(group) {
+    const BMPCHUNKS = 2;
+    const CHUNK_WIDTH = this.mapInfo.width / BMPCHUNKS;
+    const CHUNK_HEIGHT = this.mapInfo.height / BMPCHUNKS;
+
+    let outputGroup = this.game.add.group();
 
 
-    console.log('rendering...');
+    let groupPosX = 0;
+    let groupPosY = this.mapInfo.height;
+
+    //let groupPosY = this.mapInfo.height;
+
+    let renderdChunks = [];
+    let renderOutput = null;
+
+    let bmd = null;
 
     group.pivot.x = 0;
     group.pivot.y = 0;
-    group.position.x = 0;
-    group.position.y = this.mapInfo.height;
-    let renderOutput = null;
-    //This is the BitmapData we're going to be drawing to
-    //DIVIDE THIS INTO 4
-    var bmd = this.game.add.bitmapData(this.mapInfo.width, this.mapInfo.height);
-    renderOutput = bmd.addToWorld(0, 0, 0, 0, 1, 1);
-    this.game.stage.updateTransform();
-    //  Draw the group to the BitmapData
-    bmd.drawGroup(group);
+
+  //  groupPosX = -CHUNK_WIDTH;
+    for (let i = 0; i < BMPCHUNKS; i++) {
+
+      group.position.x = groupPosX;
+
+      for (let j = 0; j < BMPCHUNKS; j++) {
+
+
+        //  console.log('Rendering chunk ' + i + '-' + j);
+        this.loadingDelta++;
+        group.position.y = groupPosY;
+
+      //  console.log('Rendering chunk ' + groupPosX+ '-' + groupPosY);
+
+        //  console.log('Chunkpos ' + (i * CHUNK_WIDTH) + '-' + (j* CHUNK_HEIGHT));
+
+        //This is the BitmapData we're going to be drawing to
+        bmd = this.game.add.bitmapData(CHUNK_WIDTH, CHUNK_HEIGHT);
+        renderOutput = bmd.addToWorld(CHUNK_HEIGHT * i, CHUNK_HEIGHT * j, 0, 0, 1, 1);
+        this.game.stage.updateTransform();
+        //  Draw the group to the BitmapData
+        bmd.drawGroup(group);
+
+        renderdChunks.push(renderOutput);
+
+        outputGroup.add(renderOutput);
+        groupPosY = CHUNK_HEIGHT;
+
+        //console.log(bmd);
+        bmd = null;
+
+      }
+      groupPosY = this.mapInfo.height;
+      groupPosX = -CHUNK_WIDTH;
+
+
+
+    }
+
+
     console.log('Rendered.');
-    //bmd.drawFull(this.game.world);
+
+  //  bmd.destroy();
     group.destroy(true, false);
 
-    return renderOutput;
+    return outputGroup;
   }
 
   renderTerrainTileMap() {
@@ -247,7 +379,7 @@ class GameState extends Phaser.State {
 
     //  0 is important
     this.resourceGridLayer = tileMap.createLayer(0);
-
+    this.resourceGridLayer.visible = false;
     this.resourceGridLayer.resizeWorld();
   }
 
@@ -352,14 +484,22 @@ class GameState extends Phaser.State {
     let rockUnderSprite = null;
     let regex = new RegExp('\_(.*)');
 
-
+    let filterName = null;
 
 
 
     for (let i = this.mapInfo.stuffGrid.length - 1; i > 0; i--) {
 
+      if (regex.exec(this.mapInfo.stuffGrid[i].def)) {
+        filterName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
+      }else{
+        filterName = this.mapInfo.stuffGrid[i].def;
+      }
+
       thingPos = this.getPosition(this.mapInfo.stuffGrid[i].pos);
 
+      //First check if the stuff is a damged rock if so add it to rocks and discard
+      //Second check if its not a wall, sandbag, animal or anything undesiraable
       if (this.mapInfo.stuffGrid[i].def == "Granite" ||
         this.mapInfo.stuffGrid[i].def == "Limestone" ||
         this.mapInfo.stuffGrid[i].def == "Sandstone" ||
@@ -368,34 +508,22 @@ class GameState extends Phaser.State {
 
         this.rockGrid[thingPos[2]][thingPos[0]] = 1;
 
-      } else if (this.mapInfo.stuffGrid[i].def != "Wall" &&
-        this.mapInfo.stuffGrid[i].def != "Filth" &&
-        this.mapInfo.stuffGrid[i].def != "FilthDirt" &&
-        this.mapInfo.stuffGrid[i].def != "FilthBlood" &&
-        this.mapInfo.stuffGrid[i].def != "FilthAnimalFilth" &&
-        this.mapInfo.stuffGrid[i].def != "FilthAsh" &&
-        this.mapInfo.stuffGrid[i].def != "FilthCorpseBile" &&
-        this.mapInfo.stuffGrid[i].def != "FilthVomit" &&
-        this.mapInfo.stuffGrid[i].def != "FilthAmnioticFluid" &&
-        this.mapInfo.stuffGrid[i].def != "FilthSlime" &&
-        this.mapInfo.stuffGrid[i].def != "FilthBloodInsect" &&
-        this.mapInfo.stuffGrid[i].def != "FilthFireFoam" &&
-          this.mapInfo.stuffGrid[i].def != "FilthSand" &&
-        this.mapInfo.stuffGrid[i].def != "Human" ) {
+      } else if (
+        this.mapInfo.stuffGrid[i].def != "Wall" &&
+        this.mapInfo.stuffGrid[i].def != "Sandbags" &&
+        this.isAllowedStuff(filterName) &&
+        this.isAnimal(this.mapInfo.stuffGrid[i].def )) {
 
-          //MANKAY_LEATHER
+        //MANKAY_LEATHER
         //Make is filth function
 
         let spriteName = null;
 
-
-        if(regex.exec(this.mapInfo.stuffGrid[i].def)){
+        if (regex.exec(this.mapInfo.stuffGrid[i].def)) {
           spriteName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
-          //console.log(spriteName);
-        }else{
+        } else {
           spriteName = this.mapInfo.stuffGrid[i].def
         }
-
 
         thingSprite = this.game.add.sprite(
           (thingPos[0] * this.TILESIZE), -(thingPos[2] * this.TILESIZE),
@@ -448,10 +576,7 @@ class GameState extends Phaser.State {
         //Rotate the thing correctly
         thingSprite = this.thingAlign(thingSprite, this.mapInfo.stuffGrid[i]);
 
-
-
         if (this.mapInfo.stuffGrid[i].growth) {
-
           thingSprite.scale.setTo(this.mapInfo.stuffGrid[i].growth);
           if (this.mapInfo.stuffGrid[i].growth <= 0.1) {
             thingSprite.destroy();
@@ -460,72 +585,69 @@ class GameState extends Phaser.State {
         if (thingSprite) {
           this.stuffGridLayer.add(thingSprite);
         }
-      }
+      }//printsprite
 
     } //End for Loop
 
   }
-thingAlign(sprite,data){
+  thingAlign(sprite, data) {
 
-  let outputSprite = sprite;
+    let outputSprite = sprite;
 
+    //64x64 0
+    if (outputSprite.height == this.TILESIZE && outputSprite.width == this.TILESIZE) {
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(1, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(1, 0);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90;
+          outputSprite.anchor.setTo(0, 0);
+        }
+      }
+    } else if (outputSprite.height > this.TILESIZE &&
+      outputSprite.width == this.TILESIZE) { //
 
-  //64x64 0
-  if(outputSprite.height == this.TILESIZE && outputSprite.width == this.TILESIZE){
-    outputSprite.anchor.setTo(0, 1);
-    if (data.rot) {
-      if (data.rot == 1) {
-        outputSprite.angle = 90;
-        outputSprite.anchor.setTo(1, 1);
+      //outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(1, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180; //ok
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90;
+          outputSprite.anchor.setTo(0, 0);
+        }
       }
-      if (data.rot == 2) {
-        outputSprite.angle = 180;
-        outputSprite.anchor.setTo(1, 0);
+    } else if (outputSprite.height == this.TILESIZE &&
+      outputSprite.width > this.TILESIZE) {
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.5, 0);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(0, 0);
+        }
       }
-      if (data.rot == 3) {
-        outputSprite.angle = -90;
-        outputSprite.anchor.setTo(0, 0);
-      }
-    }
-  }else if(outputSprite.height > this.TILESIZE &&
-    outputSprite.width == this.TILESIZE){ //
-
-    //outputSprite.anchor.setTo(0, 1);
-    if (data.rot) {
-      if (data.rot == 1) {
-        outputSprite.angle = 90;
-        outputSprite.anchor.setTo(1, 1);
-      }
-      if (data.rot == 2) {
-        outputSprite.angle = 180; //ok
-        outputSprite.anchor.setTo(1, 0.5);
-      }
-      if (data.rot == 3) {
-        outputSprite.angle = -90;
-        outputSprite.anchor.setTo(0, 0);
-      }
-    }
-  }
-  else if(outputSprite.height == this.TILESIZE &&
-    outputSprite.width > this.TILESIZE){
-    outputSprite.anchor.setTo(0, 1);
-    if (data.rot) {
-      if (data.rot == 1) {
-        outputSprite.angle = 90;
-        outputSprite.anchor.setTo(0.5, 1);
-      }
-      if (data.rot == 2) {
-        outputSprite.angle = 180;
-        outputSprite.anchor.setTo(0.5, 0);
-      }
-      if (data.rot == 3) {
-        outputSprite.angle = -90; //good
-        outputSprite.anchor.setTo(0, 0);
-      }
-    }
-  }
-  else if(outputSprite.height == (this.TILESIZE*2) &&
-    outputSprite.width == (this.TILESIZE*2)){
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == (this.TILESIZE * 2)) {
 
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
@@ -542,19 +664,19 @@ thingAlign(sprite,data){
           outputSprite.anchor.setTo(0, 0.5);
         }
       }
-  }else if(outputSprite.height == (this.TILESIZE*3) &&
-    outputSprite.width == (this.TILESIZE*3)){
-    //outputSprite.anchor.setTo(0.5,1);
-  }else if(outputSprite.height == this.TILESIZE &&
-    outputSprite.width == (this.TILESIZE*3)){
+    } else if (outputSprite.height == (this.TILESIZE * 3) &&
+      outputSprite.width == (this.TILESIZE * 3)) {
+      //outputSprite.anchor.setTo(0.5,1);
+    } else if (outputSprite.height == this.TILESIZE &&
+      outputSprite.width == (this.TILESIZE * 3)) {
 
-      outputSprite.anchor.setTo(1,1);
+      outputSprite.anchor.setTo(1, 1);
 
-    }else{
+    } else {
       outputSprite.anchor.setTo(0, 1);
     }
-  return outputSprite;
-}
+    return outputSprite;
+  }
   renderMountain() {
 
     //IF WALL CHOOSE WALL SPRITE
@@ -589,7 +711,7 @@ thingAlign(sprite,data){
     let direction = null;
     let rockTintSprite = null;
 
-    //Chunk
+    //
     for (let i = 0; i < this.worldSize.x; i++) {
       for (let j = 0; j < this.worldSize.y; j++) {
         if (this.rockGrid[i][j] == 1) {
@@ -639,6 +761,8 @@ thingAlign(sprite,data){
             this.mapInfo.resourceRefGrid[masterIndex] == 103 ||
             this.mapInfo.resourceRefGrid[masterIndex] == 194 ||
             this.mapInfo.resourceRefGrid[masterIndex] == 127) {
+
+              //IF ROCK CHUNK REPLACE
             rockTintSprite = null;
             rockTintSprite = this.game.add.sprite(
               (j * this.TILESIZE), -((i + 1) * this.TILESIZE),
@@ -671,6 +795,8 @@ thingAlign(sprite,data){
               case 127: // Gold
                 rockTintSprite.tint = this.GOLD;
                 break;
+
+
             }
 
             this.resourcesHighlightGroup.add(rockTintSprite);
@@ -829,6 +955,127 @@ thingAlign(sprite,data){
     return true;
   }
 
+  //Is this stuff allowed? Return true
+  //Used so we dont render stuff like dirt and pawns
+  isAllowedStuff(stuff){
+    switch(stuff){
+      case "Filth":
+      case "FilthDirt":
+      case "FilthBlood":
+      case "FilthAnimalFilth":
+      case "FilthAsh":
+      case "FilthCorpseBile":
+      case "FilthVomit":
+      case "FilthAmnioticFluid":
+      case "FilthSlime":
+      case "FilthBloodInsect":
+      case "FilthFireFoam":
+      case "FilthSand":
+      case "Human":
+      case "PowerConduit":
+      case "SandbagRubble":
+      case "Corpse":
+      case "Frame":
+      case "Letter":
+      case "Short":
+      case "Blueprint":
+      case "Blueprint_Install":
+      case "RectTrigger":
+      case "RockRubble":
+      case "BuildingRubble":
+      case "SlagRubble":
+
+        return false;
+      break;
+      default:
+        return true
+    }
+  }
+
+  isWall(stuff){
+    if(stuff == "Wall"){
+      return true;
+    }else{
+      return false;
+    }
+  }
+ isAnimal(stuff){
+
+   switch(stuff){
+    case "Alpaca":
+    case"Alphabeaver":
+    case"FoxArctic":
+    case "WolfArctic":
+    case "Boomalope":
+    case "Boomrat":
+    case "Capybara":
+    case "Caribou":
+    case "Cassowary":
+    case "Cat":
+    case "Chicken":
+    case "Chinchilla":
+    case "Cobra":
+    case "Cougar":
+    case "Cow":
+    case "Deer":
+    case "Dromedary":
+    case "Elephant":
+    case "Elk":
+    case "Emu":
+    case "FoxFennec":
+    case "Gazelle":
+    case "GrizzlyBear":
+    case "Hare":
+    case "Husky":
+    case "Ibex":
+    case "Iguana":
+    case "LabradorRetriever":
+    case "Lynx":
+    case "Megascarab":
+    case "Megasloth":
+    case "Megaspider":
+    case "Monkey":
+    case "Muffalo":
+    case "Ostrich":
+    case "Panther":
+    case "Pig":
+    case "PolarBear":
+    case "Raccoon":
+    case "Rat":
+    case "FoxRed":
+    case "Rhinoceros":
+    case "Snowhare":
+    case "Spelopede":
+    case "Squirrel":
+    case "Thrumbo":
+    case "WolfTimber":
+    case "Tortoise":
+    case "Turkey":
+    case "Warg":
+    case "WildBoar":
+    case "YorkshireTerrier":
+    return false;
+      break;
+      default:
+    return true;
+  }
+ }
+  isRockChunk(stuff){
+
+    switch(stuff){
+      case 120: //Limestone Chunk
+      case 78: //Granite Chunk
+      case 119: //Marble Chunk
+      case 252: //Granite Chunk
+      case 102: //Slate Chunk
+      case 47: //Sandstone Chunk
+        return true;
+      break;
+      default:
+       return false;
+    }
+  }
+
   hideStuff() {
     this.stuffLayer.alpha = 0;
   }
@@ -843,8 +1090,16 @@ thingAlign(sprite,data){
   }
 
   showResources() {
-    this.resourceGridLayer.alpha = 1;
-    this.resourcesLayer.alpha = 1;
+
+    if(!this.resourcesLayer){
+      this.renderResourceTileMap();
+      this.resourcesLayer = this.renderBitmap(this.resourcesHighlightGroup);
+      this.zoomMap(this.zoomLevel);
+    }else{
+      this.resourceGridLayer.alpha = 1;
+      this.resourcesLayer.alpha = 1;
+    }
+
   }
 
   hideMountains() {
@@ -859,20 +1114,42 @@ thingAlign(sprite,data){
 
     this.zoomLevel = iZoom;
 
+    console.log(this.stuffLayer);
+
+
+    let zoomPoint = {
+      x: (this.game.camera.width/2) - this.game.camera.position.x,
+      y: (this.game.camera.height/2) - this.game.camera.position.y
+    }
+/*
+      this.topTerrainGridLayer.pivot.set(zoomPoint.x,zoomPoint.y);
+
+    this.stuffLayer.pivot.set(zoomPoint.x,zoomPoint.y);
+    this.rocksLayer.pivot.set(zoomPoint.x,zoomPoint.y);
+    this.resourcesLayer.pivot.set(zoomPoint.x,zoomPoint.y);
+
+    */
+
     this.stuffLayer.scale.set(1 / this.zoomLevel);
     this.rocksLayer.scale.set(1 / this.zoomLevel);
-    this.resourcesLayer.scale.set(1 / this.zoomLevel);
+    if(this.resourcesLayer){
+      this.resourcesLayer.scale.set(1 / this.zoomLevel);
+    }
 
     this.marker.scale.setTo(1 / this.zoomLevel)
     this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
     this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
     this.topTerrainGridLayer.resizeWorld();
 
-    this.resourceGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
-    this.resourceGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
-    this.resourceGridLayer.resizeWorld();
+    if(this.resourceGridLayer){
+      this.resourceGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
+      this.resourceGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
+      this.resourceGridLayer.resizeWorld();
+    }
+
   }
 
+//Promices
   delaceArray(iArray) {
     let masterIndex = 0;
     let outputArray = [];
@@ -1234,30 +1511,33 @@ thingAlign(sprite,data){
     let x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel); // 4 * ZOOM
     let y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel);
     let terrainTile = this.topTerrainGridLayer.map.getTile(x, y, this.topTerrainGridLayer);
+if(this.resourceGridLayer){
+  x = this.resourceGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel); // 4 * ZOOM
+  y = this.resourceGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel);
 
-    // Note: JSON.stringify will convert the object tile properties to a string
-    x = this.resourceGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel); // 4 * ZOOM
-    y = this.resourceGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel);
+  let resourceTile = this.resourceGridLayer.map.getTile(x, y, this.resourceGridLayer);
 
-    let resourceTile = this.resourceGridLayer.map.getTile(x, y, this.resourceGridLayer);
+  resourceTile = this.mapInfo.resourceRefGrid[y][x];
+  if (resourceTile){
+    this.currentTile.resourceTile = this.getResourceName(resourceTile) + " - " + resourceTile;
+  }
+
+}
+
 
     let flippedY = Math.abs(y - this.worldSize.y);
 
-    resourceTile = this.mapInfo.resourceRefGrid[y][x];
-
     let stuffTile = this.mapInfo.stuffRefGrid[x][flippedY - 1];
 
-    if(terrainTile)
-    this.currentTile.terrainTile = this.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
-    if(resourceTile)
-    this.currentTile.resourceTile = this.getResourceName(resourceTile) + " - " + resourceTile;
+    if (terrainTile)
+      this.currentTile.terrainTile = this.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
 
-    if(stuffTile[0]){
-      if(stuffTile[0].stuff){
+    if (stuffTile[0]) {
+      if (stuffTile[0].stuff) {
         console.log(stuffTile[0]);
         this.currentTile.stuffTile = stuffTile[0].stuff + " " + stuffTile[0].def; //count manage
 
-      }else{
+      } else {
         this.currentTile.stuffTile = stuffTile[0].def; //count manage
       }
 
@@ -1265,7 +1545,7 @@ thingAlign(sprite,data){
 
     }
 
-  //  console.log(this.currentTile);
+    //  console.log(this.currentTile);
   }
 
   getTerrainName(id) {

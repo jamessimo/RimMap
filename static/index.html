@@ -11,17 +11,22 @@
 <body>
 	<div id="blackout">
 		<div class="sk-folding-cube">
-		  <div class="sk-cube1 sk-cube"></div>
-		  <div class="sk-cube2 sk-cube"></div>
-		  <div class="sk-cube4 sk-cube"></div>
-		  <div class="sk-cube3 sk-cube"></div>
+			<div class="sk-cube1 sk-cube"></div>
+			<div class="sk-cube2 sk-cube"></div>
+			<div class="sk-cube4 sk-cube"></div>
+			<div class="sk-cube3 sk-cube"></div>
 		</div>
 		<h1>Loading...</h1>
+		<i>this may take a while...</i>
 	</div>
 	<div id="content">
+
 		<div id="window"></div>
+		<span id="LoadingText">0</span>
 		<div id="ui">
+
 			<div id="topbar">
+				<span id="FileName"></span> <span id="MapSize"></span>
 
 				<!--<div class="maps">
 					<select id="levels">
@@ -33,6 +38,7 @@
 				<button id="reloadButton" onclick="location.reload()"> upload new</button>
 			</div>
 
+			<div id="filemanager">
 			<div id="filegroup">
 				<input type="file" id="file_input" accept=".rws" onchange="uploadSave(this);" />
 				<label for="file">
@@ -49,6 +55,25 @@
 				</label>
 				<h3>Upload Rimworld save file</h3>
 			</div>
+			<div id="savesgroup">
+				<div id="save1" class="singleSave" onclick="loadSave('Nova.rws')">
+					Nova
+				</div>
+				<div id="save2" class="singleSave" onclick="loadSave('Temperate.rws')">
+					Temperate
+				</div>
+				<div id="save3" class="singleSave" onclick="loadSave('Arrivals.rws')">
+					Arrivals
+				</div>
+				<div id="save4" class="singleSave" onclick="loadSave('Arrivals.rws')">
+					Arrivals
+				</div>
+				<div id="save3" class="singleSave" onclick="loadSave('Arrivals.rws')">
+					Arrivals
+				</div>
+			</div>
+		</div>
+
 
 			<div id="bottomBar">
 				<div class="switchContain">
@@ -87,7 +112,7 @@
 					<span class="sliderName">Deep Resources</span>
 					</br>
 					<label id="deepResourceSwitch" class="switch">
-						<input id="deepResourceCheckbox" name="deepResourceCheckbox" type="checkbox" onchange="toggleResource()" />
+						<input id="deepResourceCheckbox" name="deepResourceCheckbox" type="checkbox" onchange="toggleResource()" disabled />
 					  <span class="slider round"></span>
 					</label>
 				</div>
@@ -116,7 +141,8 @@
 
 		function updateTick() {
 
-			/*	 console.log(d.toLocaleTimeString());*/
+			document.getElementById("LoadingText").textContent = Phaser.GAMES[0].state.callbackContext.loadingDelta;
+
 			if (Phaser.GAMES[0].state.current == "GameState" && document.getElementById("ui").style.display == "none") {
 				document.getElementById("ui").style.display = "block";
 			}
@@ -133,8 +159,8 @@
 				document.getElementById("resourceName").textContent = currentTile.resourceTile;
 
 
-					document.getElementById("stuffName").textContent = currentTile.stuffTile;
-				
+				document.getElementById("stuffName").textContent = currentTile.stuffTile;
+
 			}
 		}
 
@@ -188,12 +214,12 @@
 				var reader = new FileReader();
 				//SHOW BLACKOUT
 				document.getElementById("blackout").style.display = "block";
-				document.getElementById("filegroup").style.display = "none";
-				document.getElementById("bottomBar").style.display = "block";
+				document.getElementById("filemanager").style.display = "none";
 
 				reader.readAsText(file, "UTF-8");
 				reader.onload = function(evt) {
 
+					document.getElementById("FileName").textContent = file.name;
 					//REMOVE WHITESPACE
 					let data = evt.target.result.replace(/\n[\s]*\n?/gm, "");
 
@@ -208,11 +234,52 @@
 
 					//HIDE BLACKOUT
 					document.getElementById("blackout").style.display = "none";
+					document.getElementById("bottomBar").style.display = "block";
 				}
 				reader.onerror = function(evt) {
 
 				}
 			}
+		}
+
+		function loadSave(mapName) {
+
+			var req = new XMLHttpRequest();
+			req.open("GET", "maps/" + mapName, true);
+			document.getElementById("blackout").style.display = "block";
+			document.getElementById("filemanager").style.display = "none";
+
+			//PROGRESS.text("Connecting...");
+			req.onloadstart = function() {
+				console.log("Downloading file...");
+
+			}
+			req.onreadystatechange = req.onprogress = function() {
+				var length = this.getResponseHeader("Content-Length");
+				//console.log(length);
+				if (length != null) {
+					//document.title = "Downloading file ("+Math.round((this.responseText.length/length)*100)+"%)";
+					//PROGRESS.progress((this.responseText.length / length) * 100);
+				}
+			}
+			req.onload = function() {
+				document.getElementById("blackout").style.display = "none";
+				document.getElementById("bottomBar").style.display = "block";
+				console.log(this.responseText);
+
+				let data = this.responseText.replace(/\n[\s]*\n?/gm, "");
+
+				//PARSE THE XML
+				let loadedXML = parseXml(data);
+
+				//CONVERT THE XML TO JSON
+				let saveGameJson = xmlToJson(loadedXML);
+
+				//SEND JSON TO PHASER
+				Phaser.GAMES[0].state.callbackContext.loadWorld(saveGameJson);
+
+			}
+			req.send();
 		}
 		parseXml = function(xmlStr) {
 			return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
