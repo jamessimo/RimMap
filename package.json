@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "gulp-less": "^3.4.0",
+    "lessify": "^1.0.1",
     "phaser": "^2.4.7"
   }
 }
