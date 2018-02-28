@@ -636,7 +636,7 @@ class GameState extends Phaser.State {
       }
     } else if (outputSprite.height == (this.TILESIZE*2) &&
       outputSprite.width == (this.TILESIZE*4)) {
-      outputSprite.anchor.setTo(0, 1);
+      outputSprite.anchor.setTo(0.4, 1);
       if (data.rot) {
         if (data.rot == 1) {
           outputSprite.angle = 90;
@@ -644,11 +644,11 @@ class GameState extends Phaser.State {
         }
         if (data.rot == 2) {
           outputSprite.angle = 180;
-          outputSprite.anchor.setTo(0.5, 0);
+          outputSprite.anchor.setTo(0.6, 0.6);
         }
         if (data.rot == 3) {
           outputSprite.angle = -90; //good
-          outputSprite.anchor.setTo(0, 0);
+          outputSprite.anchor.setTo(1, 0.5);
         }
       }
     } else if (outputSprite.height == (this.TILESIZE * 2) &&
