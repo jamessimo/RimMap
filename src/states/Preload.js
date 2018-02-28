@@ -10,13 +10,12 @@ class Preload extends Phaser.State {
     this.game.load.image('resourceTiles', 'assets/ResourcesTilemap.png');
 
     this.game.load.spritesheet('wallTiles', 'assets/WallTilemap.png', 80, 80, 16);
-    this.game.load.spritesheet('brickWallTiles', 'assets/BrickWallTilemap.png', 80, 80, 16);
+    this.game.load.spritesheet('brickWallTiles', 'assets/BrickTileMap.png', 80, 80, 16);
     this.game.load.spritesheet('woodWallTiles', 'assets/WoodTilemap.png', 80, 80, 16);
     this.game.load.spritesheet('rockTiles', 'assets/Rock_Atlas.png', 80, 80, 16);
 
     this.game.load.image('rockTint', 'assets/rockTint.png');
     this.game.load.image('resourceTint', 'assets/resourceTint.png');
-
 
     //PLANTS & TREES
     this.game.load.image('PlantGrass', 'assets/GrassA.png');
@@ -30,15 +29,19 @@ class Preload extends Phaser.State {
     this.game.load.image('PlantTreeOak', 'assets/TreeOakA.png');
     this.game.load.image('PlantTreePalm', 'assets/TreePalmA.png');
     this.game.load.image('PlantTreeBamboo', 'assets/TreeBambooA.png');
+    this.game.load.image('PlantTreeMaple', 'assets/TreeMapleA.png');
+    this.game.load.image('PlantTreeCypress', 'assets/TreeCypressA.png');
+    this.game.load.image('PlantTreeWillow', 'assets/TreeWillowA.png');
+
+    this.game.load.image('PlantChokevine', 'assets/ChokevineA.png');
+
+
 
     this.game.load.image('PlantTreeDrago', 'assets/TreeDragoA.png');
     this.game.load.image('PlantSaguaroCactus', 'assets/SaguaroCactus.png');
     this.game.load.image('PlantAgave', 'assets/AgaveA.png');
 
     this.game.load.image('PlantPincushionCactus', 'assets/PincushionCactus.png');
-
-
-
 
     this.game.load.image('PlantTreePine', 'assets/TreePineA.png');
     this.game.load.image('PlantAstragalus', 'assets/AstragalusA.png');
@@ -74,6 +77,8 @@ class Preload extends Phaser.State {
     this.game.load.image('RawCorn', 'assets/Corn.png');
     this.game.load.image('RawHops', 'assets/Hops.png');
     this.game.load.image('PsychoidLeaves', 'assets/PsychoidLeaves.png');
+    this.game.load.image('SmokeleafLeaves', 'assets/SmokeleafLeaves.png');
+
     this.game.load.image('Hay', 'assets/Hay_c.png');
     this.game.load.image('Meat', 'assets/MeatBig.png');
     this.game.load.image('InsectJelly', 'assets/InsectJelly.png');
@@ -100,6 +105,8 @@ class Preload extends Phaser.State {
     this.game.load.image('Penoxycyline', 'assets/Penoxycyline_b.png');
     this.game.load.image('Beer', 'assets/Beer_b.png');
     this.game.load.image('WakeUp', 'assets/WakeUp_b.png');
+    this.game.load.image('PsychoidPekoe', 'assets/Pekoe_b.png');
+    this.game.load.image('GoJuice', 'assets/GoJuice_b.png');
 
     //RESOURCES
     this.game.load.image('Neutroamine', 'assets/Neutroamine.png');
@@ -111,6 +118,8 @@ class Preload extends Phaser.State {
     this.game.load.image('DevilstrandCloth', 'assets/Cloth.png');
     this.game.load.image('WoolAlpaca', 'assets/Wool.png');
     this.game.load.image('WoolMuffalo', 'assets/Wool.png');
+    this.game.load.image('WoolMegasloth', 'assets/Wool.png');
+    this.game.load.image('WoolCamel', 'assets/Wool.png');
     this.game.load.image('Hyperweave', 'assets/Hyperweave.png');
     this.game.load.image('Jade', 'assets/Jade.png');
     this.game.load.image('Uranium', 'assets/Uranium.png');
@@ -162,6 +171,12 @@ class Preload extends Phaser.State {
     this.game.load.image('LongSword', 'assets/LongSword.png');
     this.game.load.image('Knife', 'assets/Knife.png');
     this.game.load.image('Ikwa', 'assets/Ikwa.png');
+    this.game.load.image('Pila', 'assets/Pilum.png');
+    this.game.load.image('Spear', 'assets/Spear.png');
+    this.game.load.image('Short', 'assets/BowShort.png');
+    this.game.load.image('Great', 'assets/BowGreat.png'); //Bow_Great
+    this.game.load.image('Recurve', 'assets/BowRecurve.png');  //Bow_Recurve
+    this.game.load.image('DoomsdayRocket', 'assets/DoomsdayLauncher.png');
 
     //BODYPARTS
     this.game.load.image('Kidney', 'assets/Organ.png');
@@ -175,22 +190,22 @@ class Preload extends Phaser.State {
     this.game.load.image('SimpleProstheticLeg', 'assets/Implant.png');
     this.game.load.image('SimpleProstheticLeg', 'assets/Implant.png');
     this.game.load.image('PowerClaw', 'assets/Implant.png');
-
+    this.game.load.image('Painstopper', 'assets/Implant.png');
 
     //EXOTIC ITEMS
     this.game.load.image('PsychicInsanityLance', 'assets/PsychicInsanityLance.png');
     this.game.load.image('PsychicShockLance', 'assets/PsychicShockLance.png');
     this.game.load.image('PsychicAnimalPulser', 'assets/PsychicAnimalPulser.png');
+    this.game.load.image('PsychicSoothePulser', 'assets/PsychicSoothePulser.png');
     this.game.load.image('MechSerumNeurotrainer', 'assets/MechSerumNeurotrainer.png');
     this.game.load.image('ElephantTusk', 'assets/ElephantTusk.png');
-
+    this.game.load.image('ThrumboHorn', 'assets/ThrumboHorn.png');
 
     //STRUCTURE
     this.game.load.image('Door', 'assets/Door.png');
     this.game.load.image('Autodoor', 'assets/Autodoor.png');
     this.game.load.image('Cooler', 'assets/Cooler.png');
     this.game.load.image('Vent', 'assets/Vent.png');
-
 
     //GEAR & APPERAL
     this.game.load.image('ShieldBelt', 'assets/ShieldBelt.png');
@@ -209,6 +224,10 @@ class Preload extends Phaser.State {
     this.game.load.image('VestPlate', 'assets/VestPlate.png');
     this.game.load.image('PowerArmor', 'assets/PowerArmor.png');
     this.game.load.image('PowerArmorHelmet', 'assets/PowerArmorHelmet.png');
+    this.game.load.image('TribalA', 'assets/TribalA.png');
+    this.game.load.image('TribalHeaddress', 'assets/TribalHeaddress.png');
+    this.game.load.image('WarMask', 'assets/WarMask.png');
+    this.game.load.image('WarVeil', 'assets/WarVeil.png');
 
     //SECURITY
     this.game.load.image('TrapDeadfall', 'assets/DeadfallArmed.png');
@@ -225,6 +244,11 @@ class Preload extends Phaser.State {
     //FURNITURE
     //this.game.load.image('Hopper', 'assets/.png');
     this.game.load.image('HydroponicsBasin', 'assets/HydroponicsBasin.png');
+    this.game.load.image('MoisturePump', 'assets/MoisturePump.png');
+    this.game.load.image('PassiveCooler', 'assets/PassiveCooler.png');
+    this.game.load.image('Firefoam', 'assets/FirefoamPopper.png');
+    this.game.load.image('Sarcophagus', 'assets/SarcophagusFull_back.png');
+    this.game.load.image('TorchLamp', 'assets/TorchLamp.png');
     this.game.load.image('GeothermalGenerator', 'assets/GeothermalPlant.png');
     this.game.load.image('Telescope', 'assets/Telescope.png');
     this.game.load.image('PartySpot', 'assets/PartySpot.png');
@@ -283,7 +307,6 @@ class Preload extends Phaser.State {
     this.game.load.image('StandingLamp', 'assets/LampStanding.png');
     this.game.load.image('PlantPot', 'assets/PlantPot.png');
     this.game.load.image('Heater', 'assets/Heater.png');
-
     this.game.load.script('pako', 'assets/pako.min.js');
     //this.game.load.image('AIPersonaCore', 'assets/.png');
     //this.game.load.image('OrbitalTradeBeacon', 'assets/OrbitalTradeBeacon.png');
