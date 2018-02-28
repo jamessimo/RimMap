@@ -185,8 +185,6 @@ class GameState extends Phaser.State {
       json.savegame.game.maps.li = json.savegame.game.maps.li[0];
     }
 
-
-
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
 
     let sizes = this.getPosition(rawSizes);
@@ -350,13 +348,9 @@ class GameState extends Phaser.State {
         outputGroup.add(renderOutput);
         groupPosY = CHUNK_HEIGHT;
 
-        //bmd.baseTexture.destroy(true);
-        //console.log(bmd);
       }
       groupPosY = this.mapInfo.height;
       groupPosX = -CHUNK_WIDTH;
-
-
 
     }
     bmd = null;
@@ -404,7 +398,7 @@ class GameState extends Phaser.State {
   }
 
   renderDeepResourceTileMap() {
-
+    //TODO
   }
 
   renderWalls() {
@@ -605,10 +599,10 @@ class GameState extends Phaser.State {
           outputSprite.anchor.setTo(0, 0);
         }
       }
-    } else if (outputSprite.height > this.TILESIZE &&
+    } else if (outputSprite.height == (this.TILESIZE*2) &&
       outputSprite.width == this.TILESIZE) { //
 
-      //outputSprite.anchor.setTo(0, 1);
+      outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
           outputSprite.angle = 90;
@@ -624,7 +618,24 @@ class GameState extends Phaser.State {
         }
       }
     } else if (outputSprite.height == this.TILESIZE &&
-      outputSprite.width > this.TILESIZE) {
+      outputSprite.width == (this.TILESIZE*2)) {
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.5, 0);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(0, 0);
+        }
+      }
+    } else if (outputSprite.height == (this.TILESIZE*2) &&
+      outputSprite.width == (this.TILESIZE*4)) {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
@@ -660,13 +671,60 @@ class GameState extends Phaser.State {
       }
     } else if (outputSprite.height == (this.TILESIZE * 3) &&
       outputSprite.width == (this.TILESIZE * 3)) {
-      //outputSprite.anchor.setTo(0.5,1);
+      outputSprite.anchor.setTo(0.35,0.65);
+
+      if (data.rot == 1) {
+        outputSprite.anchor.setTo(0.5,0.5);
+        outputSprite.angle = 90;
+      }
+      if (data.rot == 2) {
+        outputSprite.anchor.setTo(0.65,0.35);
+        outputSprite.angle = 180;
+      }
+      if (data.rot == 3) {
+        outputSprite.anchor.setTo(0.5,0.5);
+        outputSprite.angle = -90; //good
+      }
+
+
     } else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 3)) {
+      outputSprite.anchor.setTo(0.4, 1);
+      if (data.rot == 1) {
+        outputSprite.angle = 90;
+        outputSprite.anchor.setTo(0.6, 1);
+      }
+      if (data.rot == 2) {
+        outputSprite.angle = 180;
+        outputSprite.anchor.setTo(0.6, 0);
+      }
+      if (data.rot == 3) {
+        outputSprite.angle = -90; //good
+        outputSprite.anchor.setTo(0.3, 0);
+      }
 
-      outputSprite.anchor.setTo(1, 1);
+    } else if (outputSprite.height == (this.TILESIZE * 4) &&
+      outputSprite.width == (this.TILESIZE * 4)) {
+        if(!data.rot){
+          outputSprite.anchor.setTo(0.25,0.75);
+        }
+      if (data.rot == 1) {
+        outputSprite.anchor.setTo(0.5,0.75);
+        outputSprite.angle = 90;
+      }
+      if (data.rot == 2) {
+        outputSprite.anchor.setTo(0.5,0.5);
+        outputSprite.angle = 180;
+      }
+      if (data.rot == 3) {
+        outputSprite.anchor.setTo(0.75,0.25);
+        outputSprite.angle = -90; //good
+      }
+    }else if (outputSprite.height == (this.TILESIZE * 8) &&
+      outputSprite.width == (this.TILESIZE * 8)) {
+        outputSprite.anchor.setTo(0.4, 0.65);
 
-    } else {
+      } else {
       outputSprite.anchor.setTo(0, 1);
     }
     return outputSprite;

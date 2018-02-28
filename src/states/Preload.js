@@ -177,6 +177,9 @@ class Preload extends Phaser.State {
     this.game.load.image('Great', 'assets/BowGreat.png'); //Bow_Great
     this.game.load.image('Recurve', 'assets/BowRecurve.png');  //Bow_Recurve
     this.game.load.image('DoomsdayRocket', 'assets/DoomsdayLauncher.png');
+    this.game.load.image('TripleRocket', 'assets/RocketLauncher.png');
+
+
 
     //BODYPARTS
     this.game.load.image('Kidney', 'assets/Organ.png');
@@ -187,7 +190,7 @@ class Preload extends Phaser.State {
     this.game.load.image('BionicArm', 'assets/Implant.png');
     this.game.load.image('BionicEye', 'assets/Implant.png');
     this.game.load.image('Joywire', 'assets/Implant.png');
-    this.game.load.image('SimpleProstheticLeg', 'assets/Implant.png');
+    this.game.load.image('SimpleProstheticArm', 'assets/Implant.png');
     this.game.load.image('SimpleProstheticLeg', 'assets/Implant.png');
     this.game.load.image('PowerClaw', 'assets/Implant.png');
     this.game.load.image('Painstopper', 'assets/Implant.png');
@@ -254,6 +257,7 @@ class Preload extends Phaser.State {
     this.game.load.image('PartySpot', 'assets/PartySpot.png');
     this.game.load.image('SunLamp', 'assets/LampSun.png');
     this.game.load.image('MinifiedFurniture', 'assets/CrateFront.png');
+    this.game.load.image('MinifiedSculpture', 'assets/CrateFront.png');
     this.game.load.image('AnimalSleepingSpot', 'assets/PartySpot.png');
     this.game.load.image('CaravanPackingSpot', 'assets/CaravanPackingSpot.png');
     this.game.load.image('CraftingSpot', 'assets/CraftingSpot.png');
@@ -295,7 +299,7 @@ class Preload extends Phaser.State {
     this.game.load.image('Battery', 'assets/Battery_back.png');
     this.game.load.image('Bed', 'assets/Bed_back.png');
     this.game.load.image('Shelf', 'assets/Shelf_back.png');
-    this.game.load.image('MarriageSpot', 'assets/tile.png');
+    this.game.load.image('MarriageSpot', 'assets/MarriageSpot.png');
     this.game.load.image('ToolCabinet', 'assets/ToolCabinet_back.png');
     this.game.load.image('SleepingSpot', 'assets/SleepSpot_back.png');
     this.game.load.image('AncientCryptosleepCasket', 'assets/ShipCryptosleepCasket_back.png');
