@@ -1,0 +1,57 @@
+/*2 - concrete
+235 - paved
+70 - wood
+246 - metal //
+37 - silver //
+199 - gold //
+101 - sterile//
+174 - red
+232 - green
+202 - blue
+46 - cream
+231 - dark
+41 - burned
+171 - carpet
+88 - sandstone tile
+224 - granite tile
+160 - limestone tile
+219 -slate tile
+126 - marble tile
+173 - sandstone flagstone
+169 - granite flagstone
+245 - limestone flagstone
+59 - slate flagstone
+1 - marble flagstone
+166 - sand
+161 - soil
+239 - marshy soil
+115 - rich soil
+48 - mud
+——
+6 - marsh
+73 - gravel
+158 - lichen covered dirt
+255 - ice
+205 - Broken asphalt
+78 - packed dirt
+37 - underwall
+140 - deepwater
+58 - deep moving water
+181 - shallow water
+137 -  shallow ocean water
+212 - shallow moving water
+56 -  rough sandstone
+246 - rough hewn sandstone
+154 -  smooth sandstone
+222 - rough granite
+116 - rough hewn granite
+199 - smooth granite
+99 -  rough limestone
+82 -  rough hewn limestone
+238 -  smooth limestone
+148 - rough slate
+101 - rough hewn slate
+184 - smooth slate
+57 -  rough marble
+135 - rough hewn marble
+208 - smooth marble */

@@ -1,9 +1,14 @@
 class Preload extends Phaser.State {
   preload() {
     //  Set-up our preloader sprite
-    this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadBar');
+    let preloadBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadBg');
+    preloadBg.anchor.setTo(0.5);
+
+    this.preloadBar = this.add.sprite(this.game.world.centerX - 256, this.game.world.centerY, 'preloadBar');
     this.load.setPreloadSprite(this.preloadBar);
-    this.preloadBar.anchor.setTo(0.5);
+
+    this.preloadBar.anchor.setTo(0, 0.5);
+
 
     this.game.load.image('tile', 'assets/tile.png');
     this.game.load.image('tiles', 'assets/ShiftTilemap.bmp');
@@ -34,7 +39,7 @@ class Preload extends Phaser.State {
     this.game.load.image('PlantTreeWillow', 'assets/TreeWillowA.png');
 
     this.game.load.image('PlantChokevine', 'assets/ChokevineA.png');
-
+    this.game.load.image('PlantRose', 'assets/RoseA.png');
 
 
     this.game.load.image('PlantTreeDrago', 'assets/TreeDragoA.png');
@@ -88,9 +93,15 @@ class Preload extends Phaser.State {
     this.game.load.image('MealSimple', 'assets/Simple.png');
     this.game.load.image('MealFine', 'assets/Fine.png');
     this.game.load.image('MealLavish', 'assets/Lavish.png');
+    this.game.load.image('NutrientPaste', 'assets/NutrientPaste.png');
+
     this.game.load.image('Pemmican', 'assets/Pemmican.png');
     this.game.load.image('Kibble', 'assets/Kibble.png');
     this.game.load.image('Milk', 'assets/Milk.png');
+    this.game.load.image('EggTurkeyFertilized', 'assets/EggsFertilized.png');
+    this.game.load.image('EggChickenFertilized', 'assets/EggsFertilized.png');
+
+
 
     //MEDICINE
     this.game.load.image('Medicine', 'assets/Medicine.png');
@@ -178,6 +189,8 @@ class Preload extends Phaser.State {
     this.game.load.image('Recurve', 'assets/BowRecurve.png');  //Bow_Recurve
     this.game.load.image('DoomsdayRocket', 'assets/DoomsdayLauncher.png');
     this.game.load.image('TripleRocket', 'assets/RocketLauncher.png');
+    this.game.load.image('Gladius', 'assets/Gladius.png');
+
 
 
 
@@ -203,6 +216,9 @@ class Preload extends Phaser.State {
     this.game.load.image('MechSerumNeurotrainer', 'assets/MechSerumNeurotrainer.png');
     this.game.load.image('ElephantTusk', 'assets/ElephantTusk.png');
     this.game.load.image('ThrumboHorn', 'assets/ThrumboHorn.png');
+    this.game.load.image('OrbitalTargeterPowerBeam', 'assets/OrbitalTargeter.png');
+
+
 
     //STRUCTURE
     this.game.load.image('Door', 'assets/Door.png');
@@ -234,18 +250,37 @@ class Preload extends Phaser.State {
 
     //SECURITY
     this.game.load.image('TrapDeadfall', 'assets/DeadfallArmed.png');
+    this.game.load.image('TurretGun', 'assets/Turrets.png');
+    this.game.load.image('Mortar', 'assets/Mortar.png');
+
 
     //UNFINISHED STUFF
     this.game.load.image('UnfinishedSculpture', 'assets/UnfinishedSculpture.png');
     this.game.load.image('UnfinishedBelt', 'assets/UnfinishedBelt.png');
     this.game.load.image('UnfinishedApparel', 'assets/UnfinishedApparel.png');
     this.game.load.image('UnfinishedComponent', 'assets/UnfinishedComponent.png');
-    this.game.load.image('UnfinishedArmor', 'assets/UnfinishedTechArmor.png');
+    this.game.load.image('UnfinishedTechArmor', 'assets/UnfinishedTechArmor.png');
     this.game.load.image('UnfinishedGun', 'assets/UnfinishedGun.png');
     this.game.load.image('UnfinishedWeapon', 'assets/UnfinishedWeapon.png');
 
     //FURNITURE
     //this.game.load.image('Hopper', 'assets/.png');
+
+    this.game.load.image('PodLauncher', 'assets/PodLauncher.png');
+    this.game.load.image('TransportPod', 'assets/TravelingTransportPods.png');
+    this.game.load.image('ComponentAssemblyBench', 'assets/ComponentAssemblyBench_back.png');
+
+    this.game.load.image('OrbitalTradeBeacon', 'assets/DropBeacon.png');
+
+    this.game.load.image('Hopper', 'assets/Hopper.png');
+    this.game.load.image('NutrientDispenser', 'assets/NutrientDispenser.png');
+
+    this.game.load.image('MultiAnalyzer', 'assets/MultiAnalyzer.png');
+    this.game.load.image('ElectricCrematorium', 'assets/Crematorium.png');
+    this.game.load.image('ElectricSmithy', 'assets/TableSmithingElectric_back.png');
+
+
+
     this.game.load.image('HydroponicsBasin', 'assets/HydroponicsBasin.png');
     this.game.load.image('MoisturePump', 'assets/MoisturePump.png');
     this.game.load.image('PassiveCooler', 'assets/PassiveCooler.png');
@@ -307,8 +342,27 @@ class Preload extends Phaser.State {
     this.game.load.image('DiningChair', 'assets/DiningChair_back.png');
     this.game.load.image('EndTable', 'assets/EndTable_front.png');
     this.game.load.image('PokerTable', 'assets/PokerTable_back.png');
-    this.game.load.image('SculptureLarge', 'assets/SculptureSmallAbstractB.png');
+
+    this.game.load.image('SculptureGrand', 'assets/SculptureGrandAbstractA.png');
+
+    this.game.load.image('SculptureLarge', 'assets/SculptureLargeAbstractB.png');
+    this.game.load.image('SculptureSmall', 'assets/SculptureSmallAbstractB.png');
+
+    this.game.load.image('FlatscreenTelevision', 'assets/FlatscreenTelevision_front.png');
+
+    this.game.load.image('VitalsMonitor', 'assets/VitalsMonitor_front.png');
+    this.game.load.image('GroundPenetratingScanner', 'assets/GroundPenetratingScanner.png');
+    this.game.load.image('LongRangeMineralScanner', 'assets/LongRangeMineralScanner.png');
+
+
+
+
     this.game.load.image('StandingLamp', 'assets/LampStanding.png');
+    this.game.load.image('Red', 'assets/LampStanding.png');
+    this.game.load.image('Green', 'assets/LampStanding.png');
+    this.game.load.image('Blue', 'assets/LampStanding.png');
+    this.game.load.image('Purple', 'assets/LampStanding.png');
+
     this.game.load.image('PlantPot', 'assets/PlantPot.png');
     this.game.load.image('Heater', 'assets/Heater.png');
     this.game.load.script('pako', 'assets/pako.min.js');

@@ -2,6 +2,8 @@ class Boot extends Phaser.State {
 
 	preload() {
 		this.load.image('preloadBar', 'assets/loader.png');
+		this.load.image('preloadBg', 'assets/loaderBg.png');
+
 	}
 	create() {
 		//this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;

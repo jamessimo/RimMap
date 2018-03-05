@@ -17,12 +17,11 @@
 			<div class="sk-cube3 sk-cube"></div>
 		</div>
 		<h1>Loading...</h1>
-		<i>this may take a while...</i>
+		<i id="loadingMsg">Initializing...</i>
 	</div>
 	<div id="content">
 
 		<div id="window"></div>
-		<span id="LoadingText">0</span>
 		<div id="ui">
 
 			<div id="topbar">
@@ -56,13 +55,16 @@
 				<h3>Upload Rimworld save file</h3>
 			</div>
 			<div id="savesgroup">
-				<div id="save1" class="singleSave" onclick="loadSave('Nova.rws')">
-					Nova
+				<div id="novaSave" class="singleSave" onclick="loadSave('Nova.rws')">
+					<div class="mapinfo">Nova - 250x250 - Medium colony</div>
 				</div>
-				<div id="save2" class="singleSave" onclick="loadSave('Temperate.rws')">
-					Temperate
+				<div id="temperateSave" class="singleSave" onclick="loadSave('Temperate.rws')">
+					<div class="mapinfo">Temperate - 250x250 - Empty temperate forrest</div>
 				</div>
-				<div id="save3" class="singleSave" onclick="loadSave('Arrivals.rws')">
+				<div id="growthsThumb" class="singleSave" onclick="loadSave('GrowthsValley.rws')">
+					<div class="mapinfo">Growth's Valley - 275x275 - Large colony</div>
+				</div>
+				<!--<div id="save3" class="singleSave" onclick="loadSave('Arrivals.rws')">
 					Arrivals
 				</div>
 				<div id="save4" class="singleSave" onclick="loadSave('Arrivals.rws')">
@@ -70,7 +72,7 @@
 				</div>
 				<div id="save3" class="singleSave" onclick="loadSave('Arrivals.rws')">
 					Arrivals
-				</div>
+				</div>-->
 			</div>
 		</div>
 
@@ -141,21 +143,39 @@
 		let blackout = document.getElementById("blackout");
 
 		let phaserState = Phaser.GAMES[0].state;
+		let loadingMsg = 	document.getElementById("loadingMsg");
+		let loadedMapName = "";
+		let finishedFrontendLoading = false;
+
 		ui.style.display = "none";
 		setInterval(updateTick, 250);
 
 		function updateTick() {
 
-			document.getElementById("LoadingText").textContent = phaserState.callbackContext.loadingDelta;
+			//document.getElementById("LoadingText").textContent = phaserState.callbackContext.loadingDelta;
 
+			if(finishedFrontendLoading == false && loadedMapName != ""){
+				loadingMsg.textContent = "Rendering " + loadedMapName + " " + "("+(phaserState.callbackContext.loadingDelta * 20)+ "%)";
+			}
+			//loaded
 			if (phaserState.current == "GameState" && ui.style.display == "none") {
 				ui.style.display = "block";
 
-				setTimeout(function(){
-					document.getElementById("MapSize").textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
-				},2000);
-
 			}
+
+			if(phaserState.current == "GameState" && blackout.style.display == "block" && phaserState.callbackContext.loadingFinished
+		&&finishedFrontendLoading != true){
+				blackout.style.display = "none";
+				console.log('tick');
+				document.getElementById("bottomBar").style.display = "block";
+
+
+				document.getElementById("MapSize").textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
+
+				finishedFrontendLoading = true;
+				document.getElementById("reloadButton").style.display = "block";
+			}
+
 			if (phaserState.callbackContext.currentTile) {
 				updateTileText();
 			}
@@ -176,7 +196,9 @@
 
 
 		let toggleMountain = function() {
-			document.getElementById("blackout").style.display = "block";
+			blackout.style.display = "block";
+			loadingMsg.textContent = "Loading mountains...";
+
 			if (document.getElementById('mountainCheckbox').checked) {
 				setTimeout(() => {
 					blackout.style.display = "none";
@@ -191,6 +213,7 @@
 		}
 		let toggleResource = function() {
 			blackout.style.display = "block";
+			loadingMsg.textContent = "Loading resources...";
 			if (document.getElementById('resourceCheckbox').checked) {
 				setTimeout(() => {
 					blackout.style.display = "none";
@@ -205,6 +228,8 @@
 		}
 		let toggleStuff = function() {
 			document.getElementById("blackout").style.display = "block";
+			loadingMsg.textContent = "Loading stuff...";
+
 			if (document.getElementById('stuffCheckbox').checked) {
 				setTimeout(() => {
 					blackout.style.display = "none";
@@ -221,14 +246,15 @@
 		let uploadSave = function(input) {
 			var file = input.files[0];
 			if (file) {
+				blackout.style.display = "block";
+
 				var reader = new FileReader();
 				//SHOW BLACKOUT
-				blackout.style.display = "block";
 				document.getElementById("filemanager").style.display = "none";
 
 				reader.readAsText(file, "UTF-8");
 				reader.onload = function(evt) {
-
+					loadedMapName = file.name;
 					document.getElementById("MapName").textContent = file.name;
 
 					//REMOVE WHITESPACE
@@ -244,8 +270,6 @@
 					phaserState.callbackContext.loadWorld(saveGameJson);
 
 					//HIDE BLACKOUT
-					blackout.style.display = "none";
-					document.getElementById("bottomBar").style.display = "block";
 				}
 				reader.onerror = function(evt) {
 
@@ -262,23 +286,21 @@
 
 			//PROGRESS.text("Connecting...");
 			req.onloadstart = function() {
-				console.log("Downloading file...");
+				loadingMsg.textContent = "Downloading file...";
 
 			}
 			req.onreadystatechange = req.onprogress = function() {
 				var length = this.getResponseHeader("Content-Length");
 				//console.log(length);
 				if (length != null) {
+					loadingMsg.textContent = "Downloading " + mapName + " ("+Math.round((this.responseText.length/length)*100)+"%)";
 					//document.title = "Downloading file ("+Math.round((this.responseText.length/length)*100)+"%)";
 					//PROGRESS.progress((this.responseText.length / length) * 100);
 				}
 			}
 			req.onload = function() {
-				blackout.style.display = "none";
-
+				loadedMapName = mapName;
 				document.getElementById("MapName").textContent = mapName;
-
-				document.getElementById("bottomBar").style.display = "block";
 				//console.log(this.responseText);
 
 				let data = this.responseText.replace(/\n[\s]*\n?/gm, "");
