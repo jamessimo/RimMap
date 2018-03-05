@@ -20,11 +20,16 @@
       position: absolute;
     }
 
-
+#FileName {
+    position: absolute;
+    font: 400 11px system-ui;
+  	padding: 1em 2em;
+  }
     #reloadButton{
       float:right;
-      position: absolute;
+      position: relative;
       right: 0;
+      display: none;
     }
     #levels{
       left:5%;
@@ -88,10 +93,38 @@
       margin-bottom: 2%;
       pointer-events: all;
       cursor: pointer;
+      opacity: 0.75;
+
+      background-size: 100%;
+      background-position: center ;
+      transition: all 0.2s ease-in-out;
+
+      .mapinfo{
+        display: block;
+        position: relative;
+        background: rgba(0,0,0,0.5);
+        width: 100%;
+        bottom: 0;
+        padding: 3px;
+      }
 
       &:hover{
-        opacity: 0.5;
+        opacity: 1;
+        background-size: 150%;
       }
+
+
+
+    }
+    #novaSave{
+      background-image: url("../assets/ui/NovaThumb.jpg");
+    }
+    #temperateSave{
+      background-image:  url("../assets/ui/TemperateThumb.jpg");
+    }
+    #growthsThumb{
+      background-image: url("../assets/ui/GrowthsThumb.jpg");
+
     }
   }
   select,
@@ -140,10 +173,7 @@
 
   button {
   	float: left;
-  	min-width: 150px;
-  	max-width: 250px;
   	display: block;
-  	margin: 1em;
   	padding: 1em 2em;
   	border: none;
   	background: none;
