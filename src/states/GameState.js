@@ -2024,7 +2024,7 @@ class GameState extends Phaser.State {
         output = "Marshy Soil";
         break;
       case 28: // rich soil
-        output = "Rich Soul";
+        output = "Rich Soil";
         break;
       case 29: //mud
         output = "Mud";
