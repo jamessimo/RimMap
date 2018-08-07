@@ -141,14 +141,14 @@ function build() {
  * Watches for file changes in the 'src' folder.
  */
 
- function buildLess(){
-   gutil.log(gutil.colors.blue('building less'));
+function buildLess(){
+ gutil.log(gutil.colors.blue('building less'));
 
-   return gulp.src('static/styles/*.less')
-   .pipe(less())
-   .pipe(gulp.dest(BUILD_PATH + '/styles'));
+ return gulp.src('static/styles/*.less')
+ .pipe(less())
+ .pipe(gulp.dest(BUILD_PATH + '/styles'));
 
- }
+}
 function serve() {
 
     var options = {
@@ -176,8 +176,8 @@ gulp.task('copyPhaser', ['copyStatic'], copyPhaser);
 gulp.task('build', ['copyPhaser'], build);
 gulp.task('fastBuild', build);
 gulp.task('serve', ['build'], serve);
-gulp.task('watch-js', ['fastBuild'], browserSync.reload); // Rebuilds and reloads the project when executed.
-gulp.task('watch-static', ['copyPhaser'], browserSync.reload);
+gulp.task('watch-js', ['fastBuild'], ()=>{browserSync.reload(); done(); }); // Rebuilds and reloads the project when executed.
+gulp.task('watch-static', ['copyPhaser'], ()=>{browserSync.reload(); done(); });
 
 /**
  * The tasks are executed in the following order:

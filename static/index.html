@@ -53,7 +53,11 @@
 					</svg>
 				</label>
 				<h3>Upload Rimworld save file</h3>
-			</div>
+
+			</div><!--Filemanager-->
+
+
+
 			<div id="savesgroup">
 				<div id="novaSave" class="singleSave" onclick="loadSave('Nova.rws')">
 					<div class="mapinfo">Nova - 250x250 - Medium colony</div>
@@ -76,8 +80,19 @@
 			</div>
 		</div>
 
+		<div id="settingsBar" class="bottomBar">
+			<div class="switchContain">
+				<span class="sliderName">HD</span>
+				</br>
+				<label id="hdSwitch" class="switch">
+					<input id="hdCheckbox" name="hdCheckbox" type="checkbox" onchange="toggleHD()" checked />
+					<span class="slider round"></span>
+				</label>
+			</div>
+			<div id="versionNum">RimMap v3.1 - @james_simo</div>
+		</div>
 
-			<div id="bottomBar">
+			<div id="mainGameBar" class="bottomBar">
 				<div class="switchContain">
 					<span class="sliderName">Items</span>
 					</br>
@@ -128,6 +143,8 @@
 						</ul>
 					</div>
 				</div>
+				<div id="versionNum">RimMap v3.1 - @james_simo</div>
+
 			</div>
 		</div>
 		<!-- UI -->
@@ -158,26 +175,51 @@
 				loadingMsg.textContent = "Rendering " + loadedMapName + " " + "("+(phaserState.callbackContext.loadingDelta * 20)+ "%)";
 			}
 			//loaded
-			if (phaserState.current == "GameState" && ui.style.display == "none") {
+			if (phaserState.current == "DynamicLoad" && ui.style.display == "none") {
 				ui.style.display = "block";
+			}
 
+			if (phaserState.current == "PreloadAssets") {
+				ui.style.display = "none";
+				blackout.style.display = "none";
+				document.getElementById("settingsBar").style.display = "none";
 			}
 
 			if(phaserState.current == "GameState" && blackout.style.display == "block" && phaserState.callbackContext.loadingFinished
-		&&finishedFrontendLoading != true){
+			&& finishedFrontendLoading != true){
 				blackout.style.display = "none";
 				console.log('tick');
-				document.getElementById("bottomBar").style.display = "block";
-
-
-				document.getElementById("MapSize").textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
+				document.getElementById("mainGameBar").style.display = "block";
 
 				finishedFrontendLoading = true;
 				document.getElementById("reloadButton").style.display = "block";
+			}else if (phaserState.current == "GameState" && phaserState.callbackContext.loadingFinished == false
+			&& finishedFrontendLoading != true){
+				ui.style.display = "block";
+				blackout.style.display = "block";
+				document.getElementById("MapSize").textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
+
 			}
 
 			if (phaserState.callbackContext.currentTile) {
 				updateTileText();
+			}
+		}
+
+		let toggleHD = function() {
+			document.getElementById("blackout").style.display = "block";
+			loadingMsg.textContent = "Loading HD...";
+
+			if (document.getElementById('hdCheckbox').checked) {
+				setTimeout(() => {
+					blackout.style.display = "none";
+					phaserState.callbackContext.showHD();
+				}, 1000);
+			} else {
+				setTimeout(() => {
+					blackout.style.display = "none";
+					phaserState.callbackContext.hideHD();
+				}, 1000);
 			}
 		}
 
@@ -187,13 +229,9 @@
 				oldTile = currentTile
 				document.getElementById("terrainName").textContent = currentTile.terrainTile;
 				document.getElementById("resourceName").textContent = currentTile.resourceTile;
-
-
 				document.getElementById("stuffName").textContent = currentTile.stuffTile;
-
 			}
 		}
-
 
 		let toggleMountain = function() {
 			blackout.style.display = "block";
@@ -266,11 +304,21 @@
 					//CONVERT THE XML TO JSON
 					let saveGameJson = xmlToJson(loadedXML);
 
+					document.getElementById("settingsBar").style.display = "none";
+
 					//SEND JSON TO PHASER
 					phaserState.callbackContext.loadWorld(saveGameJson);
 
 					//HIDE BLACKOUT
+
 				}
+				reader.onprogress = function(data) {
+            if (data.lengthComputable) {
+                var progress = parseInt( ((data.loaded / data.total) * 100), 10 );
+								loadingMsg.textContent = "Uploading " + loadedMapName + " ("+Math.round((data.loaded/data.total)*100)+"%)";
+
+            }
+        }
 				reader.onerror = function(evt) {
 
 				}
@@ -283,11 +331,11 @@
 			req.open("GET", "maps/" + mapName, true);
 			blackout.style.display = "block";
 			document.getElementById("filemanager").style.display = "none";
+			document.getElementById("settingsBar").style.display = "none";
 
 			//PROGRESS.text("Connecting...");
 			req.onloadstart = function() {
 				loadingMsg.textContent = "Downloading file...";
-
 			}
 			req.onreadystatechange = req.onprogress = function() {
 				var length = this.getResponseHeader("Content-Length");
@@ -313,6 +361,8 @@
 
 				//SEND JSON TO PHASER
 				phaserState.callbackContext.loadWorld(saveGameJson);
+
+
 
 			}
 			req.send();

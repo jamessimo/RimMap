@@ -2,7 +2,11 @@ import GameUI from 'objects/GameUI';
 
 class GameState extends Phaser.State {
 
+
   create() {
+
+    this.json = this.game.json;
+
     this.fastRender = true;
 
     this.center = {
@@ -91,8 +95,24 @@ class GameState extends Phaser.State {
     this.DEVILSTRAND = 0x8c1d10;
     this.CLOTH = 0xc3c0b0;
 
+    if(this.game.hd == false){
+      this.TILESIZE = 16; //orginal 64, cut in half to save memory.
+      this.SCALESIZE = 0.25;
 
-    this.TILESIZE = 32; //orginal 64, cut in half to save memory.
+      this.zoomLevel = 1;
+      this.zoomRate = 0.5;
+      this.minZoom = 0.5;
+      this.maxZoom = 4;
+    }else {
+      this.TILESIZE = 32; //orginal 64, cut in half to save memory.
+      this.SCALESIZE = 0.5;
+      this.zoomLevel = 1;
+      this.zoomRate = 0.5;
+      this.minZoom = 1;
+      this.maxZoom = 4;
+    }
+
+
 
     this.mapInfo = { //RAW MAP DATA (arrays)
       "height": 0,
@@ -108,22 +128,22 @@ class GameState extends Phaser.State {
       "stuffRefGrid": []
 
     };
-    this.zoomLevel = 1;
-    this.cursors =
-      this.currentTile =
-      this.topTerrainGridLayer = //TILEMAPS/BITMAP IMAGES
-      this.underTerrainGridLayer =
-      this.resourceGridLayer =
-      this.rocksGridLayer =
-      this.rocksLayer =
-      this.mountainsLayer =
-      this.resourcesHighlightGroup =
 
-      this.stuffLayer =
-      this.bottomLayer =
-      this.roofGridLayer =
-      this.currentBounds =
-      this.marker = null;
+    this.cursors =
+    this.currentTile =
+    this.topTerrainGridLayer = //TILEMAPS/BITMAP IMAGES
+    this.underTerrainGridLayer =
+    this.resourceGridLayer =
+    this.rocksGridLayer =
+    this.rocksLayer =
+    this.mountainsLayer =
+    this.resourcesHighlightGroup =
+
+    this.stuffLayer =
+    this.bottomLayer =
+    this.roofGridLayer =
+    this.currentBounds =
+    this.marker = null;
 
     this.rockGrid = [];
     this.game.forceSingleUpdate = false;
@@ -146,6 +166,9 @@ class GameState extends Phaser.State {
 
   update() {
 
+    if(this.loadingDelta == 0 ){
+      this.buildMapInfo(this.json);
+    }
     if (this.loadingDelta > 0 && this.loadingDeltaWait > 0 && this.loadingFinished == false) {
       if (this.loadingSprite) {
         this.loadingSprite.scale.setTo(0.5 * this.loadingDelta);
@@ -233,13 +256,13 @@ class GameState extends Phaser.State {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
         this.plusKey = this.game.input.keyboard.addKey(Phaser.Keyboard.EQUALS).onDown.add(function() {
-          if ((this.zoomLevel - 1) >= 1) {
-            this.zoomMap(this.zoomLevel - 1);
+          if ((this.zoomLevel - this.zoomRate) >= this.minZoom) {
+            this.zoomMap(this.zoomLevel - this.zoomRate);
           }
         }, this);
         this.minusKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UNDERSCORE).onDown.add(function() {
-          if ((this.zoomLevel + 1) < 6) {
-            this.zoomMap(this.zoomLevel + 1);
+          if ((this.zoomLevel + this.zoomRate) < this.maxZoom) {
+            this.zoomMap(this.zoomLevel + this.zoomRate);
           }
         }, this);
         this.game.input.onDown.add(this.getTileProperties, this);
@@ -249,9 +272,11 @@ class GameState extends Phaser.State {
         //this.front_layer.destroy();
         this.loadingFinished = true;
 
-        /*  this.cameraCenterTest = this.game.add.graphics();
+        /*
+          this.cameraCenterTest = this.game.add.graphics();
           this.cameraCenterTest.lineStyle(4, 0xFF00FF, 1);
-          this.cameraCenterTest.drawRect(0, 0, this.TILESIZE, this.TILESIZE);*/
+          this.cameraCenterTest.drawRect(0, 0, this.TILESIZE, this.TILESIZE);
+        */
 
       }
     }
@@ -287,34 +312,36 @@ class GameState extends Phaser.State {
   }
 
   render() {
-    //this.game.debug.text(this.game.time.fps || '--', 2, 44, "#00ff00");
+    this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
     //this.game.debug.text(this.loadingDelta || '--', 2, 44, "#ff0000");
   }
 
-  loadWorld(json) {
+  buildMapInfo(json) {
 
     //SETUP LOADING
 
-    console.log('File In Phaser');
+
+    console.log('File In GameState');
+  let rawSizes = null;
+if (json.savegame.game.maps.li.length) {
+  json.savegame.game.maps.li = json.savegame.game.maps.li[0];
+}
+
+console.log(this.worldSize);
+
+
+        rawSizes = json.savegame.game.maps.li.mapInfo.size;
+
+        let sizes = this.getPosition(rawSizes);
+
+        this.worldSize.x = sizes[0];
+        this.worldSize.y = sizes[2];
+        this.worldSize.z = sizes[1];
+
+        console.log(this.worldSize.x + " x " + this.worldSize.y);
+
+
     this.loadingDelta = 1;
-
-    let rawSizes = null;
-    //FETCH META DATA
-    //IF MANY MAPS
-    if (json.savegame.game.maps.li.length) {
-      json.savegame.game.maps.li = json.savegame.game.maps.li[0];
-    }
-
-    rawSizes = json.savegame.game.maps.li.mapInfo.size;
-
-    let sizes = this.getPosition(rawSizes);
-    this.worldSize.x = sizes[0];
-    this.worldSize.y = sizes[2];
-    this.worldSize.z = sizes[1];
-
-    console.log(this.worldSize.x + " x " + this.worldSize.y);
-
-    //  console.log(json.savegame.game.maps.li);
 
     this.mapInfo.width = this.TILESIZE * this.worldSize.x;
     this.mapInfo.height = this.TILESIZE * this.worldSize.y;
@@ -337,7 +364,7 @@ class GameState extends Phaser.State {
 
   renderBitmap(group) {
 
-    const BMPCHUNKS = 2;
+    const BMPCHUNKS = 1;
     const CHUNK_WIDTH = this.mapInfo.width / BMPCHUNKS;
     const CHUNK_HEIGHT = this.mapInfo.height / BMPCHUNKS;
 
@@ -516,7 +543,7 @@ class GameState extends Phaser.State {
             wallSprite.tint = 0xffffff;
         }
 
-        wallSprite.scale.setTo(0.5);
+        wallSprite.scale.setTo(this.SCALESIZE);
         wallSprite.anchor.setTo(0.1, 0.9);
         this.stuffGridLayer.add(wallSprite);
 
@@ -551,7 +578,8 @@ class GameState extends Phaser.State {
         this.mapInfo.stuffGrid[i].def == "Limestone" ||
         this.mapInfo.stuffGrid[i].def == "Sandstone" ||
         this.mapInfo.stuffGrid[i].def == "Marble" ||
-        this.mapInfo.stuffGrid[i].def == "Slate") {
+        this.mapInfo.stuffGrid[i].def == "Slate" ||
+        this.mapInfo.stuffGrid[i].def == "MineableSteel") {
 
         this.rockGrid[thingPos[2]][thingPos[0]] = 1;
 
@@ -592,13 +620,13 @@ class GameState extends Phaser.State {
         }
 
         //Rotate the thing correctly
-        thingSprite.scale.setTo(0.5);
+        thingSprite.scale.setTo(this.SCALESIZE);
         thingSprite = this.thingAlign(thingSprite, this.mapInfo.stuffGrid[i]);
         if (this.mapInfo.stuffGrid[i].growth) {
           if (this.mapInfo.stuffGrid[i].growth <= 0.1) {
             thingSprite.destroy();
           } else {
-            thingSprite.scale.setTo(this.mapInfo.stuffGrid[i].growth / 2);
+            thingSprite.scale.setTo(this.mapInfo.stuffGrid[i].growth * (this.SCALESIZE));
           }
         }
 
@@ -883,7 +911,7 @@ class GameState extends Phaser.State {
                 rockSprite.tint = this.LIMESTONE;
                 break;
             }
-            rockSprite.scale.setTo(0.5);
+            rockSprite.scale.setTo(this.SCALESIZE);
             this.rocksGridLayer.add(rockSprite);
           }
 
@@ -930,7 +958,7 @@ class GameState extends Phaser.State {
 
 
             }
-            rockTintSprite.scale.setTo(0.5);
+            rockTintSprite.scale.setTo(this.SCALESIZE);
             this.resourcesHighlightGroup.add(rockTintSprite);
 
           } // end resource if
@@ -943,7 +971,7 @@ class GameState extends Phaser.State {
             'rockTint'
           );
           //this has a weird problem
-          rockTint.scale.setTo(0.5);
+          rockTint.scale.setTo(this.SCALESIZE);
           this.mountainsLayer.add(rockTint);
         }
         masterIndex++;
@@ -2024,7 +2052,7 @@ class GameState extends Phaser.State {
         output = "Marshy Soil";
         break;
       case 28: // rich soil
-        output = "Rich Soul";
+        output = "Rich Soil";
         break;
       case 29: //mud
         output = "Mud";
