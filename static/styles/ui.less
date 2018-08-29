@@ -12,12 +12,40 @@
   //  background-color: rbga(0,0,0,0.2)
     top: 0;
     position: absolute;
-    z-index: 9001;
+    z-index: 200;
     width: 100%;
+    a{
+      color:white;
+    }
     button {
       cursor: pointer;
       pointer-events: all;
       position: absolute;
+    }
+    button {
+      //float: left;
+    	display: block;
+    	padding: 1em 2em;
+    	border: none;
+    	background: none;
+    	color: inherit;
+    	vertical-align: middle;
+    	position: relative;
+    	z-index: 1;
+      cursor: pointer;
+    }
+
+    button:focus {
+    	outline: none;
+    }
+
+    #reloadButton{
+
+    }
+
+    #shareButton{
+      display: none;
+      float: right;
     }
 
 #FileName {
@@ -173,21 +201,7 @@
     }
   }
 
-  button {
-  	float: left;
-  	display: block;
-  	padding: 1em 2em;
-  	border: none;
-  	background: none;
-  	color: inherit;
-  	vertical-align: middle;
-  	position: relative;
-  	z-index: 1;
-  }
 
-  button:focus {
-  	outline: none;
-  }
 
   #settingsBar{
     display: block;
@@ -197,7 +211,7 @@
 
 }
 
-#versionNum {
+.versionNum {
   float: right;
   bottom: 4px;
   position: absolute;
@@ -252,7 +266,7 @@ input:checked + .slider {
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #ffca42;
 }
 
 input:checked + .slider:before {
@@ -268,4 +282,88 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    pointer-events: none;
+    z-index: 400;
+    /* Modal Content/Box */
+    .modal-content {
+
+      text-align: center;
+        color:#111111;
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+        pointer-events: all;
+
+        input {
+          width: 60%;
+          padding: 12px 20px;
+          margin: 8px auto;
+          font-size: 18px;
+          box-sizing: border-box;
+        }
+
+        button {
+
+          color: #14171a;
+          border-color: #14171a;
+          border: 2px solid;
+          font-size: 18px;
+          min-width: 150px;
+          max-width: 350px;
+          display: block;
+          margin: auto;
+          padding: 0.5em 2em;
+          outline: none;
+          background: #ffca42;
+          cursor: pointer;
+          vertical-align: middle;
+          position: relative;
+          z-index: 1;
+          -webkit-backface-visibility: hidden;
+          -moz-osx-font-smoothing: grayscale;
+          border-radius: 30px;
+          &:hover{
+            background-color: #ccc;
+          }
+
+          .fa {
+            margin-left: -12px;
+            margin-right: 8px;
+          }
+        }
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+
+
+      &:hover,
+      &:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
+    }
+
 }

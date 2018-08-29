@@ -14,6 +14,11 @@ class GameState extends Phaser.State {
       y: this.game.world.centerY
     }
 
+    this.SCREENWIDTH = this.game.width;
+    this.SCREENHEIGHT = this.game.height;
+
+    this.MOUSEBOUNDS = 50;
+
     this.worldSize = {
       x: 0,
       y: 0,
@@ -95,7 +100,7 @@ class GameState extends Phaser.State {
     this.DEVILSTRAND = 0x8c1d10;
     this.CLOTH = 0xc3c0b0;
 
-    if(this.game.hd == false){
+    if (this.game.hd == false) {
       this.TILESIZE = 16; //orginal 64, cut in half to save memory.
       this.SCALESIZE = 0.25;
 
@@ -103,7 +108,7 @@ class GameState extends Phaser.State {
       this.zoomRate = 0.5;
       this.minZoom = 0.5;
       this.maxZoom = 4;
-    }else {
+    } else {
       this.TILESIZE = 32; //orginal 64, cut in half to save memory.
       this.SCALESIZE = 0.5;
       this.zoomLevel = 1;
@@ -117,6 +122,7 @@ class GameState extends Phaser.State {
     this.mapInfo = { //RAW MAP DATA (arrays)
       "height": 0,
       "width": 0,
+      "name": null,
       "topTerrainGrid": [],
       "underTerrainGrid": [],
       "resourceGrid": [],
@@ -130,20 +136,20 @@ class GameState extends Phaser.State {
     };
 
     this.cursors =
-    this.currentTile =
-    this.topTerrainGridLayer = //TILEMAPS/BITMAP IMAGES
-    this.underTerrainGridLayer =
-    this.resourceGridLayer =
-    this.rocksGridLayer =
-    this.rocksLayer =
-    this.mountainsLayer =
-    this.resourcesHighlightGroup =
+      this.currentTile =
+      this.topTerrainGridLayer = //TILEMAPS/BITMAP IMAGES
+      this.underTerrainGridLayer =
+      this.resourceGridLayer =
+      this.rocksGridLayer =
+      this.rocksLayer =
+      this.mountainsLayer =
+      this.resourcesHighlightGroup =
 
-    this.stuffLayer =
-    this.bottomLayer =
-    this.roofGridLayer =
-    this.currentBounds =
-    this.marker = null;
+      this.stuffLayer =
+      this.bottomLayer =
+      this.roofGridLayer =
+      this.currentBounds =
+      this.marker = null;
 
     this.rockGrid = [];
     this.game.forceSingleUpdate = false;
@@ -161,12 +167,12 @@ class GameState extends Phaser.State {
     this.clickIndex = 0;
     this.oldStuffTile = null;
 
-
   }
 
   update() {
 
-    if(this.loadingDelta == 0 ){
+    if (this.loadingDelta == 0) {
+      console.log(this.SCREENHEIGHT);
       this.buildMapInfo(this.json);
     }
     if (this.loadingDelta > 0 && this.loadingDeltaWait > 0 && this.loadingFinished == false) {
@@ -184,8 +190,6 @@ class GameState extends Phaser.State {
 
       if (this.loadingDelta == 1) {
 
-        console.log(this.loadingDelta);
-
         this.rocksGridLayer = this.game.add.group();
         this.mountainsLayer = this.game.add.group();
         this.resourcesHighlightGroup = this.game.add.group();
@@ -201,7 +205,6 @@ class GameState extends Phaser.State {
           }
         }
 
-
         //RENDER TILEMAP
 
         this.renderTerrainTileMap();
@@ -213,6 +216,8 @@ class GameState extends Phaser.State {
         this.renderMountain();
 
         this.markerInit();
+
+        //this.cameraZones();
 
         this.loadingDelta = 2;
         this.loadingDeltaWait = this.LOADDELAY;
@@ -229,13 +234,10 @@ class GameState extends Phaser.State {
         //this.game.world.bringToTop(this.front_layer);
 
       } else if (this.loadingDelta == 3) {
-        console.log(this.loadingDelta);
 
         this.rocksGridLayer.add(this.mountainsLayer);
 
         this.rocksLayer = this.renderBitmap(this.rocksGridLayer);
-
-        console.log('No-render');
 
 
         this.mountainsLayer.destroy();
@@ -289,12 +291,12 @@ class GameState extends Phaser.State {
     }
 
     if (this.cameraCenterTest) {
-
       //this.topTerrainGridLayer.pivot.x = this.mapInfo.width- this.game.input.activePointer.worldX * this.zoomLevel;
       //this.topTerrainGridLayer.pivot.y =  this.mapInfo.height-this.game.input.activePointer.worldY * this.zoomLevel;
       this.cameraCenterTest.x = this.game.input.activePointer.worldX * this.zoomLevel;
       this.cameraCenterTest.y = this.game.input.activePointer.worldY * this.zoomLevel;
     }
+
 
     //ZOOM
     if (this.cursors !== null) {
@@ -309,37 +311,56 @@ class GameState extends Phaser.State {
         this.game.camera.x += this.TILESIZE;
       }
     }
+
+
+    //CAMERA PAN
+
+    //this.SCREENHEIGHT
+//this.SCREENWIDTH
+//console.log(this.game.input.mousePointer.y );
+if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS)
+    {
+      this.game.camera.x += this.TILESIZE;
+    }
+
+    if (this.game.input.mousePointer.x < 0 + this.MOUSEBOUNDS)
+    {
+        this.game.camera.x -= this.TILESIZE;
+    }
+
+    if (this.game.input.mousePointer.y > this.SCREENHEIGHT - this.MOUSEBOUNDS)
+    {
+      this.game.camera.y += this.TILESIZE;
+    }
+
+    if (this.game.input.mousePointer.y < 0 + this.MOUSEBOUNDS)
+    {
+      this.game.camera.y -= this.TILESIZE;
+    }
+
   }
 
   render() {
-    this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
+    //this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
     //this.game.debug.text(this.loadingDelta || '--', 2, 44, "#ff0000");
   }
 
   buildMapInfo(json) {
 
     //SETUP LOADING
+    let rawSizes = null;
+    if (json.savegame.game.maps.li.length) {
+      json.savegame.game.maps.li = json.savegame.game.maps.li[0];
+    }
+    rawSizes = json.savegame.game.maps.li.mapInfo.size;
 
+    let sizes = this.getPosition(rawSizes);
 
-    console.log('File In GameState');
-  let rawSizes = null;
-if (json.savegame.game.maps.li.length) {
-  json.savegame.game.maps.li = json.savegame.game.maps.li[0];
-}
+    this.worldSize.x = sizes[0];
+    this.worldSize.y = sizes[2];
+    this.worldSize.z = sizes[1];
 
-console.log(this.worldSize);
-
-
-        rawSizes = json.savegame.game.maps.li.mapInfo.size;
-
-        let sizes = this.getPosition(rawSizes);
-
-        this.worldSize.x = sizes[0];
-        this.worldSize.y = sizes[2];
-        this.worldSize.z = sizes[1];
-
-        console.log(this.worldSize.x + " x " + this.worldSize.y);
-
+    console.log(this.worldSize.x + " x " + this.worldSize.y);
 
     this.loadingDelta = 1;
 
@@ -354,12 +375,11 @@ console.log(this.worldSize);
     //this.mapInfo.deepResourceGrid = this.decompress(json.savegame.game.maps.li.deepResourceGrid.defGridDeflate);
     //this.mapInfo.deepResourceCount = this.decompress(json.savegame.game.maps.li.deepResourceGrid.countGridDeflate);
 
-    //console.log(this.mapInfo.deepResourceGrid);
+
 
     this.mapInfo.topTerrainGrid = this.mapTextures(this.mapInfo.topTerrainGrid, "terrain");
     this.mapInfo.resourceGrid = this.mapTextures(this.mapInfo.resourceRefGrid.slice(0), "resource");
     this.mapInfo.stuffGrid = json.savegame.game.maps.li.things.thing;
-
   }
 
   renderBitmap(group) {
@@ -415,9 +435,7 @@ console.log(this.worldSize);
     }
     bmd = null;
 
-    console.log('Rendered.');
-
-    //  bmd.destroy();
+    //bmd.destroy();
     group.destroy(true, false);
 
     return outputGroup;
@@ -436,7 +454,6 @@ console.log(this.worldSize);
     this.topTerrainGridLayer.renderSettings.enableScrollDelta = false;
 
     this.topTerrainGridLayer.resizeWorld();
-
   }
 
   renderResourceTileMap() {
@@ -512,6 +529,7 @@ console.log(this.worldSize);
           case "WoodLog":
             wallStuff = "woodWallTiles"
             break;
+            //TODO ADD SMOOTH
           default:
             wallStuff = "wallTiles";
         }
@@ -560,15 +578,23 @@ console.log(this.worldSize);
     let rockUnderSprite = null;
     let regex = new RegExp('\_(.*)');
 
+    let preRegex = new RegExp('(.*)\_')
+
     let filterName = null;
 
     for (let i = this.mapInfo.stuffGrid.length - 1; i > 0; i--) {
 
       if (regex.exec(this.mapInfo.stuffGrid[i].def)) {
-        filterName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
+        if(preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] == "Shell" ||
+        preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] == "TrapIED"){
+          filterName = this.mapInfo.stuffGrid[i].def;
+        }else{
+          filterName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
+        }
       } else {
         filterName = this.mapInfo.stuffGrid[i].def;
       }
+
 
       thingPos = this.getPosition(this.mapInfo.stuffGrid[i].pos);
 
@@ -589,20 +615,9 @@ console.log(this.worldSize);
         this.isAllowedStuff(filterName) &&
         this.isAnimal(this.mapInfo.stuffGrid[i].def)) {
 
-        //MANKAY_LEATHER
-        //Make is filth function
-
-        let spriteName = null;
-
-        if (regex.exec(this.mapInfo.stuffGrid[i].def)) {
-          spriteName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
-        } else {
-          spriteName = this.mapInfo.stuffGrid[i].def
-        }
-
         thingSprite = this.game.add.sprite(
           (thingPos[0] * this.TILESIZE), -(thingPos[2] * this.TILESIZE),
-          spriteName
+          filterName
         );
 
         if (this.mapInfo.stuffGrid[i].def != "WoodLog" && //Dont color sprites that are pre-colored
@@ -857,6 +872,7 @@ console.log(this.worldSize);
             case 252: //Granite
             case 102: //Slate
             case 47: //Sandstone
+              //TODO JUST PLACE IMAGE
               this.rockGrid[i][j] = 0; //Ignore Rock chunks
               break;
             default:
@@ -870,7 +886,6 @@ console.log(this.worldSize);
     let direction = null;
     let rockTintSprite = null;
 
-    //
     for (let i = 0; i < this.worldSize.x; i++) {
       for (let j = 0; j < this.worldSize.y; j++) {
         if (this.rockGrid[i][j] == 1) {
@@ -955,7 +970,6 @@ console.log(this.worldSize);
               case 127: // Gold
                 rockTintSprite.tint = this.GOLD;
                 break;
-
 
             }
             rockTintSprite.scale.setTo(this.SCALESIZE);
@@ -1370,6 +1384,7 @@ console.log(this.worldSize);
       case "FilthBloodInsect":
       case "FilthFireFoam":
       case "FilthSand":
+      case "Blight":
       case "Human":
       case "PowerConduit":
       case "SandbagRubble":
@@ -1390,6 +1405,7 @@ console.log(this.worldSize);
       case "Scyther":
       case "ActiveDropPod":
       case "Fire":
+      case "Spark":
         return false;
         break;
       default:
@@ -1523,13 +1539,8 @@ console.log(this.worldSize);
       y: (this.game.camera.height / 2) / (1 / this.zoomLevel)
     };
 
-    console.log(this.topTerrainGridLayer);
-
-
-
     //  this.topTerrainGridLayer.position.x = zoomPoint.x;
     //  this.topTerrainGridLayer.position.y = zoomPoint.y;
-
 
     /*
     this.stuffLayer.pivot.set(zoomPoint.x,zoomPoint.y);
@@ -1813,6 +1824,8 @@ console.log(this.worldSize);
     } else if (param = "resource") {
       for (let i = 0; i < iArray.length; i++) {
         //console.log( iArray[])
+if(iArray[i] > 0 && this.mapInfo.underTerrainGrid[i] >0)
+        console.log(iArray[i] + " - " + this.mapInfo.underTerrainGrid[i]);
 
         switch (iArray[i]) {
 
@@ -1837,6 +1850,10 @@ console.log(this.worldSize);
             break;
 
           case 103: //Uruianum
+            iArray[i] = 1;
+            break;
+
+            case 229: //Jade
             iArray[i] = 1;
             break;
 
@@ -1939,7 +1956,7 @@ console.log(this.worldSize);
     let stuffTile = this.mapInfo.stuffRefGrid[x][flippedY - 1];
 
     if (terrainTile)
-      this.currentTile.terrainTile = this.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
+      this.currentTile.terrainTile = this.getTerrainName(terrainTile.index + 1) // + " - " + (terrainTile.index + 1);
 
     this.oldStuffTile = stuffTile;
     this.clickDepth = stuffTile.length;
@@ -1959,12 +1976,6 @@ console.log(this.worldSize);
         this.currentTile.stuffTile = stuffTile[this.clickIndex].def; //count manage
       }
     }
-
-
-
-
-
-    //  console.log(this.currentTile);
   }
 
   getTerrainName(id) {
@@ -2183,6 +2194,10 @@ console.log(this.worldSize);
       case 194: // Sliver
         output = "Sliver";
         break;
+
+      case 229: //Jade
+        output = "Jade";
+      break;
 
       case 127: // Gold
         output = "Gold";

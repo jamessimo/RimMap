@@ -37,13 +37,20 @@ class DynamicLoad extends Phaser.State {
 
     let allAssets = this.game.cache.getJSON("assets");
     let regex = new RegExp('\_(.*)');
+    let preRegex = new RegExp('(.*)\_');
 
     for (let i = 0; i < toLoadAssets.length; i++) {
 
       //  toLoadJson.push(allAssets.image[toLoadAssets[i]])
       let filterName = null;
+      
       if (regex.exec(toLoadAssets[i])) {
-        filterName = regex.exec(toLoadAssets[i])[1];
+        if(preRegex.exec(toLoadAssets[i])[1] == "Shell" ||
+        preRegex.exec(toLoadAssets[i])[1] == "TrapIED"){
+          filterName = toLoadAssets[i];
+        }else{
+          filterName = regex.exec(toLoadAssets[i])[1];
+        }
       } else {
         filterName = toLoadAssets[i];
       }

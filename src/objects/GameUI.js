@@ -3,6 +3,8 @@ class GameUI {
   constructor(game){
       this.game = game;
       this.initUI();
+
+
   }
 
   initUI(){
