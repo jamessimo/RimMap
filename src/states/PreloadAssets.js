@@ -15,8 +15,6 @@ class PreloadAssets extends Phaser.State {
 
     this.preloadBar.anchor.setTo(0, 0.5);
 
-    console.log(this.toLoadJson);
-
     this.text = this.game.add.text(256, this.game.world.centerY + 64, 'Click to start load', { font: "normal 18px Arial", align: 'left', fill: '#ffffff'});
 
 

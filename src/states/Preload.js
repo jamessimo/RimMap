@@ -16,6 +16,8 @@ class Preload extends Phaser.State {
     this.game.load.spritesheet('woodWallTiles', 'assets/WoodTilemap.png', 80, 80, 16);
     this.game.load.spritesheet('rockTiles', 'assets/Rock_Atlas.png', 80, 80, 16);
     this.game.load.image('rockTint', 'assets/rockTint.png');
+    this.game.load.image('chunk', 'assets/RockLowA.png');
+
     this.game.load.image('resourceTint', 'assets/resourceTint.png');
 
     this.game.load.script('pako', 'assets/pako.min.js');

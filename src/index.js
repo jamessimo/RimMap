@@ -8,7 +8,7 @@ class Game extends Phaser.Game {
 
 	constructor() {
 		window.PhaserGlobal = { disableAudio: true };
-// Phaser.WEBGL_MULTI
+		// Phaser.WEBGL_MULTI
 		super(1024, 720, Phaser.WEBGL_MULTI, 'window', null);
 
 		this.state.add('Boot', Boot, false);

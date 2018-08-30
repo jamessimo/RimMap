@@ -151,15 +151,19 @@
 						<input id="resourceCheckbox" name="resourceCheckbox" type="checkbox" onchange="toggleResource()"  />
 					  <span class="slider round"></span>
 					</label>
+
 				</div>
-				<!--<div class="switchContain">
-					<span class="sliderName">Deep Resources</span>
-					</br>
-					<label id="deepResourceSwitch" class="switch">
-						<input id="deepResourceCheckbox" name="deepResourceCheckbox" type="checkbox" onchange="toggleResource()" disabled />
-					  <span class="slider round"></span>
-					</label>
-				</div>-->
+				<div class="switchContain">
+
+				<span class="sliderName">Deep Resources</span>
+			</br>
+
+				<label id="deepResourceSwitch" class="switch">
+					<input id="deepResourceCheckbox" name="deepResourceCheckbox" type="checkbox" onchange="toggleDeepResource()"  />
+					<span class="slider round"></span>
+				</label>
+							</div>
+
 
 				<div class="tileInfoContain">
 					<div id="tileData">
@@ -167,6 +171,8 @@
 							<li><span id="terrainName"></span></li>
 							<li><span id="stuffName"></span></li>
 							<li><span id="resourceName"></span></li>
+							<li><span id="deepResourceName"></span></li>
+
 						</ul>
 					</div>
 				</div>
@@ -204,7 +210,6 @@
 				case "DynamicLoad":
 					if (ui.style.display == "none") {
 						ui.style.display = "block";
-						console.log(window);
 						let url = null;
 						if (window.document.referrer) {
 							url = new URL(window.document.referrer); //window.document.referrer;//document.location;
@@ -212,14 +217,11 @@
 							url = new URL(document.location); //window.document.referrer;//document.location;
 						}
 
-						console.log(url);
-
 						if (url != null) {
 							params = new URLSearchParams(url.search.substring(1))
 							let urlMapId = params.get("mapid")
 
 							if (urlMapId !== null) {
-								console.log(urlMapId);
 								loadSave(urlMapId, false);
 							}
 						}
@@ -241,15 +243,20 @@
 						finishedFrontendLoading = true;
 						document.getElementById("reloadButton").style.display = "block";
 
-						if (file.name !== undefined) {
-							document.getElementById("shareButton").style.display = "block";
-							document.getElementById("uploadFileName").textContent = file.name;
+						if(file){
+							if (file.name !== undefined) {
+								document.getElementById("shareButton").style.display = "block";
+								document.getElementById("uploadFileName").textContent = file.name;
+							}
 						}
 
 					} else if (phaserState.callbackContext.loadingFinished == false && finishedFrontendLoading != true) {
 						ui.style.display = "block";
 						blackout.style.display = "block";
-
+					}
+					if(phaserState.callbackContext.loadingFinished == true && ui.style.display == "none"){//JUST CHECK TO MAKE SURE UI LOADS IF USER MINIMIZED
+						ui.style.display = "block";
+						console.log("NO UI!!");
 					}
 					if (finishedFrontendLoading == false && loadedMapName != "") {
 						loadingMsg.textContent = "Rendering " + loadedMapName + " " + "(" + (phaserState.callbackContext.loadingDelta * 20) + "%)";
@@ -282,6 +289,8 @@
 				oldTile = currentTile;
 				document.getElementById("terrainName").textContent = currentTile.terrainTile;
 				document.getElementById("resourceName").textContent = currentTile.resourceTile;
+				document.getElementById("deepResourceName").textContent = currentTile.deepResourceTile;
+
 				document.getElementById("stuffName").textContent = currentTile.stuffTile;
 			}
 		}
@@ -314,6 +323,21 @@
 				setTimeout(() => {
 					blackout.style.display = "none";
 					phaserState.callbackContext.hideResources();
+				}, 1000);
+			}
+		}
+		let toggleDeepResource = function() {
+			blackout.style.display = "block";
+			loadingMsg.textContent = "Loading deep resources...";
+			if (document.getElementById('deepResourceCheckbox').checked) {
+				setTimeout(() => {
+					blackout.style.display = "none";
+					phaserState.callbackContext.showDeepResources();
+				}, 1000);
+			} else {
+				setTimeout(() => {
+					blackout.style.display = "none";
+					phaserState.callbackContext.hideDeepResources();
 				}, 1000);
 			}
 		}
@@ -434,7 +458,6 @@
 		};
 
 		let uploadFileIO = function() {
-			console.log("uploadFileIO")
 			if (file) {
 
 				let formData = new FormData();
@@ -448,8 +471,6 @@
 
 				req.onloadstart = function() {
 					blackout.style.display = "block";
-
-					console.log("Uploading file...");
 					loadingMsg.textContent = "Uploading file...";
 				}
 				req.onreadystatechange = req.onprogress = function() {
@@ -464,12 +485,6 @@
 
 					blackout.style.display = "none";
 
-					/*
-					var length = req.getResponseHeader("Content-Length");
-						if (length != null) {
-							console.log("Downloading " + mapName + " ("+Math.round((this.responseText.length/length)*100)+"%)");
-					}
-					*/
 				}
 				req.send(formData);
 			}
