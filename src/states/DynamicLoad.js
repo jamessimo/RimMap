@@ -10,12 +10,13 @@ class DynamicLoad extends Phaser.State {
       "image": {}
     };
     this.loadingDelta = 0;
+    this.game.hd = false;
   }
 
   loadWorld(json) {
 
     //SETUP LOADING
-    console.log('File In DynamicLoad');
+  //  console.log('File In DynamicLoad');
 
     let rawSizes = null;
     //FETCH META DATA
@@ -27,6 +28,7 @@ class DynamicLoad extends Phaser.State {
     //console.log(json.savegame.game.maps.li);
 
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
+    //TODO CHECK VERSION AND SWAP OUT allAssets
 
     let sizes = this.getPosition(rawSizes);
     this.worldSize.x = sizes[0];
@@ -43,18 +45,22 @@ class DynamicLoad extends Phaser.State {
 
       //  toLoadJson.push(allAssets.image[toLoadAssets[i]])
       let filterName = null;
-      
+
       if (regex.exec(toLoadAssets[i])) {
+
         if(preRegex.exec(toLoadAssets[i])[1] == "Shell" ||
         preRegex.exec(toLoadAssets[i])[1] == "TrapIED"){
           filterName = toLoadAssets[i];
+        }else if( preRegex.exec(toLoadAssets[i])[1] == "Plant"){ //VERSION 0.19
+          filterName =  preRegex.exec(toLoadAssets[i])[1] + regex.exec(toLoadAssets[i])[1];
         }else{
-          filterName = regex.exec(toLoadAssets[i])[1];
+          filterName =  regex.exec(toLoadAssets[i])[1];
         }
       } else {
         filterName = toLoadAssets[i];
       }
 
+      //Loop through all the unique assets sound
       if (allAssets.image[filterName] !== undefined) {
         var assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
 
@@ -67,7 +73,7 @@ class DynamicLoad extends Phaser.State {
     }
 
 
-    //  console.log(this.game.cache.getJSON("assets"));
+    //console.log(this.toLoadJson.image);
     //new AssetLoader(this.game, this.game.cache.getJSON("toLoadJson"));
     this.startMap(json);
   }

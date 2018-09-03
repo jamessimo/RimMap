@@ -1,4 +1,4 @@
-import * as GameUI from 'objects/GameUI';
+//import * as GameUI from 'objects/GameUI';
 
 class GameState extends Phaser.State {
 
@@ -117,8 +117,6 @@ class GameState extends Phaser.State {
       this.maxZoom = 4;
     }
 
-
-
     this.mapInfo = { //RAW MAP DATA (arrays)
       "height": 0,
       "width": 0,
@@ -223,10 +221,10 @@ class GameState extends Phaser.State {
 
         this.markerInit();
 
-        this.centerMarker = this.game.add.graphics();
+      /*  this.centerMarker = this.game.add.graphics();
         this.centerMarker.lineStyle(2, 0x00FFFF, 1);
         this.centerMarker.drawRect(0, 0, this.TILESIZE, this.TILESIZE);
-
+*/
         //this.cameraZones();
 
         this.loadingDelta = 2;
@@ -249,8 +247,6 @@ class GameState extends Phaser.State {
         this.rocksGridLayer.add(this.mountainsLayer);
 
         this.rocksLayer = this.renderBitmap(this.rocksGridLayer);
-
-
 
         //  this.resourceLayer.alpha = 0;
 
@@ -302,14 +298,13 @@ class GameState extends Phaser.State {
         this.game.camera.y -= (this.TILESIZE/ this.zoomLevel);
       }
 
-      this.centerMarker.x = (this.game.camera.view.halfWidth + this.game.camera.x);
-      this.centerMarker.y = (this.game.camera.view.halfHeight + this.game.camera.y);
+    //  this.centerMarker.x = (this.game.camera.view.halfWidth + this.game.camera.x);
+    //  this.centerMarker.y = (this.game.camera.view.halfHeight + this.game.camera.y);
 
       //http://jsfiddle.net/valueerror/pdx0px0w/
       if (this.marker && this.topTerrainGridLayer) { ///4
         this.marker.x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
         this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
-
       }
 
       //ZOOM
@@ -414,8 +409,9 @@ class GameState extends Phaser.State {
         bmd.baseTexture.resolution = 0.5;
 
         //bmd.scale.set(1.5,1.5);
-        bmd.baseTexture.skipRender = true;
-        bmd.baseTexture.unloadFromGPU();
+        //bmd.baseTexture.skipRender = true;
+        //bmd.baseTexture.unloadFromGPU();
+        bmd.disableTextureUpload = true;
 
         bmd.drawGroup(group);
 
@@ -429,9 +425,10 @@ class GameState extends Phaser.State {
       groupPosX = -CHUNK_WIDTH;
 
     }
+  //  bmd.cls();
+
     bmd = null;
 
-    //bmd.destroy();
     group.destroy(true, false);
 
     return outputGroup;
@@ -462,15 +459,40 @@ class GameState extends Phaser.State {
         if (this.mapInfo.resourceRefGrid[masterIndex] > 0) {
 
           switch (this.mapInfo.resourceRefGrid[masterIndex]) {
-            case 120: //Limestone chunk TODO
-            case 78: //Granite chunkChunkGranite
-            case 119: //Marble chunk
+
+            case 78: //Marble chunk
+            resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'chunk');
+            resourceSprite.scale.setTo(this.SCALESIZE);
+            resourceSprite.tint = this.MARBLE;
+            this.resourceGridLayer.add(resourceSprite);
+            break;
+            case 119: //Limestone chunk
+            resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'chunk');
+            resourceSprite.scale.setTo(this.SCALESIZE);
+            resourceSprite.tint = this.LIMESTONE;
+            this.resourceGridLayer.add(resourceSprite);
+              break;
             case 252: //Granite chunk
+            resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'chunk');
+            resourceSprite.scale.setTo(this.SCALESIZE);
+            resourceSprite.tint = this.GRANITE;
+            this.resourceGridLayer.add(resourceSprite);
+              break;
             case 102: //Slate chunk
+              resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'chunk');
+              resourceSprite.scale.setTo(this.SCALESIZE);
+              resourceSprite.tint = this.SLATE;
+              this.resourceGridLayer.add(resourceSprite);
             case 47: //Sandstone chunk
               resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'chunk');
               resourceSprite.scale.setTo(this.SCALESIZE);
-              resourceSprite.tint = this.GRANITE;
+              resourceSprite.tint = this.SANDSTONE;
+              this.resourceGridLayer.add(resourceSprite);
+              break;
+            case 241:
+              resourceSprite = this.game.add.sprite((j * this.TILESIZE), -((i + 1) * this.TILESIZE), 'slag');
+
+              resourceSprite.scale.setTo(this.SCALESIZE);
               this.resourceGridLayer.add(resourceSprite);
               break;
 
@@ -643,8 +665,6 @@ class GameState extends Phaser.State {
 
       } //End wallif
     } //End For
-
-
   }
 
   renderStuff() {
@@ -664,13 +684,14 @@ class GameState extends Phaser.State {
         if (preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] == "Shell" ||
           preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] == "TrapIED") {
           filterName = this.mapInfo.stuffGrid[i].def;
-        } else {
+        } else if(  preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] == "Plant"){ //VERSION 0.19
+          filterName =  preRegex.exec(this.mapInfo.stuffGrid[i].def)[1] + regex.exec(this.mapInfo.stuffGrid[i].def)[1];
+        }else {
           filterName = regex.exec(this.mapInfo.stuffGrid[i].def)[1];
         }
       } else {
         filterName = this.mapInfo.stuffGrid[i].def;
       }
-
       thingPos = this.getPosition(this.mapInfo.stuffGrid[i].pos);
 
       //First check if the stuff is a damged rock if so add it to rocks and discard
@@ -688,7 +709,7 @@ class GameState extends Phaser.State {
         this.mapInfo.stuffGrid[i].def != "Wall" &&
         this.mapInfo.stuffGrid[i].def != "Sandbags" &&
         this.isAllowedStuff(filterName) &&
-        this.isAnimal(this.mapInfo.stuffGrid[i].def)) {
+        this.isAnimal(filterName)) {
 
         thingSprite = this.game.add.sprite(
           (thingPos[0] * this.TILESIZE), -(thingPos[2] * this.TILESIZE),
@@ -933,11 +954,12 @@ class GameState extends Phaser.State {
           switch (this.mapInfo.resourceRefGrid[masterIndex]) {
 
             case 120: //?!?!?!?!? TODO
-            case 78: //Granite chunk
-            case 119: //Marble chunk
+            case 78: //Marble chunk
+            case 119: //Limestone chunk
             case 252: //Granite chunk
             case 102: //Slate chunk
             case 47: //Sandstone chunk
+            case 241: //Metal Chunk
 
               this.rockGrid[i][j] = 0; //Ignore Rock chunks
               break;
@@ -1017,236 +1039,241 @@ class GameState extends Phaser.State {
     //If thing has stuff do stuff case, if not do based on names
     let currentSprite = null;
 
-    if (thingRef.stuff) {
-      currentSprite = thingRef.stuff;
-    } else {
-      currentSprite = thingRef.def;
-    }
+    if(thingRef.color){
+     let rawColor = this.getColor(thingRef.color);
+     let hexColor = Phaser.Color.getColor(rawColor[0],rawColor[1],rawColor[2]);
+     sprite.tint = hexColor
+    } else{
+      if (thingRef.stuff) {
+        currentSprite = thingRef.stuff;
+      } else {
+        currentSprite = thingRef.def;
+      }
+      switch (currentSprite) {
+        case "ChunkSandstone":
+          sprite.tint = this.SANDSTONE;
+          break;
+        case "ChunkGranite":
+          sprite.tint = this.GRANITE;
+          break;
+        case "ChunkSlate":
+          sprite.tint = this.SLATE;
+          break;
+        case "ChunkLimestone":
+          sprite.tint = this.LIMESTONE;
+          break;
+        case "ChunkMarble":
+          sprite.tint = this.MARBLE;
+          break;
+        case "BlocksSandstone":
+          sprite.tint = this.SANDSTONE;
+          break;
+        case "BlocksGranite":
+          sprite.tint = this.GRANITE;
+          break;
+        case "BlocksSlate":
+          sprite.tint = this.SLATE;
+          break;
+        case "BlocksLimestone":
+          sprite.tint = this.LIMESTONE;
+          break;
+        case "BlocksMarble":
+          sprite.tint = this.MARBLE;
+          break;
+        case "WoodLog":
+          sprite.tint = 0xBF6C2A;
+          break;
+        case "Cloth":
+          sprite.tint = this.CLOTH;
+          break;
+        case "WoolMuffalo":
+        case "Muffalo_Leather":
+          sprite.tint = this.MUFFALO;
+          break;
+        case "WoolAlpaca":
+        case "Alpaca_Leather":
+          sprite.tint = this.ALPACA;
+          break;
 
-    switch (currentSprite) {
-      case "ChunkSandstone":
-        sprite.tint = this.SANDSTONE;
-        break;
-      case "ChunkGranite":
-        sprite.tint = this.GRANITE;
-        break;
-      case "ChunkSlate":
-        sprite.tint = this.SLATE;
-        break;
-      case "ChunkLimestone":
-        sprite.tint = this.LIMESTONE;
-        break;
-      case "ChunkMarble":
-        sprite.tint = this.MARBLE;
-        break;
-      case "BlocksSandstone":
-        sprite.tint = this.SANDSTONE;
-        break;
-      case "BlocksGranite":
-        sprite.tint = this.GRANITE;
-        break;
-      case "BlocksSlate":
-        sprite.tint = this.SLATE;
-        break;
-      case "BlocksLimestone":
-        sprite.tint = this.LIMESTONE;
-        break;
-      case "BlocksMarble":
-        sprite.tint = this.MARBLE;
-        break;
-      case "WoodLog":
-        sprite.tint = 0xBF6C2A;
-        break;
-      case "Cloth":
-        sprite.tint = this.CLOTH;
-        break;
-      case "WoolMuffalo":
-      case "Muffalo_Leather":
-        sprite.tint = this.MUFFALO;
-        break;
-      case "WoolAlpaca":
-      case "Alpaca_Leather":
-        sprite.tint = this.ALPACA;
-        break;
-
-      case "DevilstrandCloth":
-        sprite.tint = this.DEVILSTRAND;
-        break;
-      case "Alphabeaver_Leather":
-        sprite.tint = this.ALPHABEAVER;
-        break;
-      case "FoxArctic_Leather":
-        sprite.tint = this.FOXARCTIC;
-        break;
-      case "WolfArctic_Leather":
-        sprite.tint = this.WOLFARCTIC;
-        break;
-      case "Boomalope_Leather":
-        sprite.tint = this.BOOMALOPE;
-        break;
-      case "Boomrat_Leather":
-        sprite.tint = this.BOOMRAT;
-        break;
-      case "Capybara_Leather":
-        sprite.tint = this.CAPYBARA;
-        break;
-      case "Caribou_Leather":
-        sprite.tint = this.CARIBOU;
-        break;
-      case "WoolCamel":
-      case "Camel_Leather":
-        sprite.tint = this.CAMEL;
-        break;
-      case "Cassowary_Leather":
-        sprite.tint = this.CASSOWARY;
-        break;
-      case "Cat_Leather":
-        sprite.tint = this.CAT;
-        break;
-      case "Chicken_Leather":
-        sprite.tint = this.CHICKEN;
-        break;
-      case "Chinchilla_Leather":
-        sprite.tint = this.CHINCHILLA;
-        break;
-      case "Cobra_Leather":
-        sprite.tint = this.ALPACA;
-        break;
-      case "Cougar_Leather":
-        sprite.tint = this.COUGAR;
-        break;
-      case "Cow_Leather":
-        sprite.tint = this.COW;
-        break;
-      case "Deer_Leather":
-        sprite.tint = this.DEER;
-        break;
-      case "Dromedary_Leather":
-        sprite.tint = this.DROMEDARY;
-        break;
-      case "Elephant_Leather":
-        sprite.tint = this.ELEPHANT;
-        break;
-      case "Elk_Leather":
-        sprite.tint = this.ELK;
-        break;
-      case "Emu_Leather":
-        sprite.tint = this.EMU;
-        break;
-      case "FoxFennec_Leather":
-        sprite.tint = this.FOXFENNEC;
-        break;
-      case "Gazelle_Leather":
-        sprite.tint = this.GAZELLE;
-        break;
-      case "GrizzlyBear_Leather":
-        sprite.tint = this.GRIZZLYBEAR;
-        break;
-      case "Hare_Leather":
-        sprite.tint = this.HARE;
-        break;
-      case "Husky_Leather":
-        sprite.tint = this.HUSKY;
-        break;
-      case "Ibex_Leather":
-        sprite.tint = this.IBEX;
-        break;
-      case "Iguana_Leather":
-        sprite.tint = this.IGUANA;
-        break;
-      case "LabradorRetriever_Leather":
-        sprite.tint = this.LABRADORRETRIEVER;
-        break;
-      case "Lynx_Leather":
-        sprite.tint = this.LYNX;
-        break;
-      case "WoolMegasloth":
-      case "Megasloth_Leather":
-        sprite.tint = this.MEGASLOTH;
-        break;
-      case "Monkey_Leather":
-        sprite.tint = this.MONKEY;
-        break;
-      case "Ostrich_Leather":
-        sprite.tint = this.OSTRICH;
-        break;
-      case "Panther_Leather":
-        sprite.tint = this.PANTHER;
-        break;
-      case "Pig_Leather":
-        sprite.tint = this.PIG;
-        break;
-      case "PolarBear_Leather":
-        sprite.tint = this.POLARBEAR;
-        break;
-      case "Raccoon_Leather":
-        sprite.tint = this.RACCOON;
-        break;
-      case "Rat_Leather":
-        sprite.tint = this.RAT;
-        break;
-      case "FoxRed_Leather":
-        sprite.tint = this.FOXRED;
-        break;
-      case "Rhinoceros_Leather":
-        sprite.tint = this.RHINOCEROS;
-        break;
-      case "Snowhare_Leather":
-        sprite.tint = this.SNOWHARE;
-        break;
-      case "Squirrel_Leather":
-        sprite.tint = this.SQUIRREL;
-        break;
-      case "WolfTimber_Leather":
-        sprite.tint = this.WOLFTIMBER;
-        break;
-      case "Tortoise_Leather":
-        sprite.tint = this.TORTOISE;
-        break;
-      case "Turkey_Leather":
-        sprite.tint = this.TURKEY;
-        break;
-      case "Warg_Leather":
-        sprite.tint = this.WARG;
-        break;
-      case "WildBoar_Leather":
-        sprite.tint = this.WILDBOAR;
-        break;
-      case "YorkshireTerrier_Leather":
-        sprite.tint = this.YORKSHIRETERRIER;
-        break;
-      case "Human_Leather":
-        sprite.tint = this.HUMAN;
-        break;
-      case "Steel":
-        sprite.tint = this.STEEL;
-        break;
-      case "Plasteel":
-        sprite.tint = this.PLASTEEL;
-        break;
-      case "Jade":
-        sprite.tint = this.JADE;
-        break;
-      case "Gold":
-        sprite.tint = this.GOLD;
-        break;
-      case "Silver":
-        sprite.tint = this.SILVER;
-        break;
-      case "Uruianum":
-        sprite.tint = this.URANIUM;
-        break;
-      case "StandingLamp_Red":
-        sprite.tint = 0xFF0000;
-        break;
-      case "StandingLamp_Blue":
-        sprite.tint = 0x0000FF;
-        break;
-      case "StandingLamp_Green":
-        sprite.tint = 0x00FF00;
-        break;
-      default:
-        //thingSprite.tint = 0xffffff;
+        case "DevilstrandCloth":
+          sprite.tint = this.DEVILSTRAND;
+          break;
+        case "Alphabeaver_Leather":
+          sprite.tint = this.ALPHABEAVER;
+          break;
+        case "FoxArctic_Leather":
+          sprite.tint = this.FOXARCTIC;
+          break;
+        case "WolfArctic_Leather":
+          sprite.tint = this.WOLFARCTIC;
+          break;
+        case "Boomalope_Leather":
+          sprite.tint = this.BOOMALOPE;
+          break;
+        case "Boomrat_Leather":
+          sprite.tint = this.BOOMRAT;
+          break;
+        case "Capybara_Leather":
+          sprite.tint = this.CAPYBARA;
+          break;
+        case "Caribou_Leather":
+          sprite.tint = this.CARIBOU;
+          break;
+        case "WoolCamel":
+        case "Camel_Leather":
+          sprite.tint = this.CAMEL;
+          break;
+        case "Cassowary_Leather":
+          sprite.tint = this.CASSOWARY;
+          break;
+        case "Cat_Leather":
+          sprite.tint = this.CAT;
+          break;
+        case "Chicken_Leather":
+          sprite.tint = this.CHICKEN;
+          break;
+        case "Chinchilla_Leather":
+          sprite.tint = this.CHINCHILLA;
+          break;
+        case "Cobra_Leather":
+          sprite.tint = this.ALPACA;
+          break;
+        case "Cougar_Leather":
+          sprite.tint = this.COUGAR;
+          break;
+        case "Cow_Leather":
+          sprite.tint = this.COW;
+          break;
+        case "Deer_Leather":
+          sprite.tint = this.DEER;
+          break;
+        case "Dromedary_Leather":
+          sprite.tint = this.DROMEDARY;
+          break;
+        case "Elephant_Leather":
+          sprite.tint = this.ELEPHANT;
+          break;
+        case "Elk_Leather":
+          sprite.tint = this.ELK;
+          break;
+        case "Emu_Leather":
+          sprite.tint = this.EMU;
+          break;
+        case "FoxFennec_Leather":
+          sprite.tint = this.FOXFENNEC;
+          break;
+        case "Gazelle_Leather":
+          sprite.tint = this.GAZELLE;
+          break;
+        case "GrizzlyBear_Leather":
+          sprite.tint = this.GRIZZLYBEAR;
+          break;
+        case "Hare_Leather":
+          sprite.tint = this.HARE;
+          break;
+        case "Husky_Leather":
+          sprite.tint = this.HUSKY;
+          break;
+        case "Ibex_Leather":
+          sprite.tint = this.IBEX;
+          break;
+        case "Iguana_Leather":
+          sprite.tint = this.IGUANA;
+          break;
+        case "LabradorRetriever_Leather":
+          sprite.tint = this.LABRADORRETRIEVER;
+          break;
+        case "Lynx_Leather":
+          sprite.tint = this.LYNX;
+          break;
+        case "WoolMegasloth":
+        case "Megasloth_Leather":
+          sprite.tint = this.MEGASLOTH;
+          break;
+        case "Monkey_Leather":
+          sprite.tint = this.MONKEY;
+          break;
+        case "Ostrich_Leather":
+          sprite.tint = this.OSTRICH;
+          break;
+        case "Panther_Leather":
+          sprite.tint = this.PANTHER;
+          break;
+        case "Pig_Leather":
+          sprite.tint = this.PIG;
+          break;
+        case "PolarBear_Leather":
+          sprite.tint = this.POLARBEAR;
+          break;
+        case "Raccoon_Leather":
+          sprite.tint = this.RACCOON;
+          break;
+        case "Rat_Leather":
+          sprite.tint = this.RAT;
+          break;
+        case "FoxRed_Leather":
+          sprite.tint = this.FOXRED;
+          break;
+        case "Rhinoceros_Leather":
+          sprite.tint = this.RHINOCEROS;
+          break;
+        case "Snowhare_Leather":
+          sprite.tint = this.SNOWHARE;
+          break;
+        case "Squirrel_Leather":
+          sprite.tint = this.SQUIRREL;
+          break;
+        case "WolfTimber_Leather":
+          sprite.tint = this.WOLFTIMBER;
+          break;
+        case "Tortoise_Leather":
+          sprite.tint = this.TORTOISE;
+          break;
+        case "Turkey_Leather":
+          sprite.tint = this.TURKEY;
+          break;
+        case "Warg_Leather":
+          sprite.tint = this.WARG;
+          break;
+        case "WildBoar_Leather":
+          sprite.tint = this.WILDBOAR;
+          break;
+        case "YorkshireTerrier_Leather":
+          sprite.tint = this.YORKSHIRETERRIER;
+          break;
+        case "Human_Leather":
+          sprite.tint = this.HUMAN;
+          break;
+        case "Steel":
+          sprite.tint = this.STEEL;
+          break;
+        case "Plasteel":
+          sprite.tint = this.PLASTEEL;
+          break;
+        case "Jade":
+          sprite.tint = this.JADE;
+          break;
+        case "Gold":
+          sprite.tint = this.GOLD;
+          break;
+        case "Silver":
+          sprite.tint = this.SILVER;
+          break;
+        case "Uruianum":
+          sprite.tint = this.URANIUM;
+          break;
+        case "StandingLamp_Red":
+          sprite.tint = 0xFF0000;
+          break;
+        case "StandingLamp_Blue":
+          sprite.tint = 0x0000FF;
+          break;
+        case "StandingLamp_Green":
+          sprite.tint = 0x00FF00;
+          break;
+        default:
+          //thingSprite.tint = 0xffffff;
+      }
     }
 
     return sprite;
@@ -1390,6 +1417,14 @@ class GameState extends Phaser.State {
   //Is this stuff allowed? Return true
   //Used so we dont render stuff like dirt and pawns
   isAllowedStuff(stuff) {
+
+    let preRegex = new RegExp('(.*)\_')
+
+    if(preRegex.exec(stuff)){ //0.19 Change everyhing to Filth_xxx
+      if(preRegex.exec(stuff)[1] == "Filth")
+        return false;
+    }
+
     switch (stuff) {
       case "Filth":
       case "FilthDirt":
@@ -1418,6 +1453,7 @@ class GameState extends Phaser.State {
       case "Blueprint_Install":
       case "RectTrigger":
       case "RockRubble":
+      case "RubbleRock":
       case "BuildingRubble":
       case "SlagRubble":
       case "Centipede":
@@ -1494,25 +1530,13 @@ class GameState extends Phaser.State {
       case "Warg":
       case "WildBoar":
       case "YorkshireTerrier":
-        return false;
-        break;
-      default:
-        return true;
-    }
-  }
+      case "Grizzly":
+      case "Timber":
 
-  isRockChunk(stuff) {
-    switch (stuff) {
-      case 120: //?!?!!?
-      case 78: //Granite Chunk
-      case 119: //Marble Chunk
-      case 252: //Granite Chunk
-      case 102: //Slate Chunk
-      case 47: //Sandstone Chunk
-        return true;
+        return false;
         break;
       default:
-        return false;
+        return true;
     }
   }
 
@@ -1586,9 +1610,6 @@ class GameState extends Phaser.State {
 
     this.zoomLevel = iZoom;
 
-
-
-
     this.stuffLayer.scale.set(1 / this.zoomLevel);
     //this.stuffLayer.pivot.x = this.centerMarker.x;
     //this.stuffLayer.pivot.y = this.centerMarker.y;
@@ -1619,7 +1640,6 @@ class GameState extends Phaser.State {
     //this.topTerrainGridLayer.pivot.y = (this.centerMarker.y - this.topTerrainGridLayer.height);
 
     console.log(this.topTerrainGridLayer.position);
-    console.log(this.game.camera.position);
 
     this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
     this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
@@ -1871,10 +1891,16 @@ class GameState extends Phaser.State {
           case 208: //smooth marble
             iArray[i] = 55;
             break;
+
+          case 21: //Moving river water?
+            iArray[i] = 38;
+          break;
+          case 71: //Bridge
+              iArray[i] = 3;
+          break;
           default:
             console.log(iArray[i]);
             iArray[i] = 1000;
-            //console.log()
         }
         iArray[i] = iArray[i] -= 1; //fix for index offset
       }
@@ -1984,7 +2010,9 @@ class GameState extends Phaser.State {
       "terrainTile": null,
       "resourceTile": null,
       "deepResourceTile": null,
-      "stuffTile": null //count manage
+      "stuffTile": null, //count manage
+      "totalHealth": 0,
+      "currentHealth": 0
     };
 
     let x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel); // 4 * ZOOM
@@ -1992,9 +2020,7 @@ class GameState extends Phaser.State {
     let flippedY = Math.abs(y - this.worldSize.y);
 
     let terrainTile = this.topTerrainGridLayer.map.getTile(x, y, this.topTerrainGridLayer);
-
     let stuffTile = this.mapInfo.stuffRefGrid[x][flippedY - 1];
-
     let resourceTile = this.mapInfo.resourceRefGrid[(flippedY - 1) * this.worldSize.y + x];
     let deepResourceTile = this.mapInfo.deepResourceGrid[(flippedY - 1) * this.worldSize.y + x];
 
@@ -2014,20 +2040,22 @@ class GameState extends Phaser.State {
       } else {
         this.clickIndex = 0;
       }
-      if (stuffTile[this.clickIndex].stuff) {
-        this.currentTile.stuffTile = stuffTile[this.clickIndex].stuff + " " + stuffTile[this.clickIndex].def; //count manage
-      } else {
-        this.currentTile.stuffTile = stuffTile[this.clickIndex].def; //count manage
-      }
+
+
+      let stuffMaterial = stuffTile[this.clickIndex].stuff;
+      let stuffName = stuffTile[this.clickIndex].def;
+      let stuffHealth = stuffTile[this.clickIndex].health;
+      let stuffStack = stuffTile[this.clickIndex].stackCount;
+
+      this.currentTile.stuffTile = ((stuffMaterial) ?  stuffMaterial + " " : "") + stuffName + ((stuffStack) ?  " x" +  stuffStack : "")  +  ((stuffHealth) ? " ("+stuffHealth + " HP)" : "");
     }
 
     if (resourceTile) {
       this.currentTile.resourceTile = this.getResourceName(resourceTile) + " - " + resourceTile;
     }
     if (deepResourceTile) {
-      this.currentTile.deepResourceTile = this.getDeepResourceName(deepResourceTile)  + " - " + deepResourceTile;
+      this.currentTile.deepResourceTile = this.getDeepResourceName(deepResourceTile) + " x" + this.mapInfo.deepResourceCount[(flippedY - 1) * this.worldSize.y + x] + " - " + deepResourceTile;
     }
-
 
   }
 
@@ -2271,6 +2299,10 @@ class GameState extends Phaser.State {
       case 47: // Sandstone
         output = "Sandstone Chunk";
         break;
+      case 241: // Metal Chunk
+        output = "Metal Chunk";
+        break;
+
       default:
         output = null;
     }
@@ -2320,6 +2352,18 @@ class GameState extends Phaser.State {
     //Loop through the array to make it all ints
     for (let i = 0; i < formattedSize.length; i++) {
       formattedSize[i] = parseInt(formattedSize[i]);
+    }
+    return formattedSize;
+  }
+  getColor(raw) {
+    //Remove the () + comma seperate the x y z
+    let formattedSize = raw.replace(/[RGBA(-)]/g, '');
+    //Split out into an array
+    formattedSize = formattedSize.split(",");
+    //Loop through the array to make it all ints
+    for (let i = 0; i < formattedSize.length; i++) {
+      let byte = Math.floor(formattedSize[i] >= 1.0 ? 255 : formattedSize[i] * 256.0)
+      formattedSize[i] = byte;
     }
     return formattedSize;
   }

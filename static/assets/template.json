@@ -37,6 +37,9 @@
     "PlantHealroot": "assets/Healroot.png",
     "PlantHops": "assets/HopsPlantA.png",
     "PlantWildHealroot": "assets/Healroot.png",
+
+    "PlantHealrootWild": "assets/Healroot.png",
+
     "PlantDandelion": "assets/Dandelion.png",
     "PlantRaspberry": "assets/RaspberryBushA_2.png",
     "PlantBrambles": "assets/BramblesA.png",
@@ -75,6 +78,8 @@
     "EggTurkeyFertilized": "assets/EggsFertilized.png",
     "EggChickenFertilized": "assets/EggsFertilized.png",
     "Medicine": "assets/Medicine.png",
+    "MedicineIndustrial": "assets/Medicine.png",
+
     "HerbalMedicine": "assets/MedicineHerbal.png",
     "GlitterworldMedicine": "assets/MedicineGlitterworld.png",
     "SmokeleafJoint": "assets/Joint_c.png",
@@ -88,6 +93,10 @@
     "GoJuice": "assets/GoJuice_b.png",
     "Neutroamine": "assets/Neutroamine.png",
     "Component": "assets/Component.png",
+    "ComponentIndustrial": "assets/Component.png",
+    "ComponentSpacer": "assets/ComponentSpacer.png",
+
+
     "Chemfuel": "assets/Chemfuel.png",
     "WoodLog": "assets/WoodLog_b.png",
     "Cloth": "assets/Cloth.png",
@@ -182,13 +191,18 @@
     "Pants": "assets/Pants_OnMap.png",
     "Parka": "assets/Parka.png",
     "BasicShirt": "assets/ShirtBasic.png",
-    "CowboyHat": "assets/ShirtBasic.png",
+    "CowboyHat": "assets/CowboyHat.png",
     "CollarShirt": "assets/ShirtButton.png",
     "Jacket": "assets/Jacket.png",
     "Duster": "assets/Duster.png",
     "BowlerHat": "assets/BowlerHat.png",
     "Tuque": "assets/Tuque.png",
+
     "VestPlate": "assets/VestPlate.png",
+    "FlakVest": "assets/VestPlate.png",
+
+    "FlakPants": "assets/FlakPants.png",
+
     "PowerArmor": "assets/PowerArmor.png",
     "PowerArmorHelmet": "assets/PowerArmorHelmet.png",
     "TribalA": "assets/TribalA.png",
@@ -311,7 +325,7 @@
     "InfiniteChemreactor": "assets/InfiniteChemreactor.png",
     "HoopstoneRing": "assets/HoopstoneRing.png",
     "PowerSwitch": "assets/PowerSwitch.png",
-    
+
     "CollapsedRocks": "assets/CollapsedRocks.png",
 
     "Shell_EMP": "assets/Shell_EMP.png",
@@ -324,7 +338,12 @@
     "TrapIED_AntigrainWarhead": "assets/IEDAntigrainWarhead.png",
     "TrapIED_Firefoam": "assets/IEDFirefoam.png",
     "TrapIED_HighExplosive": "assets/IEDHighExplosive.png",
-    "TrapIED_Incendiary": "assets/IEDIncendiary.png"
+    "TrapIED_Incendiary": "assets/IEDIncendiary.png",
+
+    "AncientLamppost": "assets/AncientLamppostA.png",
+    "AncientConcreteBarrier": "assets/AncientConcreteB.png",
+    "PlantBerry": "assets/BerryBushA.png"
+
 
   }
 }

@@ -4,7 +4,7 @@ class Boot extends Phaser.State {
 		this.load.image('preloadBar', 'assets/loader.png');
 		this.load.image('preloadBg', 'assets/loaderBg.png');
 
-		this.load.json("assets", "assets/template.json");
+		this.load.json("assets", "assets/template.json"); //TODO ADD VERSIONS?
 
 		this.load.script('assetLoader', 'assets/phaser-asset-loader-0.0.1.min.js');
 
