@@ -1,5 +1,5 @@
 # RimMap
-A webapp that lets you view your Rimworld maps in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
+A webapp that lets you view & share your Rimworld save in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
 
 
 ## Current Features
@@ -27,7 +27,6 @@ A webapp that lets you view your Rimworld maps in a web browser! Check it out on
 * User controls (zoom in/out) are not polished (partially fixed)
 * Smooth Walls not implemented 
 
-
 ## WIP Features
 
 * Map sharing (in beta)
@@ -36,7 +35,6 @@ A webapp that lets you view your Rimworld maps in a web browser! Check it out on
 * Refined Zooming and scrolling
 * Investigate weird bug (no UI on first load)
 
-
 ## Future Planned Features
 * Allow users to share their saves with other users using a short URL  (in beta)
 * Show all save info including individual colonists, animals, factions and economy 
@@ -44,6 +42,12 @@ A webapp that lets you view your Rimworld maps in a web browser! Check it out on
 * Integrate with steam to download your save straight from the cloud
 * Allow users embed and annotate saves (suggested by [@TynanSylvester](http://twitter.com/TynanSylvester/status/970936653517701120) himself!)
 * Make this into an electron app that would track and record your current sessions and make a time laps of your game
+
+## How to build
+
+Just run
+```npm start ``` 
+to start the build and watch process, will rebuild the entire /build folder when anything inside /src or /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
 
 ## Changelog 
 
