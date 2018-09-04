@@ -153,6 +153,13 @@ class GameState extends Phaser.State {
 
     console.log('File In Phaser');
 
+
+    //CLEAR ANY EXUSUTUNG MAPS
+    if(this.mainLayer !== null){
+      this.mainLayer.destroy(true,false);
+    }
+
+
     //FETCH META DATA
     let rawSizes = json.savegame.game.maps.li.mapInfo.size;
     let sizes = this.getPosition(rawSizes);
