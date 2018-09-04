@@ -78,7 +78,9 @@ function updateTick() {
       }
       if (phaserState.callbackContext.loadingFinished == true) {
         blackout.style.display = "none";
+
         if (finishedFrontendLoading != true) {
+          ui.style.display = "block";
           mainGameBar.style.display = "block";
           finishedFrontendLoading = true;
           reloadButton.style.display = "block";
@@ -90,15 +92,16 @@ function updateTick() {
             }
           }
         }
-        if (finishedFrontendLoading == false && loadedMapName != "") {
-          loadingMsg.textContent = "Rendering " + loadedMapName + " " + "(" + (phaserState.callbackContext.loadingDelta * 20) + "%)";
-          mapSize.textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
-        }
       } else if (phaserState.callbackContext.loadingFinished == false) {
         blackout.style.display = "block";
-        if (finishedFrontendLoading != true) {
+        if (finishedFrontendLoading == false) {
           ui.style.display = "block";
+          if (loadedMapName != "") {
+            loadingMsg.textContent = "Rendering " + loadedMapName + " " + "(" + (phaserState.callbackContext.loadingDelta * 20) + "%)";
+            mapSize.textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
+          }
         }
+
       }
       break;
   }
@@ -150,7 +153,7 @@ let toggleMountain = function() {
 }
 let toggleResource = function() {
 
-  blackout.style.display = "block";
+  phaserState.callbackContext.loadingFinished = false;
   loadingMsg.textContent = "Loading resources...";
   if (resourceCheckbox.checked) {
     setTimeout(() => {
@@ -164,7 +167,8 @@ let toggleResource = function() {
 }
 let toggleDeepResource = function() {
 
-  blackout.style.display = "block";
+  //blackout.style.display = "block";
+  phaserState.callbackContext.loadingFinished = false;
   loadingMsg.textContent = "Loading deep resources...";
   if (deepResourceCheckbox.checked) {
     setTimeout(() => {

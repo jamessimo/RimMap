@@ -6,34 +6,75 @@ A webapp that lets you view your Rimworld maps in a web browser! Check it out on
 
 ✔ Shows all terrain tile types
 
-✔ Pan map with arrow keys, zoom with + & -
+✔ Shows all items & structures 
 
 ✔ Shows all plant and tree types
 
-✔ Shows some structures like Solar Generator and Wind Turbine
+✔ Shows deep resouces + mountains
 
-✔ Shows roofs + mountains
+✔ Can share map via a URL
+
+✔ Pan map with arrow keys, zoom with + & -
+
+✔ Include example maps
+
+![Rimmap screenshot](https://github.com/jamessimo/RimMap/blob/master/screenshots/Screenshot1_v4-1.png?raw=true)
+
+## Known Issues
+* 0.19 save files have lots of missing items (also some graphics not updates 0.19
+* Missing some deep resources
+* UI sometimes fails to load on first visit
+* User controls (zoom in/out) are not polished (partially fixed)
+* Smooth Walls not implemented 
 
 
 ## WIP Features
 
-* Show **all** in-game items (Guns, Food, Pawns, Production structures etc..) 
-* Performance enhancements
-* Tile information (partially working, open devtools and click on a tile) 
-* use correct tile graphics for different types of terrain
-* Include example maps 
-* Loading graphics
-* Show item Hit points/Growth Rate
-* Show different plant variations/growth states
+* Map sharing (in beta)
+* Mod support
+* Full game save viewing (pawn info, animal info)
+* Refined Zooming and scrolling
+* Investigate weird bug (no UI on first load)
+
 
 ## Future Planned Features
-* World Viewer. View your entire Rimworld planet in-browser 
-* Map editing/make plans in app then export the plans to a new save
-* Map sharing
-* Mod support
-* Full game save viewing & editing (pawn info, animal info)
+* Allow users to share their saves with other users using a short URL  (in beta)
+* Show all save info including individual colonists, animals, factions and economy 
+* Show the the entire world map
+* Integrate with steam to download your save straight from the cloud
+* Allow users embed and annotate saves (suggested by [@TynanSylvester](http://twitter.com/TynanSylvester/status/970936653517701120) himself!)
+* Make this into an electron app that would track and record your current sessions and make a time laps of your game
 
 ## Changelog 
+
+### (4.1.0)
+* Added Sandbags
+* Removed "Filth" or invisible items from tile click 
+
+### (4.0.0)
+* Beta 19 inital support pass (bridges and new tile types)
+* Added ability to share maps via URL
+* Added deep resource tilemap
+* Default to non HD textures to fix crashes on windows machines
+* Show item hit points 
+
+### (3.0.0)
+* More performance inhancements (resource tilemap made bitmap)
+* Dynamic texture loading to drastically shorten the load times
+* Modding support
+* User can now use HD or non HD textures to help loading/performance 
+* Screen edge pan camera
+
+### (2.0.0)
+* Added real world tile graphics
+* Added all game items (beta 18)
+* Added wall direcition code
+* Added plants growth state
+* Zooming in out (inital)
+* Added example maps
+* Improved loading times
+* Huge performance improvements (7FPS to 60FPS)
+* Loading progress bar
 
 ### (1.0.0)
 * Initial commit

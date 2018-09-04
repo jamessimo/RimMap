@@ -211,6 +211,8 @@
     "WarVeil": "assets/WarVeil.png",
 
     "TrapDeadfall": "assets/DeadfallArmed.png",
+    "TrapSpike": "assets/DeadfallArmed.png",
+
     "TurretGun": "assets/Turrets.png",
     "Mortar": "assets/Mortar.png",
 
@@ -283,7 +285,7 @@
     "ElectricTailoringBench": "assets/TableTailorHand_back.png",
     "Brewery": "assets/TableBrewery_back.png",
     "TableSculpting": "assets/TableSculpting_back.png",
-    "TableStonecutter": "assets/TableStonecutter_back.png",
+    "TableStonecutter": "assets/TableStonecutter.png",
     "TableButcher": "assets/TableButcher_back.png",
     "Battery": "assets/Battery_back.png",
     "Bed": "assets/Bed_back.png",
@@ -342,7 +344,9 @@
 
     "AncientLamppost": "assets/AncientLamppostA.png",
     "AncientConcreteBarrier": "assets/AncientConcreteB.png",
-    "PlantBerry": "assets/BerryBushA.png"
+    "PlantBerry": "assets/BerryBushA.png",
+    "Campfire": "assets/Campfire.png",
+    "GameOfUr": "assets/GameOfUr.png"
 
 
   }
