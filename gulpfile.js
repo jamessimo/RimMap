@@ -1,5 +1,7 @@
 var del = require('del');
 var gulp = require('gulp');
+var less = require('gulp-less');
+
 var path = require('path');
 var argv = require('yargs').argv;
 var gutil = require('gulp-util');
@@ -10,12 +12,13 @@ var gulpif = require('gulp-if');
 var exorcist = require('exorcist');
 var babelify = require('babelify');
 var browserify = require('browserify');
+var lessify = require('lessify');
 var browserSync = require('browser-sync');
 
 /**
  * Using different folders/file names? Change these constants:
  */
-var PHASER_PATH = './node_modules/phaser/build/';
+var PHASER_PATH = './node_modules/phaser-ce/build/';
 var BUILD_PATH = './build';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
 var SOURCE_PATH = './src';
@@ -53,7 +56,7 @@ function logBuildMode() {
  */
 function cleanBuild() {
     if (!keepFiles) {
-        del(['build/**/*.*']);
+        del([BUILD_PATH + '/**/*.*']);
     } else {
         keepFiles = false;
     }
@@ -75,6 +78,11 @@ function copyStatic() {
 function copyPhaser() {
 
     var srcList = ['phaser.min.js'];
+
+    buildLess();
+
+    del([BUILD_PATH + '/**/*.less']);
+
 
     if (!isProduction()) {
         srcList.push('phaser.map', 'phaser.js');
@@ -101,6 +109,7 @@ function copyPhaser() {
 function build() {
 
     var sourcemapPath = SCRIPTS_PATH + '/' + OUTPUT_FILE + '.map';
+
     logBuildMode();
 
     return browserify({
@@ -125,13 +134,21 @@ function build() {
         .pipe(buffer())
         .pipe(gulpif(isProduction(), uglify()))
         .pipe(gulp.dest(SCRIPTS_PATH));
-
 }
 
 /**
  * Starts the Browsersync server.
  * Watches for file changes in the 'src' folder.
  */
+
+function buildLess(){
+ gutil.log(gutil.colors.blue('building less'));
+
+ return gulp.src('static/styles/*.less')
+ .pipe(less())
+ .pipe(gulp.dest(BUILD_PATH + '/styles'));
+
+}
 function serve() {
 
     var options = {
@@ -150,7 +167,6 @@ function serve() {
     gulp.watch(STATIC_PATH + '/**/*', ['watch-static']).on('change', function() {
         keepFiles = true;
     });
-
 }
 
 
@@ -160,8 +176,8 @@ gulp.task('copyPhaser', ['copyStatic'], copyPhaser);
 gulp.task('build', ['copyPhaser'], build);
 gulp.task('fastBuild', build);
 gulp.task('serve', ['build'], serve);
-gulp.task('watch-js', ['fastBuild'], browserSync.reload); // Rebuilds and reloads the project when executed.
-gulp.task('watch-static', ['copyPhaser'], browserSync.reload);
+gulp.task('watch-js', ['fastBuild'], ()=>{browserSync.reload(); done(); }); // Rebuilds and reloads the project when executed.
+gulp.task('watch-static', ['copyPhaser'], ()=>{browserSync.reload(); done(); });
 
 /**
  * The tasks are executed in the following order:
