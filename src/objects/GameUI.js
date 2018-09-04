@@ -2,10 +2,17 @@ class GameUI {
 
   constructor(game){
       this.game = game;
-      this.initUI();
+
+
+      initUI();
   }
 
   initUI(){
+
+
+  this.INMAIN = "lol";
+
+  console.log(this.INMAIN);
   /*  var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
 
   var text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, "-TILE NAME-\nTILE ID\nNewline", style);
