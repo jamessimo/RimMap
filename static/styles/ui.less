@@ -17,6 +17,9 @@
     a{
       color:white;
     }
+    #MapSize{
+      text-shadow: black 1px 1px 1px;
+    }
     button {
       cursor: pointer;
       pointer-events: all;
@@ -24,6 +27,7 @@
     }
     button {
       //float: left;
+      text-shadow: black 1px 1px 1px;
     	display: block;
     	padding: 1em 2em;
     	border: none;
@@ -39,20 +43,16 @@
     	outline: none;
     }
 
-    #reloadButton{
-
-    }
-
     #shareButton{
       display: none;
       float: right;
     }
 
-#FileName {
-    position: absolute;
-    font: 400 11px system-ui;
-  	padding: 1em 2em;
-  }
+    #FileName {
+      position: absolute;
+      font: 400 11px system-ui;
+    	padding: 1em 2em;
+    }
     #reloadButton{
       float:right;
       position: relative;
@@ -143,9 +143,6 @@
         opacity: 1;
         background-size: 150%;
       }
-
-
-
     }
     #novaSave{
       background-image: url("../assets/ui/NovaThumb.jpg");
@@ -170,6 +167,8 @@
     background: rgba(0,0,0,0.2);
     padding: 11px 0px;
     display: none;
+
+    text-shadow: black 1px 1px 1px;
 
     #tileData ul{
       list-style: none;
@@ -203,15 +202,10 @@
       top:0;
     }
   }
-
-
-
   #settingsBar{
     display: block;
     padding: 4px 0px;
   }
-
-
 }
 
 .versionNum {
@@ -305,7 +299,7 @@ input:checked + .slider:before {
     /* Modal Content/Box */
     .modal-content {
 
-      text-align: center;
+        text-align: center;
         color:#111111;
         background-color: #fefefe;
         margin: 15% auto; /* 15% from the top and centered */

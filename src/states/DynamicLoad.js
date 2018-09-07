@@ -14,18 +14,13 @@ class DynamicLoad extends Phaser.State {
   }
 
   loadWorld(json) {
-
     //SETUP LOADING
-  //  console.log('File In DynamicLoad');
-
     let rawSizes = null;
-    //FETCH META DATA
+
     //IF MANY MAPS
     if (json.savegame.game.maps.li.length) {
       json.savegame.game.maps.li = json.savegame.game.maps.li[0];
     }
-
-    //console.log(json.savegame.game.maps.li);
 
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
     //TODO CHECK VERSION AND SWAP OUT allAssets
@@ -37,7 +32,7 @@ class DynamicLoad extends Phaser.State {
 
     const toLoadAssets = this.getUniqueStuff(json.savegame.game.maps.li.things.thing);
 
-    let allAssets = this.game.cache.getJSON("assets");
+    let allAssets = this.game.cache.getJSON("vanillaAssets"); //Add more
     let regex = new RegExp('\_(.*)');
     let preRegex = new RegExp('(.*)\_');
 
@@ -62,19 +57,10 @@ class DynamicLoad extends Phaser.State {
 
       //Loop through all the unique assets sound
       if (allAssets.image[filterName] !== undefined) {
-        var assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
-
-        // console.log(assetString);
-        this.toLoadJson.image[filterName] = allAssets.image[filterName] //JSON.parse(assetString);
-
-        //console.log(filterName + " " + allAssets.image[filterName]);
+        let assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
+        this.toLoadJson.image[filterName] = allAssets.path + allAssets.image[filterName];
       }
-
     }
-
-
-    //console.log(this.toLoadJson.image);
-    //new AssetLoader(this.game, this.game.cache.getJSON("toLoadJson"));
     this.startMap(json);
   }
 

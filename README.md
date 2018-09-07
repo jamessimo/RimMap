@@ -1,18 +1,14 @@
-# RimMap
-A webapp that lets you view & share your Rimworld save in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
+![Rimmap banner](https://github.com/jamessimo/RimMap/blob/master/banner.png?raw=true)
 
+A webapp that lets you view & share your Rimworld save in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
 
 ## Current Features
 
-✔ Shows all terrain tile types
+✔ Shows all terrain, items, plants
 
-✔ Shows all items & structures 
+✔ Can upload and share your gave save via URL
 
-✔ Shows all plant and tree types
-
-✔ Shows deep resouces + mountains
-
-✔ Can share map via a URL
+✔ Shows resouces, deep resouces & mountains
 
 ✔ Pan map with arrow keys, zoom with + & -
 
@@ -23,12 +19,11 @@ A webapp that lets you view & share your Rimworld save in a web browser! Check i
 ## Known Issues
 * 0.19 save files have lots of missing items (also some graphics not updates 0.19
 * Missing some deep resources
-* UI sometimes fails to load on first visit
-* User controls (zoom in/out) are not polished (partially fixed)
+* ~~UI sometimes fails to load on first visit~~
+* ~~User controls (zoom in/out) are not polished (partially fixed)~~
 * Smooth Walls not implemented 
 
 ## WIP Features
-
 * Map sharing (in beta)
 * Mod support
 * Full game save viewing (pawn info, animal info)
@@ -44,12 +39,14 @@ A webapp that lets you view & share your Rimworld save in a web browser! Check i
 * Make this into an electron app that would track and record your current sessions and make a time laps of your game
 
 ## How to build
-
 Just run
 ```npm start ``` 
-to start the build and watch process, will rebuild the entire /build folder when anything inside /src or /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
+to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
 
 ## Changelog 
+
+### (5.0.0)
+* You can now drag the map and use your mouse wheel to zoom
 
 ### (4.1.0)
 * Added Sandbags

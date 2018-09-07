@@ -1,8 +1,4 @@
-//import * as GameUI from 'objects/GameUI';
-
 class GameState extends Phaser.State {
-
-
   create() {
 
     this.json = this.game.json;
@@ -102,20 +98,20 @@ class GameState extends Phaser.State {
     this.CLOTH = 0xc3c0b0;
 
     if (this.game.hd == false) {
-      this.TILESIZE = 16; //orginal 64, cut in half to save memory.
+      this.TILESIZE = 16;
       this.SCALESIZE = 0.25;
 
       this.zoomLevel = 1;
       this.zoomRate = 0.5;
       this.minZoom = 0.5;
-      this.maxZoom = 4;
+      this.maxZoom = 2.5;
     } else {
       this.TILESIZE = 32; //orginal 64, cut in half to save memory.
       this.SCALESIZE = 0.5;
       this.zoomLevel = 1;
       this.zoomRate = 0.5;
       this.minZoom = 1;
-      this.maxZoom = 4;
+      this.maxZoom = 2.5;
     }
 
     this.mapInfo = { //RAW MAP DATA (arrays)
@@ -131,8 +127,8 @@ class GameState extends Phaser.State {
       "roofGrid": [],
       "stuffGrid": [],
       "stuffRefGrid": []
-
     };
+
 
     this.cursors =
       this.currentTile =
@@ -143,19 +139,17 @@ class GameState extends Phaser.State {
       this.rocksGridLayer =
       this.rocksLayer =
       this.mountainsLayer =
-
       this.stuffLayer =
       this.resourceLayer =
       this.deepResourceLayer =
-      this.bottomLayer =
       this.roofGridLayer =
-      this.currentBounds =
       this.centerMarker =
+      this.currentBounds =
       this.marker = null;
 
     this.rockGrid = [];
     this.game.forceSingleUpdate = false;
-    this.game.stage.backgroundColor = '#14171a';
+    this.game.stage.backgroundColor = '#1f271d';
 
     this.game.multiTexture = true;
 
@@ -168,6 +162,24 @@ class GameState extends Phaser.State {
     this.clickDepth = 0;
     this.clickIndex = 0;
     this.oldStuffTile = null;
+
+    this.worldScale = this.minZoom;
+    this.distance = 0;
+    this.olddistance = 0;
+    this.groupScale = 0;
+    this.distancedelta = 0;
+    this.easing = 1; //0.1;
+    this.mapSizeCurrent;
+    this.mapSizeMax;
+    this.prevScale = {};
+    this.nextScale = {};
+    this.zoompoint = {
+      x: 0,
+      y: 0
+    };
+    this.scrollZoomRate = 256;
+    this.scrolling = true;
+    this.padding = 2;
 
   }
 
@@ -182,13 +194,10 @@ class GameState extends Phaser.State {
       }
       this.loadingDeltaWait--;
     } else {
-      //this.loadingDeltaWait = this.LOADDELAY;
       this.loading = true;
     }
 
     if (this.loading && this.loadingFinished == false) {
-
-
       if (this.loadingDelta == 1) {
 
         console.log(this.loadingDelta);
@@ -199,7 +208,6 @@ class GameState extends Phaser.State {
         this.resourceGridLayer = this.game.add.group();
         this.deepResourceGridLayer = this.game.add.group();
 
-        this.bottomLayer = this.game.add.group();
 
         for (var i = 0; i < this.worldSize.x; i++) {
           if (!this.rockGrid[i]) {
@@ -222,16 +230,9 @@ class GameState extends Phaser.State {
 
         this.markerInit();
 
-        /*  this.centerMarker = this.game.add.graphics();
-        this.centerMarker.lineStyle(2, 0x00FFFF, 1);
-        this.centerMarker.drawRect(0, 0, this.TILESIZE, this.TILESIZE);
-*/
-        //this.cameraZones();
-
         this.loadingDelta = 2;
         this.loadingDeltaWait = this.LOADDELAY;
         this.loading = false;
-        //this.game.world.bringToTop(this.front_layer);
 
       } else if (this.loadingDelta == 2) {
         console.log(this.loadingDelta);
@@ -245,11 +246,12 @@ class GameState extends Phaser.State {
       } else if (this.loadingDelta == 3) {
         console.log(this.loadingDelta);
 
+        //for scrolling
+        this.groupScale = this.stuffLayer.scale.x;
+
         this.rocksGridLayer.add(this.mountainsLayer);
 
         this.rocksLayer = this.renderBitmap(this.rocksGridLayer);
-
-        //  this.resourceLayer.alpha = 0;
 
         this.mountainsLayer.destroy();
         this.loadingDelta = 4;
@@ -259,10 +261,32 @@ class GameState extends Phaser.State {
       } else if (this.loadingDelta == 4) {
         console.log(this.loadingDelta);
 
-        this.game.world.setBounds(0, 0, this.mapInfo.width, this.mapInfo.height);
+        this.mapSizeMax = this.mapInfo.width;
+        this.mapSizeCurrent = this.mapSizeMax;
+        this.worldScale = 1;
 
-        this.game.camera.x = this.mapInfo.width / 2;
-        this.game.camera.y = this.mapInfo.height / 2;
+        this.game.input.mouseWheel.callback = (event) => {
+          let wheelDelt = this.game.input.mouseWheel.delta;
+          let oldSize = this.mapSizeCurrent;
+          if (wheelDelt < 0) {
+            this.mapSizeCurrent -= this.scrollZoomRate;
+            this.mapSizeCurrent = Phaser.Math.clamp(this.mapSizeCurrent, this.SCREENWIDTH, this.mapSizeMax);
+          } else {
+            this.mapSizeCurrent += this.scrollZoomRate;
+            this.mapSizeCurrent = Phaser.Math.clamp(this.mapSizeCurrent, this.SCREENWIDTH, this.mapSizeMax);
+          }
+          this.scrolling = true;
+          this.worldScale = (this.mapSizeCurrent / this.mapSizeMax);
+        };
+
+
+        this.currentBounds = new Phaser.Rectangle(-this.mapInfo.width * 2, -this.mapInfo.height * 2, this.mapInfo.width * 4, this.mapInfo.height * 4);
+        //  this.game.camera.bounds =  this.currentBounds;
+
+        //this.game.world.setBounds(0, 0, this.mapInfo.width, this.mapInfo.height);
+        this.game.camera.bounds = null;
+
+        this.game.camera.focusOnXY(this.mapInfo.width / 2, this.mapInfo.height / 2);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
         this.plusKey = this.game.input.keyboard.addKey(Phaser.Keyboard.EQUALS).onDown.add(function() {
@@ -275,41 +299,34 @@ class GameState extends Phaser.State {
             this.zoomMap(this.zoomLevel + this.zoomRate);
           }
         }, this);
+
         this.game.input.onDown.add(this.getTileProperties, this);
+
         this.loadingDelta = 5;
         this.loading = false;
         this.loadingDeltaWait = this.LOADDELAY;
         this.loadingFinished = true;
-
       }
-
     }
-    if (this.loadingFinished == true) {
-      //CAMERA PAN
-      if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS) {
-        this.game.camera.x += (this.TILESIZE / this.zoomLevel);
-      }
-      if (this.game.input.mousePointer.x < 0 + this.MOUSEBOUNDS) {
-        this.game.camera.x -= (this.TILESIZE / this.zoomLevel);
-      }
-      if (this.game.input.mousePointer.y > this.SCREENHEIGHT - this.MOUSEBOUNDS) {
-        this.game.camera.y += (this.TILESIZE / this.zoomLevel);
-      }
-      if (this.game.input.mousePointer.y < 0 + this.MOUSEBOUNDS) {
-        this.game.camera.y -= (this.TILESIZE / this.zoomLevel);
-      }
+    if (this.loadingFinished == true && this.loadingDelta == 5) {
 
-      //  this.centerMarker.x = (this.game.camera.view.halfWidth + this.game.camera.x);
-      //  this.centerMarker.y = (this.game.camera.view.halfHeight + this.game.camera.y);
 
-      //http://jsfiddle.net/valueerror/pdx0px0w/
-      if (this.marker && this.topTerrainGridLayer) { ///4
-        this.marker.x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
-        this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
-      }
+      // wheelzoom
 
-      //ZOOM
-      if (this.cursors !== null) {
+      if (this.isMouseOut()) {
+        if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS) {
+          this.game.camera.x += (this.TILESIZE / this.zoomLevel);
+        }
+        if (this.game.input.mousePointer.x < 0 + this.MOUSEBOUNDS) {
+          this.game.camera.x -= (this.TILESIZE / this.zoomLevel);
+        }
+        if (this.game.input.mousePointer.y > this.SCREENHEIGHT - this.MOUSEBOUNDS) {
+          this.game.camera.y += (this.TILESIZE / this.zoomLevel);
+        }
+        if (this.game.input.mousePointer.y < 0 + this.MOUSEBOUNDS) {
+          this.game.camera.y -= (this.TILESIZE / this.zoomLevel);
+        }
+
         if (this.cursors.up.isDown) {
           this.game.camera.y -= (this.TILESIZE / this.zoomLevel);
         } else if (this.cursors.down.isDown) {
@@ -320,12 +337,80 @@ class GameState extends Phaser.State {
         } else if (this.cursors.right.isDown) {
           this.game.camera.x += (this.TILESIZE / this.zoomLevel);
         }
+
       }
+      // move camera / pan
+      if (this.game.input.activePointer.isDown && !this.game.input.pointer2.isDown) {
+        if (this.oldcamera) { // if moving the world always continue from the last position
+          if (this.isMouseOut()) {
+            this.game.camera.x += this.oldcamera.x - this.game.input.activePointer.position.x;
+            this.game.camera.y += this.oldcamera.y - this.game.input.activePointer.position.y;
+          }
+        }
+        this.oldcamera = this.game.input.activePointer.position.clone();
+
+      } else {
+
+        // adjust camera center and zoom here
+
+        if (this.isMouseOut()) {
+
+          //this.zoompoint.x = this.game.input.mousePointer.worldX;
+          //this.zoompoint.y = this.game.input.mousePointer.worldY;
+
+          this.marker.x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
+          this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.TILESIZE / this.zoomLevel;
+
+          this.zoompoint.x = this.marker.x;
+          this.zoompoint.y = this.marker.y;
+        }
+
+        this.oldcamera = null;
+
+        this.rescalefactorx = this.mapInfo.width / (this.mapInfo.width * this.groupScale); // multiply by rescalefactor to get original world value
+        this.rescalefactory = this.mapInfo.height / (this.mapInfo.height * this.groupScale);
+
+        this.prevScale.x = this.groupScale;
+        this.prevScale.y = this.groupScale;
+
+        this.nextScale.x = this.prevScale.x + (this.worldScale - this.groupScale) * this.easing;
+        this.nextScale.y = this.prevScale.y + (this.worldScale - this.groupScale) * this.easing;
+
+        var xAdjust = (this.zoompoint.x - this.game.camera.x) * (this.nextScale.x - this.prevScale.x);
+        var yAdjust = (this.zoompoint.y - this.game.camera.y) * (this.nextScale.y - this.prevScale.y);
+
+        //Only move screen if we're not the same scale
+        if (this.prevScale.x != this.nextScale.x || this.prevScale.y != this.nextScale.y) {
+
+          var scaleAdjustX = this.nextScale.x / this.prevScale.x;
+          var scaleAdjustY = this.nextScale.y / this.prevScale.y;
+
+          var focusX = (this.game.camera.x * scaleAdjustX) + xAdjust * (this.rescalefactorx);
+          var focusY = (this.game.camera.y * scaleAdjustY) + yAdjust * (this.rescalefactory);
+
+          //  var focus   var focusX = (game.camera.position.x * scaleAdjustX) + xAdjust*(rescalefactorx);
+          //  var focusY = ((this.zoompoint.y / scaleAdjustY) / this.rescalefactory);
+
+          this.game.camera.x = focusX;
+          this.game.camera.y = focusY;
+          //this.game.camera.focusOnXY(focusX, focusY);
+        }
+        if (this.scrolling == true) {
+
+          //if (this.rescalefactorx >= this.minZoom || this.rescalefactorx <= this.maxZoom) {
+          this.zoomMap(parseFloat(this.rescalefactorx).toPrecision(4));
+          //this.zoomMap(this.zoomLevel - this.zoomRate);
+          //}
+        }
+        //now actually scale the stage
+        this.groupScale += (this.worldScale - this.groupScale) * this.easing; //easing
+      }
+      this.scrolling = false;
     }
   }
 
   render() {
-    //this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
+    this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
     //this.game.debug.text(this.loadingDelta || '--', 2, 44, "#ff0000");
   }
 
@@ -423,7 +508,6 @@ class GameState extends Phaser.State {
       groupPosX = -CHUNK_WIDTH;
 
     }
-    //  bmd.cls();
 
     bmd = null;
 
@@ -750,192 +834,7 @@ class GameState extends Phaser.State {
 
     } //End for Loop
   }
-  thingAlign(sprite, data) {
 
-    let outputSprite = sprite;
-
-    //64x64 0
-    if (outputSprite.height == this.TILESIZE && outputSprite.width == this.TILESIZE) {
-      outputSprite.anchor.setTo(0, 1);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(1, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180;
-          outputSprite.anchor.setTo(1, 0);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90;
-          outputSprite.anchor.setTo(0, 0);
-        }
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 2) &&
-      outputSprite.width == this.TILESIZE) { //
-
-      outputSprite.anchor.setTo(0, 1);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(1, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180; //ok
-          outputSprite.anchor.setTo(1, 0.5);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90;
-          outputSprite.anchor.setTo(0, 0.5);
-        }
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 4) &&
-      outputSprite.width == this.TILESIZE) { //
-
-      outputSprite.anchor.setTo(0, 0.75);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(1, 0.75);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180; //ok
-          outputSprite.anchor.setTo(1, 0.5);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90;
-          outputSprite.anchor.setTo(0, 0.5);
-        }
-      }
-    } else if (outputSprite.height == this.TILESIZE &&
-      outputSprite.width == (this.TILESIZE * 2)) {
-      outputSprite.anchor.setTo(0, 1);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(0.5, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180;
-          outputSprite.anchor.setTo(0.5, 0);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90; //good
-          outputSprite.anchor.setTo(0, 0);
-        }
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 2) &&
-      outputSprite.width == (this.TILESIZE * 4)) {
-      outputSprite.anchor.setTo(0.4, 0.75);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(0.5, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180;
-          outputSprite.anchor.setTo(0.6, 0.6);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90; //good
-          outputSprite.anchor.setTo(1, 0.5);
-        }
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 2) &&
-      outputSprite.width == (this.TILESIZE * 2)) {
-
-      outputSprite.anchor.setTo(0, 1);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(0.5, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180;
-          outputSprite.anchor.setTo(0.5, 0.5);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90; //good
-          outputSprite.anchor.setTo(0, 0.5);
-        }
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 3) &&
-      outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.35, 0.65);
-
-      if (data.rot == 1) {
-        outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = 90;
-      }
-      if (data.rot == 2) {
-        outputSprite.anchor.setTo(0.65, 0.35);
-        outputSprite.angle = 180;
-      }
-      if (data.rot == 3) {
-        outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = -90; //good
-      }
-
-
-    } else if (outputSprite.height == this.TILESIZE &&
-      outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.4, 1);
-      if (data.rot == 1) {
-        outputSprite.angle = 90;
-        outputSprite.anchor.setTo(0.6, 1);
-      }
-      if (data.rot == 2) {
-        outputSprite.angle = 180;
-        outputSprite.anchor.setTo(0.6, 0);
-      }
-      if (data.rot == 3) {
-        outputSprite.angle = -90; //good
-        outputSprite.anchor.setTo(0.3, 0);
-      }
-
-    } else if (outputSprite.height == (this.TILESIZE * 4) &&
-      outputSprite.width == (this.TILESIZE * 4)) {
-      if (!data.rot) {
-        outputSprite.anchor.setTo(0.25, 0.75);
-      }
-      if (data.rot == 1) {
-        outputSprite.anchor.setTo(0.5, 0.75);
-        outputSprite.angle = 90;
-      }
-      if (data.rot == 2) {
-        outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = 180;
-      }
-      if (data.rot == 3) {
-        outputSprite.anchor.setTo(0.75, 0.25);
-        outputSprite.angle = -90; //good
-      }
-    } else if (outputSprite.height == (this.TILESIZE * 8) &&
-      outputSprite.width == (this.TILESIZE * 8)) {
-      outputSprite.anchor.setTo(0.4, 0.65);
-
-    } else if (outputSprite.height == (this.TILESIZE * 2) &&
-      outputSprite.width == (this.TILESIZE * 5)) {
-      outputSprite.anchor.setTo(0.4, 0);
-      if (data.rot) {
-        if (data.rot == 1) {
-          outputSprite.angle = 90;
-          outputSprite.anchor.setTo(0.5, 1);
-        }
-        if (data.rot == 2) {
-          outputSprite.angle = 180;
-          outputSprite.anchor.setTo(0.6, 0.5);
-        }
-        if (data.rot == 3) {
-          outputSprite.angle = -90; //good
-          outputSprite.anchor.setTo(1, 0.5);
-        }
-      }
-    } else {
-      outputSprite.anchor.setTo(0, 1);
-    }
-    return outputSprite;
-  }
   renderMountain() {
 
     //IF WALL CHOOSE WALL SPRITE
@@ -1031,7 +930,140 @@ class GameState extends Phaser.State {
     }
     //this.mapInfo.resourceRefGrid = this.formatArray(this.mapInfo.resourceRefGrid);
   }
+  hideStuff() {
+    this.stuffLayer.alpha = 0;
+  }
 
+  showStuff() {
+    this.stuffLayer.alpha = 1;
+  }
+
+  hideResources() {
+    this.resourceLayer.alpha = 0;
+    this.loadingFinished = true;
+  }
+
+  showResources() {
+    this.loadingFinished = false;
+    if (!this.resourceLayer) {
+      let oldCam = {
+        x: this.game.camera.x,
+        y: this.game.camera.y
+      }
+      this.game.camera.x = 0;
+      this.game.camera.y = 0;
+      setTimeout(() => {
+        this.renderResourceTileMap();
+        this.resourceLayer = this.renderBitmap(this.resourceGridLayer, true);
+        this.resourceLayer.scale.set(1 / this.zoomLevel);
+        setTimeout(() => {
+          this.game.camera.x = oldCam.x;
+          this.game.camera.y = oldCam.y;
+          this.loadingFinished = true;
+        }, 500);
+      }, 500);
+    } else {
+      this.resourceLayer.alpha = 1;
+      this.loadingFinished = true;
+    }
+  }
+  hideDeepResources() {
+    this.deepResourceLayer.alpha = 0;
+    this.loadingFinished = true;
+  }
+
+  showDeepResources() {
+    this.loadingFinished = false;
+    if (!this.deepResourceLayer) {
+      let oldCam = {
+        x: this.game.camera.x,
+        y: this.game.camera.y
+      }
+      this.game.camera.x = 0;
+      this.game.camera.y = 0;
+      setTimeout(() => {
+        this.renderDeepResourceTileMap();
+        this.deepResourceLayer = this.renderBitmap(this.deepResourceGridLayer, true);
+        this.deepResourceLayer.scale.set(1 / this.zoomLevel);
+        setTimeout(() => {
+          this.game.camera.x = oldCam.x;
+          this.game.camera.y = oldCam.y;
+          this.loadingFinished = true;
+        }, 500);
+      }, 500);
+    } else {
+      this.deepResourceLayer.alpha = 1;
+      this.loadingFinished = true;
+    }
+  }
+
+  hideMountains() {
+    this.rocksLayer.alpha = 0;
+  }
+
+  showMountains() {
+    this.rocksLayer.alpha = 1;
+  }
+
+  zoomMap(iZoom) {
+
+    this.zoomLevel = iZoom;
+
+    this.stuffLayer.scale.set(1 / this.zoomLevel);
+
+    if (this.rocksLayer) {
+      this.rocksLayer.scale.set(1 / this.zoomLevel);
+    }
+    if (this.resourceLayer) {
+      this.resourceLayer.scale.set(1 / this.zoomLevel);
+    }
+    if (this.deepResourceLayer) {
+      this.deepResourceLayer.scale.set(1 / this.zoomLevel);
+    }
+    this.marker.scale.setTo(1 / this.zoomLevel)
+
+    this.topTerrainGridLayer.position.x = this.topTerrainGridLayer.width - this.game.camera.position.x;
+    this.topTerrainGridLayer.position.y = this.topTerrainGridLayer.height - this.game.camera.position.y;
+
+    this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
+    this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
+    this.topTerrainGridLayer.resizeWorld();
+
+  }
+
+  delaceArray(iArray) {
+    let masterIndex = 0;
+    let outputArray = [];
+
+    //Delace array
+    for (var r = this.worldSize.x; r > 0; r--) {
+      for (var c = this.worldSize.y * 2; c > 0; c--) {
+        if (c % 2 === 0) { //Have to skip every other byte due to weird decompression error
+          // outputArray.push(iArray[masterIndex] ^ iArray[masterIndex + 1]);
+          outputArray.push(iArray[masterIndex]);
+        }
+        masterIndex++;
+      }
+    }
+    return outputArray;
+  }
+
+  //Make array 2D
+  formatArray(iArray) {
+    let masterIndex = 0;
+    let outputArray = [];
+    let row = [];
+    for (let y = 0; y < this.worldSize.y; y++) {
+      row = [];
+      for (let x = 0; x < this.worldSize.x; x++) {
+        row.push(iArray[masterIndex]);
+        masterIndex++;
+      }
+      outputArray.push(row);
+    }
+    outputArray = outputArray.reverse()
+    return outputArray;
+  }
   colorSprite(sprite, thingRef) {
     //If thing has stuff do stuff case, if not do based on names
     let currentSprite = null;
@@ -1418,7 +1450,199 @@ class GameState extends Phaser.State {
     }
     return direction;
   }
+  thingAlign(sprite, data) {
 
+    let outputSprite = sprite;
+    //TODO 4x1 megaScreen
+
+    //1X1
+    if (outputSprite.height == this.TILESIZE && outputSprite.width == this.TILESIZE) {
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(1, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(1, 0);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90;
+          outputSprite.anchor.setTo(0, 0);
+        }
+      }
+    //2X1
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == this.TILESIZE) { //
+
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(1, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180; //ok
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90;
+          outputSprite.anchor.setTo(0, 0.5);
+        }
+      }
+    //1X4
+    } else if (outputSprite.height == (this.TILESIZE * 4) &&
+      outputSprite.width == this.TILESIZE) { //
+
+      outputSprite.anchor.setTo(0, 0.75);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(1, 0.75);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180; //ok
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90;
+          outputSprite.anchor.setTo(0, 0.5);
+        }
+      }
+    //1x2
+    } else if (outputSprite.height == this.TILESIZE &&
+      outputSprite.width == (this.TILESIZE * 2)) {
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.5, 0);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(0, 0);
+        }
+      }
+    //2x4
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == (this.TILESIZE * 4)) {
+      outputSprite.anchor.setTo(0.4, 0.75);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.6, 0.6);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+      }
+    //2x2
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == (this.TILESIZE * 2)) {
+
+      outputSprite.anchor.setTo(0, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.5, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(0, 0.5);
+        }
+      }
+    //3x3
+    } else if (outputSprite.height == (this.TILESIZE * 3) &&
+      outputSprite.width == (this.TILESIZE * 3)) {
+      outputSprite.anchor.setTo(0.35, 0.65);
+
+      if (data.rot == 1) {
+        outputSprite.anchor.setTo(0.5, 0.5);
+        outputSprite.angle = 90;
+      }
+      if (data.rot == 2) {
+        outputSprite.anchor.setTo(0.65, 0.35);
+        outputSprite.angle = 180;
+      }
+      if (data.rot == 3) {
+        outputSprite.anchor.setTo(0.5, 0.5);
+        outputSprite.angle = -90; //good
+      }
+
+
+    } else if (outputSprite.height == this.TILESIZE &&
+      outputSprite.width == (this.TILESIZE * 3)) {
+      outputSprite.anchor.setTo(0.4, 1);
+      if (data.rot == 1) {
+        outputSprite.angle = 90;
+        outputSprite.anchor.setTo(0.6, 1);
+      }
+      if (data.rot == 2) {
+        outputSprite.angle = 180;
+        outputSprite.anchor.setTo(0.6, 0);
+      }
+      if (data.rot == 3) {
+        outputSprite.angle = -90; //good
+        outputSprite.anchor.setTo(0.3, 0);
+      }
+
+    } else if (outputSprite.height == (this.TILESIZE * 4) &&
+      outputSprite.width == (this.TILESIZE * 4)) {
+      if (!data.rot) {
+        outputSprite.anchor.setTo(0.25, 0.75);
+      }
+      if (data.rot == 1) {
+        outputSprite.anchor.setTo(0.5, 0.75);
+        outputSprite.angle = 90;
+      }
+      if (data.rot == 2) {
+        outputSprite.anchor.setTo(0.5, 0.5);
+        outputSprite.angle = 180;
+      }
+      if (data.rot == 3) {
+        outputSprite.anchor.setTo(0.75, 0.25);
+        outputSprite.angle = -90; //good
+      }
+    } else if (outputSprite.height == (this.TILESIZE * 8) &&
+      outputSprite.width == (this.TILESIZE * 8)) {
+      outputSprite.anchor.setTo(0.4, 0.65);
+
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == (this.TILESIZE * 5)) {
+      outputSprite.anchor.setTo(0.4, 0);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.angle = 90;
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.angle = 180;
+          outputSprite.anchor.setTo(0.6, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+      }
+    } else {
+      outputSprite.anchor.setTo(0, 1);
+    }
+    return outputSprite;
+  }
   matchArrays(a, b) {
     for (let i = 0; i < a.length; i++) {
       for (let j = 0; j < b.length; j++) {
@@ -1546,155 +1770,6 @@ class GameState extends Phaser.State {
       default:
         return true;
     }
-  }
-
-  hideStuff() {
-    this.stuffLayer.alpha = 0;
-  }
-
-  showStuff() {
-    this.stuffLayer.alpha = 1;
-  }
-
-  hideResources() {
-    this.resourceLayer.alpha = 0;
-    this.loadingFinished = true;
-  }
-
-  showResources() {
-    this.loadingFinished = false;
-    if (!this.resourceLayer) {
-      let oldCam = {
-        x: this.game.camera.x,
-        y: this.game.camera.y
-      }
-      this.game.camera.x = 0;
-      this.game.camera.y = 0;
-      setTimeout(() => {
-        this.renderResourceTileMap();
-        this.resourceLayer = this.renderBitmap(this.resourceGridLayer, true);
-        this.resourceLayer.scale.set(1 / this.zoomLevel);
-        setTimeout(() => {
-          this.game.camera.x = oldCam.x;
-          this.game.camera.y = oldCam.y;
-          this.loadingFinished = true;
-        }, 500);
-      }, 500);
-    } else {
-      this.resourceLayer.alpha = 1;
-      this.loadingFinished = true;
-    }
-  }
-  hideDeepResources() {
-    this.deepResourceLayer.alpha = 0;
-    this.loadingFinished = true;
-  }
-
-  showDeepResources() {
-    this.loadingFinished = false;
-    if (!this.deepResourceLayer) {
-      let oldCam = {
-        x: this.game.camera.x,
-        y: this.game.camera.y
-      }
-      this.game.camera.x = 0;
-      this.game.camera.y = 0;
-      setTimeout(() => {
-        this.renderDeepResourceTileMap();
-        this.deepResourceLayer = this.renderBitmap(this.deepResourceGridLayer, true);
-        this.deepResourceLayer.scale.set(1 / this.zoomLevel);
-        setTimeout(() => {
-          this.game.camera.x = oldCam.x;
-          this.game.camera.y = oldCam.y;
-          this.loadingFinished = true;
-        }, 500);
-      }, 500);
-    } else {
-      this.deepResourceLayer.alpha = 1;
-      this.loadingFinished = true;
-    }
-  }
-
-  hideMountains() {
-    this.rocksLayer.alpha = 0;
-  }
-
-  showMountains() {
-    this.rocksLayer.alpha = 1;
-  }
-
-  zoomMap(iZoom) {
-
-    this.zoomLevel = iZoom;
-
-    this.stuffLayer.scale.set(1 / this.zoomLevel);
-    //this.stuffLayer.pivot.x = this.centerMarker.x;
-    //this.stuffLayer.pivot.y = this.centerMarker.y;
-
-    if (this.rocksLayer) {
-      this.rocksLayer.scale.set(1 / this.zoomLevel);
-      //this.rocksLayer.pivot.x = this.centerMarker.x;
-      //this.rocksLayer.pivot.y = this.centerMarker.y;
-    }
-    if (this.resourceLayer) {
-      this.resourceLayer.scale.set(1 / this.zoomLevel);
-      //this.resourceLayer.pivot.x = this.centerMarker.x;
-      //this.resourceLayer.pivot.y = this.centerMarker.y;
-
-    }
-    if (this.deepResourceLayer) {
-      this.deepResourceLayer.scale.set(1 / this.zoomLevel);
-      //this.deepResourceLayer.pivot.x = this.centerMarker.x;
-      //this.deepResourceLayer.pivot.y = this.centerMarker.y;
-    }
-    this.marker.scale.setTo(1 / this.zoomLevel)
-
-
-    this.topTerrainGridLayer.position.x = this.topTerrainGridLayer.width - this.game.camera.position.x;
-    this.topTerrainGridLayer.position.y = this.topTerrainGridLayer.height - this.game.camera.position.y;
-
-    //this.topTerrainGridLayer.pivot.x = (this.centerMarker.x - this.topTerrainGridLayer.width);
-    //this.topTerrainGridLayer.pivot.y = (this.centerMarker.y - this.topTerrainGridLayer.height);
-
-    console.log(this.topTerrainGridLayer.position);
-
-    this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
-    this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
-    this.topTerrainGridLayer.resizeWorld();
-  }
-
-  delaceArray(iArray) {
-    let masterIndex = 0;
-    let outputArray = [];
-
-    //Delace array
-    for (var r = this.worldSize.x; r > 0; r--) {
-      for (var c = this.worldSize.y * 2; c > 0; c--) {
-        if (c % 2 === 0) { //Have to skip every other byte due to weird decompression error
-          // outputArray.push(iArray[masterIndex] ^ iArray[masterIndex + 1]);
-          outputArray.push(iArray[masterIndex]);
-        }
-        masterIndex++;
-      }
-    }
-    return outputArray;
-  }
-
-  //Make array 2D
-  formatArray(iArray) {
-    let masterIndex = 0;
-    let outputArray = [];
-    let row = [];
-    for (let y = 0; y < this.worldSize.y; y++) {
-      row = [];
-      for (let x = 0; x < this.worldSize.x; x++) {
-        row.push(iArray[masterIndex]);
-        masterIndex++;
-      }
-      outputArray.push(row);
-    }
-    outputArray = outputArray.reverse()
-    return outputArray;
   }
 
   makeCSV(iArray) {
@@ -1908,110 +1983,20 @@ class GameState extends Phaser.State {
           case 208: //smooth marble
             iArray[i] = 55;
             break;
-
           case 21: //Moving river water?
             iArray[i] = 38;
             break;
           case 71: //Bridge
             iArray[i] = 3;
             break;
+            //TODO SOFTSAND
           default:
             console.log(iArray[i]);
             iArray[i] = 1000;
         }
         iArray[i] = iArray[i] -= 1; //fix for index offset
       }
-    } else if (param = "resource") {
-      for (let i = 0; i < iArray.length; i++) {
-        switch (iArray[i]) {
-          case 138: //Limestone
-          case 84: //Granite
-          case 212: //Marble
-          case 67: //Sandstonerock
-          case 197: //Slate
-            iArray[i] = 1;
-            break;
-
-          case 17: //Plasteel
-            iArray[i] = 1;
-            break;
-
-          case 56: //compactsteel
-            iArray[i] = 1;
-            break;
-
-          case 156: //Steel
-            iArray[i] = 1;
-            break;
-
-          case 103: //Uruianum
-            iArray[i] = 1;
-            break;
-
-          case 229: //gold
-            iArray[i] = 1;
-            break;
-
-          case 194: // Sliver
-            iArray[i] = 1;
-            break;
-
-          case 127: // Jade
-            iArray[i] = 1;
-            break;
-
-          case 102: //Slate chunk
-            iArray[i] = 6;
-            break;
-          case 78: // Marble chunk
-            iArray[i] = 4;
-            break;
-          case 119: // Limestone chunk
-            iArray[i] = 3;
-            break;
-          case 252: // Granite chunk
-            iArray[i] = 2;
-            break;
-          case 47: // Sandstone chunk
-            iArray[i] = 5;
-            break;
-
-        }
-      }
-    } else if (param = "roof") {
-      for (let i = 0; i < iArray.length; i++) {
-        switch (iArray[i]) {
-          case 68: //Mountain
-            iArray[i] = 1;
-            break;
-          case 43: // Mountain cliff
-            iArray[i] = 2;
-            break;
-          case 13: //House
-            iArray[i] = 3;
-            break;
-          default: //dont render
-            iArray[i] = 0;
-        }
-      }
-    } else if (param = "deepResource") {
-      for (let i = 0; i < iArray.length; i++) {
-        switch (iArray[i]) {
-          case 68: //Steel
-            iArray[i] = 1;
-            break;
-          case 43: // Fuel
-            iArray[i] = 2;
-            break;
-          case 13: //Uruianum
-            iArray[i] = 3;
-            break;
-          default: //Silver
-            iArray[i] = 0;
-        }
-      }
     }
-
     return iArray;
   }
 
@@ -2037,48 +2022,53 @@ class GameState extends Phaser.State {
     let flippedY = Math.abs(y - this.worldSize.y);
 
     let terrainTile = this.topTerrainGridLayer.map.getTile(x, y, this.topTerrainGridLayer);
-    let stuffTile = this.mapInfo.stuffRefGrid[x][flippedY - 1];
-    let resourceTile = this.mapInfo.resourceRefGrid[(flippedY - 1) * this.worldSize.y + x];
-    let deepResourceTile = this.mapInfo.deepResourceGrid[(flippedY - 1) * this.worldSize.y + x];
+    let stuffTile = null;
+    let resourceTile = null;
+    let deepResourceTile = null;
+
+    if (x >= 0 && x <= this.worldSize.x &&
+      y >= 0 && y <= this.worldSize.y) {
+      stuffTile = this.mapInfo.stuffRefGrid[x][flippedY - 1];
+      resourceTile = this.mapInfo.resourceRefGrid[(flippedY - 1) * this.worldSize.y + x];
+      deepResourceTile = this.mapInfo.deepResourceGrid[(flippedY - 1) * this.worldSize.y + x];
+    }
 
     if (terrainTile) {
       this.currentTile.terrainTile = this.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
     }
+    if (stuffTile) {
+      this.oldStuffTile = stuffTile;
 
+      if (stuffTile[0]) {
+        console.log(stuffTile);
 
-
-    this.oldStuffTile = stuffTile;
-
-    if (stuffTile[0]) {
-      console.log(stuffTile);
-
-      //Sanitze stuffTile to removed notAllowed Items
-      for (let i = 0; i < stuffTile.length; i++) {
-        if (this.isAllowedStuff(this.getStuffName(stuffTile[i].def)) == false) {
-          let index = stuffTile.indexOf(i);
-          stuffTile.splice(index, 1);
-          this.clickIndex++;
+        //Sanitze stuffTile to removed notAllowed Items
+        for (let i = 0; i < stuffTile.length; i++) {
+          if (this.isAllowedStuff(this.getStuffName(stuffTile[i].def)) == false) {
+            let index = stuffTile.indexOf(i);
+            stuffTile.splice(index, 1);
+            this.clickIndex++;
+          }
         }
-      }
-      this.clickDepth = stuffTile.length;
+        this.clickDepth = stuffTile.length;
 
-      if (stuffTile != this.oldStuffTile) {
-        this.clickIndex = 0;
-      } else if (this.clickIndex < this.clickDepth - 1) {
-        this.clickIndex++;
-      } else {
-        this.clickIndex = 0;
-      }
-      if (stuffTile[this.clickIndex]) {
-        let stuffMaterial = stuffTile[this.clickIndex].stuff;
-        let stuffName = stuffTile[this.clickIndex].def;
-        let stuffHealth = stuffTile[this.clickIndex].health;
-        let stuffStack = stuffTile[this.clickIndex].stackCount;
-        this.currentTile.stuffTile = ((stuffMaterial) ? stuffMaterial + " " : "") + stuffName + ((stuffStack) ? " x" + stuffStack : "") + ((stuffHealth) ? " (" + stuffHealth + " HP)" : "");
-      }
+        if (stuffTile != this.oldStuffTile) {
+          this.clickIndex = 0;
+        } else if (this.clickIndex < this.clickDepth - 1) {
+          this.clickIndex++;
+        } else {
+          this.clickIndex = 0;
+        }
+        if (stuffTile[this.clickIndex]) {
+          let stuffMaterial = stuffTile[this.clickIndex].stuff;
+          let stuffName = stuffTile[this.clickIndex].def;
+          let stuffHealth = stuffTile[this.clickIndex].health;
+          let stuffStack = stuffTile[this.clickIndex].stackCount;
+          this.currentTile.stuffTile = ((stuffMaterial) ? stuffMaterial + " " : "") + stuffName + ((stuffStack) ? " x" + stuffStack : "") + ((stuffHealth) ? " (" + stuffHealth + " HP)" : "");
+        }
 
+      }
     }
-
     if (resourceTile) {
       this.currentTile.resourceTile = this.getResourceName(resourceTile) + " - " + resourceTile;
     }
@@ -2351,6 +2341,18 @@ class GameState extends Phaser.State {
       case 160: //Uruianum
         output = "Uruianum";
         break;
+      case 243: //plasteel
+        output = "Plasteel";
+        break;
+      case 125: //Gold
+        output = "Gold";
+        break;
+      case 22: //Jade
+        output = "Jade";
+        break;
+      case 80: //Silver
+        output = "Silver";
+        break;
       default:
         output = null;
     }
@@ -2395,6 +2397,16 @@ class GameState extends Phaser.State {
       formattedSize[i] = byte;
     }
     return formattedSize;
+  }
+  isMouseOut(){
+    if(this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) >= 0 &&
+      this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) < this.worldSize.x &&
+      this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) >= 0 &&
+      this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) < this.worldSize.y){
+        return true;
+      }else{
+        return false;
+      }
   }
 }
 export default GameState;

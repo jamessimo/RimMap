@@ -9,25 +9,20 @@ class Preload extends Phaser.State {
 
     this.preloadBar.anchor.setTo(0, 0.5);
 
-
-    this.game.load.image('resourceTiles', 'assets/ResourcesTilemap.png');
-    this.game.load.spritesheet('wallTiles', 'assets/WallTilemap.png', 80, 80, 16);
-    this.game.load.spritesheet('brickWallTiles', 'assets/BrickTileMap.png', 80, 80, 16);
-    this.game.load.spritesheet('woodWallTiles', 'assets/WoodTilemap.png', 80, 80, 16);
-    this.game.load.spritesheet('rockTiles', 'assets/Rock_Atlas.png', 80, 80, 16);
-
-    this.game.load.spritesheet('sandbagTiles', 'assets/Sandbags_Atlas.png', 80, 80, 16);
+    this.game.load.spritesheet('wallTiles', 'assets/vanilla/WallTilemap.png', 80, 80, 16);
+    this.game.load.spritesheet('brickWallTiles', 'assets/vanilla/BrickTileMap.png', 80, 80, 16);
+    this.game.load.spritesheet('woodWallTiles', 'assets/vanilla/WoodTilemap.png', 80, 80, 16);
+    this.game.load.spritesheet('rockTiles', 'assets/vanilla/Rock_Atlas.png', 80, 80, 16);
+    this.game.load.spritesheet('sandbagTiles', 'assets/vanilla/Sandbags_Atlas.png', 80, 80, 16);
+    this.game.load.image('chunk', 'assets/vanilla/RockLowA.png');
+    this.game.load.image('slag', 'assets/vanilla/MetalDebrisA.png');
 
     this.game.load.image('rockTint', 'assets/rockTint.png');
-    this.game.load.image('chunk', 'assets/RockLowA.png');
-    this.game.load.image('slag', 'assets/MetalDebrisA.png');
-
-
     this.game.load.image('resourceTint', 'assets/resourceTint.png');
 
     this.game.load.script('pako', 'assets/pako.min.js');
 
-  //  new AssetLoader(this.game, this.game.cache.getJSON("assets"));
+    //new AssetLoader(this.game, this.game.cache.getJSON("assets"));
 
   }
   create() {

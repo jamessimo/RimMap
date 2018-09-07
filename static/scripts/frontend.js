@@ -101,7 +101,6 @@ function updateTick() {
             mapSize.textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
           }
         }
-
       }
       break;
   }
@@ -303,6 +302,7 @@ let uploadFileIO = function() {
 
     req.onloadstart = function() {
       blackout.style.display = "block";
+      phaserState.callbackContext.loadingFinished = false;
       loadingMsg.textContent = "Uploading file...";
     }
     req.onreadystatechange = req.onprogress = function() {
@@ -314,7 +314,7 @@ let uploadFileIO = function() {
         document.getElementById("generatedURL").value = "https://jamessimo.itch.io/rimmap/?mapid=" + jsonRespose.filename;
 
       }
-
+      phaserState.callbackContext.loadingFinished = true;
       blackout.style.display = "none";
 
     }
