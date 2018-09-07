@@ -9,7 +9,7 @@
 	<meta http-equiv="Access-Control-Expose-Headers" content="Content-Length">
 
 
-	<title>Rimmap - Web based Rimworld map viewer!</title>
+	<title>Rimmap - a Web based Rimworld map viewer!</title>
 	<link rel="stylesheet" href="styles/main.css">
 	<link rel="stylesheet" href="styles/ui.css">
 </head>
@@ -33,9 +33,9 @@
 			<div id="topbar">
 				<span id="FileName"><span id="MapName"></span> <span id="MapSize"></span></span>
 
-				<button id="reloadButton" onclick="parent.location = 'https://jamessimo.itch.io/rimmap'">Upload new</button>
+				<button id="reloadButton" onclick="parent.location = 'https://jamessimo.itch.io/rimmap'">Load new save</button>
 
-				<button id="shareButton" onclick="toggleShareBox()">Share map</button>
+				<button id="shareButton" onclick="toggleShareBox()">Share save</button>
 
 			</div>
 
@@ -54,7 +54,7 @@
 					    </g>
 					</svg>
 				</label>
-					<h3>Upload Rimworld save file</h3>
+				<h3>Load Rimworld save file</h3>
 
 				</div>
 				<!--Filemanager-->
@@ -91,7 +91,6 @@
 				<!-- Modal content -->
 				<div class="modal-content">
 					<span id="closeModal" onclick="toggleShareBox()" class="close">&times;</span>
-
 
 					<p>Upload your Rimworld save to the cloud and share it via a URL</p>
 					<br>

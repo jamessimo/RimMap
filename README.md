@@ -46,7 +46,9 @@ to start the build and watch process, will rebuild the entire /build folder when
 ## Changelog 
 
 ### (5.0.0)
-* You can now drag the map and use your mouse wheel to zoom
+* You can now drag the map and use your mouse wheel to zoom (like the base game)
+* Now supports mods
+* Updated all the old textures to use new Beta 0.19 items 
 
 ### (4.1.0)
 * Added Sandbags
