@@ -192,12 +192,6 @@ class GameState extends Phaser.State {
         this.mapSizeCurrent = this.mapSizeMax;
         this.worldScale = 1;
 
-
-          /*  this.centerMarker = this.game.add.graphics();
-              this.centerMarker.lineStyle(2, 0x00ff44, 1);
-              this.centerMarker.drawRect(0, 0, this.utils.TILESIZE, this.utils.TILESIZE);*/
-
-
         this.game.input.mouseWheel.callback = (event) => {
           let wheelDelt = this.game.input.mouseWheel.delta;
 
@@ -218,10 +212,7 @@ class GameState extends Phaser.State {
             }
           }
 
-          console.log(this.mapSizeCurrent + " / " +  this.mapSizeMax);
           this.worldScale = (this.mapSizeCurrent / this.mapSizeMax);
-
-
 
           this.rescalefactorx = this.mapInfo.width / (this.mapInfo.width * this.groupScale); // multiply by rescalefactor to get original world value
           this.rescalefactory = this.mapInfo.height / (this.mapInfo.height * this.groupScale);
@@ -246,28 +237,17 @@ class GameState extends Phaser.State {
             this.game.camera.x = focusX;
             this.game.camera.y = focusY;
 
-            //  this.game.camera.focusOnXY(focusX,focusY)
-
-            /*this.centerMarker.position.x = focusX;
-            this.centerMarker.position.y = focusY;*/
-
           }
-        //  console.log("Group:" + this.groupScale + " World" + this.worldScale + " rescalefactorx:" + this.rescalefactorx);
 
           //now actually scale the stage
           this.groupScale += (this.worldScale - this.groupScale); //easing
-
-
           this.scaleMap(this.groupScale);
-
-          //this.zoomMap(this.rescalefactorx);
         };
 
 
         this.currentBounds = new Phaser.Rectangle(-this.mapInfo.width * 2, -this.mapInfo.height * 2, this.mapInfo.width * 4, this.mapInfo.height * 4);
         //  this.game.camera.bounds =  this.currentBounds;
 
-        //this.game.world.setBounds(0, 0, this.mapInfo.width, this.mapInfo.height);
         this.game.camera.bounds = null;
 
         this.game.camera.focusOnXY(this.mapInfo.width / 2, this.mapInfo.height / 2);
@@ -345,9 +325,7 @@ class GameState extends Phaser.State {
           this.zoompoint.x = this.marker.x;
           this.zoompoint.y = this.marker.y;
         }
-
         this.oldcamera = null;
-
       }
       this.scrolling = false;
     }
