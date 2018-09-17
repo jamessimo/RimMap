@@ -1,3 +1,5 @@
+import Utils from 'utils/Utils';
+
 class DynamicLoad extends Phaser.State {
 
   create() {
@@ -11,6 +13,7 @@ class DynamicLoad extends Phaser.State {
     };
     this.loadingDelta = 0;
     this.game.hd = false;
+    this.utils = new Utils(this.game);
   }
 
   loadWorld(json) {
@@ -39,21 +42,7 @@ class DynamicLoad extends Phaser.State {
     for (let i = 0; i < toLoadAssets.length; i++) {
 
       //  toLoadJson.push(allAssets.image[toLoadAssets[i]])
-      let filterName = null;
-
-      if (regex.exec(toLoadAssets[i])) {
-
-        if(preRegex.exec(toLoadAssets[i])[1] == "Shell" ||
-        preRegex.exec(toLoadAssets[i])[1] == "TrapIED"){
-          filterName = toLoadAssets[i];
-        }else if( preRegex.exec(toLoadAssets[i])[1] == "Plant"){ //VERSION 0.19
-          filterName =  preRegex.exec(toLoadAssets[i])[1] + regex.exec(toLoadAssets[i])[1];
-        }else{
-          filterName =  regex.exec(toLoadAssets[i])[1];
-        }
-      } else {
-        filterName = toLoadAssets[i];
-      }
+      let filterName = this.utils.getStuffName(toLoadAssets[i]);
 
       //Loop through all the unique assets sound
       if (allAssets.image[filterName] !== undefined) {

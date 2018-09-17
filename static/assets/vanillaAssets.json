@@ -37,9 +37,7 @@
     "PlantHealroot": "Healroot.png",
     "PlantHops": "HopsPlantA.png",
     "PlantWildHealroot": "Healroot.png",
-
     "PlantHealrootWild": "Healroot.png",
-
     "PlantDandelion": "Dandelion.png",
     "PlantRaspberry": "RaspberryBushA_2.png",
     "PlantBrambles": "BramblesA.png",
@@ -77,10 +75,14 @@
     "Milk": "Milk.png",
     "EggTurkeyFertilized": "EggsFertilized.png",
     "EggChickenFertilized": "EggsFertilized.png",
+
     "Medicine": "Medicine.png",
     "MedicineIndustrial": "Medicine.png",
 
     "HerbalMedicine": "MedicineHerbal.png",
+    "MedicineHerbal": "MedicineHerbal.png",
+
+    "MedicineUltratech": "MedicineGlitterworld.png",
     "GlitterworldMedicine": "MedicineGlitterworld.png",
     "SmokeleafJoint": "Joint_c.png",
     "Flake": "Flake_c.png",
@@ -96,11 +98,10 @@
     "ComponentIndustrial": "Component.png",
     "ComponentSpacer": "ComponentSpacer.png",
 
-
     "Chemfuel": "Chemfuel.png",
     "WoodLog": "WoodLog_b.png",
     "Cloth": "Cloth.png",
-    "Leather": "Cloth.png",
+    "Leather": "Leather.png",
     "DevilstrandCloth": "Cloth.png",
     "WoolAlpaca": "Wool.png",
     "WoolMuffalo": "Wool.png",
@@ -168,6 +169,7 @@
     "BionicLeg": "Implant.png",
     "BionicArm": "Implant.png",
     "BionicEye": "Implant.png",
+    "BionicSpine": "Implant.png",
     "Joywire": "Implant.png",
     "SimpleProstheticArm": "Implant.png",
     "SimpleProstheticLeg": "Implant.png",
@@ -201,6 +203,7 @@
     "VestPlate": "VestPlate.png",
     "FlakVest": "VestPlate.png",
 
+    "PlateArmor": "PlateArmor.png",
     "FlakPants": "FlakPants.png",
 
     "PowerArmor": "PowerArmor.png",
@@ -214,6 +217,8 @@
     "TrapSpike": "DeadfallArmed.png",
 
     "TurretGun": "Turrets.png",
+    "MiniTurret": "Turrets.png",
+
     "Mortar": "Mortar.png",
 
     "UnfinishedSculpture": "UnfinishedSculpture.png",
@@ -231,7 +236,7 @@
     "OrbitalTradeBeacon": "DropBeacon.png",
 
     "Hopper": "Hopper.png",
-    "NutrientDispenser": "NutrientDispenser.png",
+    "NutrientPasteDispenser": "NutrientDispenser.png",
 
     "MultiAnalyzer": "MultiAnalyzer.png",
     "ElectricCrematorium": "Crematorium.png",
@@ -247,9 +252,12 @@
     "Telescope": "Telescope.png",
     "PartySpot": "PartySpot.png",
     "SunLamp": "LampSun.png",
+
+    "MinifiedThing": "CrateFront.png",
     "MinifiedFurniture": "CrateFront.png",
     "MinifiedSculpture": "CrateFront.png",
     "AnimalSleepingSpot": "PartySpot.png",
+
     "CaravanPackingSpot": "CaravanPackingSpot.png",
     "CraftingSpot": "CraftingSpot.png",
     "HorseshoesPin": "HorseshoesPin.png",
@@ -273,19 +281,23 @@
     "RoyalBed": "RoyalBed_back.png",
     "HospitalBed": "HospitalBed_back.png",
     "SolarGenerator": "SolarCollector.png",
-    "WindTurbine": "WindTurbineBody.png",
+    "WindTurbine": "WindTurbine.png",
     "CommsConsole": "CommsConsole.png",
     "DeepDrill": "DeepDrill.png",
     "AdvancedHelmet": "AdvancedHelmet.png",
+    "SimpleResearchBench": "ResearchBenchSimple_back.png",
     "HiTechResearchBench": "ResearchBenchHiTech_back.png",
     "DrugLab": "TableDrugLab_back.png",
     "ElectricStove": "TableStoveElectric_back.png",
     "TableMachining": "TableMachining_back.png",
     "ElectricSmelter": "ElectricSmelter_back.png",
     "ElectricTailoringBench": "TableTailorHand_back.png",
+    "TableSmithingElectric": "TableSmithingElectric.png",
+
     "Brewery": "TableBrewery_back.png",
     "TableSculpting": "TableSculpting_back.png",
     "TableStonecutter": "TableStonecutter.png",
+    "TableTailorHand": "TableTailorHand.png",
     "TableButcher": "TableButcher_back.png",
     "Battery": "Battery_back.png",
     "Bed": "Bed_back.png",
@@ -293,8 +305,13 @@
     "MarriageSpot": "MarriageSpot.png",
     "ToolCabinet": "ToolCabinet_back.png",
     "SleepingSpot": "SleepSpot_back.png",
+    "DoubleSleepingSpot": "DoubleSleepSpot.png",
+
     "AncientCryptosleepCasket": "ShipCryptosleepCasket_back.png",
     "AnimalBed": "AnimalBed.png",
+
+    "AnimalSleepingBox": "AnimalSleepBox.png",
+
     "DiningChair": "DiningChair_back.png",
     "EndTable": "EndTable_front.png",
     "PokerTable": "PokerTable_back.png",
@@ -320,6 +337,8 @@
     "CryptosleepCasket": "ShipCryptosleepCasket_back.png",
     "ShipComputerCore": "ShipComputerCore_back.png",
     "Wort": "Wort.png",
+
+    "TornadoGenerator": "OrbitalTargeter.png",
     "OrbitalTargeterBombardment": "OrbitalTargeter.png",
     "OrbitalTargeterPowerBeam" : "OrbitalTargeter.png",
     "Ambrosia" : "Ambrosia_2.png",
@@ -346,7 +365,19 @@
     "AncientConcreteBarrier": "AncientConcreteB.png",
     "PlantBerry": "BerryBushA.png",
     "Campfire": "Campfire.png",
-    "GameOfUr": "GameOfUr.png"
+    "GameOfUrBoard": "GameOfUr.png",
+    "Hive": "Hive.png",
+    "FueledStove": "TableStoveFueled.png",
+    "FueledSmithy": "TableSmithingFueled.png",
+    "ButcherSpot": "ButcherSpot.png",
+    "BedrollDouble": "BedrollDouble.png",
+    "WatermillGenerator": "WatermillGenerator.png",
+    "Autocannon": "Autocannon.png",
+    "FabricationBench": "FabricationBench.png",
+    "HandTailoringBench": "TableTailorHand.png"
+
+
+
 
 
   }

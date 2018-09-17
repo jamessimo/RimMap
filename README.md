@@ -1,6 +1,6 @@
 ![Rimmap banner](https://github.com/jamessimo/RimMap/blob/master/banner.png?raw=true)
 
-A webapp that lets you view & share your Rimworld save in a web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
+RimMap lets you view & share your Rimworld save in your web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap) 
 
 ## Current Features
 
@@ -10,7 +10,7 @@ A webapp that lets you view & share your Rimworld save in a web browser! Check i
 
 ✔ Shows resouces, deep resouces & mountains
 
-✔ Pan map with arrow keys, zoom with + & -
+✔ Pan map your mouse or with arrow keys
 
 ✔ Include example maps
 
@@ -18,21 +18,21 @@ A webapp that lets you view & share your Rimworld save in a web browser! Check i
 
 ## Known Issues
 * 0.19 save files have lots of missing items (also some graphics not updates 0.19
-* Missing some deep resources
+* New tiles shifted everything (limestone Flagstone) 
+* ~~Missing some deep resources~~
 * ~~UI sometimes fails to load on first visit~~
 * ~~User controls (zoom in/out) are not polished (partially fixed)~~
-* Smooth Walls not implemented 
+* ~~Smooth Walls not implemented~~
 
 ## WIP Features
-* Map sharing (in beta)
+* Map sharing **(in beta)**
 * Mod support
 * Full game save viewing (pawn info, animal info)
 * Refined Zooming and scrolling
 * Investigate weird bug (no UI on first load)
 
 ## Future Planned Features
-* Allow users to share their saves with other users using a short URL  (in beta)
-* Show all save info including individual colonists, animals, factions and economy 
+* Allow users to share their saves with other users using a short URL **(in beta)**
 * Show the the entire world map
 * Integrate with steam to download your save straight from the cloud
 * Allow users embed and annotate saves (suggested by [@TynanSylvester](http://twitter.com/TynanSylvester/status/970936653517701120) himself!)
@@ -40,15 +40,22 @@ A webapp that lets you view & share your Rimworld save in a web browser! Check i
 
 ## How to build
 Just run
-```npm start ``` 
+```npm install ``` then ```npm start ``` 
 to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
 
 ## Changelog 
 
 ### (5.0.0)
 * You can now drag the map and use your mouse wheel to zoom (like the base game)
-* Now supports mods
 * Updated all the old textures to use new Beta 0.19 items 
+* Added smoothed walls
+* Added all deep resources names
+* Fixed "mineable X" (resources that are damaged
+* Changed wording around "upload" and "load"
+* **Technical**
+* Now takes into account resources in stuff and places them in resources (also optimized resource loading
+* Partial Mod support (broke out texture load logic)
+* Modulized code better 
 
 ### (4.1.0)
 * Added Sandbags
