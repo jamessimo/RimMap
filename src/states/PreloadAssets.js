@@ -41,7 +41,7 @@ class PreloadAssets extends Phaser.State {
     }, 250, Phaser.Easing.Linear.None, true);
     //tween.onComplete.add(this.startMainRender, this);
   }
-  
+
   fileComplete(progress, cacheKey, success, totalLoaded, totalFiles) {
 	   this.text.setText("Downloading assets: " + progress + "% - " + totalLoaded + " out of " + totalFiles);
   }
@@ -50,10 +50,6 @@ class PreloadAssets extends Phaser.State {
     this.text.setText("Downloaded all assets! Start rendering...");
     this.game.json = this.json;
     this.game.state.start('GameState');
-
-  }
-
-  startMainRender() {
 
   }
 

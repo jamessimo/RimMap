@@ -304,9 +304,10 @@ input:checked + .slider:before {
         background-color: #fefefe;
         margin: 15% auto; /* 15% from the top and centered */
         padding: 20px;
-        border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on screen size */
+        border: none;
+        max-width: 720px; /* Could be more or less, depending on screen size */
         pointer-events: all;
+        box-shadow: 0px 0px 30px black;
 
         input {
           width: 60%;
@@ -316,11 +317,31 @@ input:checked + .slider:before {
           box-sizing: border-box;
         }
 
-        button {
+        #clip{
+          display: none;
+        }
+        .input-group-button{
+          position: relative;
+          .copyBtn {
+            background-color: #ffca42;
+            border: none;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            outline: none;
+            cursor: pointer;
+            position: absolute;
+            top: -16px;
+            right: 0px;
+            &:hover{
+              background-color: #ccc;
+            }
+          }
+        }
+
+        .uploadBtn {
 
           color: #14171a;
-          border-color: #14171a;
-          border: 2px solid;
+          border: none;
           font-size: 18px;
           min-width: 150px;
           max-width: 350px;

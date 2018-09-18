@@ -10,7 +10,7 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ✔ Shows resouces, deep resouces & mountains
 
-✔ Pan map your mouse or with arrow keys
+✔ Pan & zoom map with mouse & with arrow keys
 
 ✔ Include example maps
 
@@ -18,18 +18,13 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ## Known Issues
 * 0.19 save files have lots of missing items (also some graphics not updates 0.19
-* New tiles shifted everything (limestone Flagstone) 
-* ~~Missing some deep resources~~
-* ~~UI sometimes fails to load on first visit~~
-* ~~User controls (zoom in/out) are not polished (partially fixed)~~
-* ~~Smooth Walls not implemented~~
+* Tilemap gitters when zooming in (Tilemap issue, investigate)
 
 ## WIP Features
 * Map sharing **(in beta)**
 * Mod support
 * Full game save viewing (pawn info, animal info)
-* Refined Zooming and scrolling
-* Investigate weird bug (no UI on first load)
+* ~~Refined Zooming and scrolling~~
 
 ## Future Planned Features
 * Allow users to share their saves with other users using a short URL **(in beta)**
@@ -47,13 +42,13 @@ to start the build and watch process, will rebuild the entire /build folder when
 
 ### (5.0.0)
 * You can now drag the map and use your mouse wheel to zoom (like the base game)
-* Updated all the old textures to use new Beta 0.19 items 
+* Updated some of the old textures to use new Beta 0.19 items 
 * Added smoothed walls
 * Added all deep resources names
-* Fixed "mineable X" (resources that are damaged
+* Fixed "mineable X" (resources that are damaged)
 * Changed wording around "upload" and "load"
 * **Technical**
-* Now takes into account resources in stuff and places them in resources (also optimized resource loading
+* Now takes into account resources in stuff and places them in resources (also optimized resource loading)
 * Partial Mod support (broke out texture load logic)
 * Modulized code better 
 

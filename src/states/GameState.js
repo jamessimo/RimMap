@@ -110,10 +110,7 @@ class GameState extends Phaser.State {
   update() {
 
     if (this.loadingDelta == 0) {
-
-      console.log(this.utils.TILESIZE);
       this.buildMapInfo(this.json);
-
     }
     if (this.loadingDelta > 0 && this.loadingDeltaWait > 0 && this.loadingFinished == false) {
       if (this.loadingSprite) {
@@ -134,7 +131,6 @@ class GameState extends Phaser.State {
         this.stuffGridLayer = this.game.add.group();
         this.resourceGridLayer = this.game.add.group();
         this.deepResourceGridLayer = this.game.add.group();
-
 
         for (let i = 0; i < this.worldSize.x; i++) {
           if (!this.rockGrid[i]) {
@@ -173,8 +169,12 @@ class GameState extends Phaser.State {
       } else if (this.loadingDelta == 3) {
         console.log(this.loadingDelta);
 
+        this.worldScale = 1;
+
         //for scrolling
         this.groupScale = this.stuffLayer.scale.x;
+
+        this.scaleMap(this.groupScale);
 
         this.rocksGridLayer.add(this.mountainsLayer);
 
@@ -190,7 +190,6 @@ class GameState extends Phaser.State {
 
         this.mapSizeMax = this.mapInfo.width;
         this.mapSizeCurrent = this.mapSizeMax;
-        this.worldScale = 1;
 
         this.game.input.mouseWheel.callback = (event) => {
           let wheelDelt = this.game.input.mouseWheel.delta;
@@ -246,7 +245,6 @@ class GameState extends Phaser.State {
 
 
         this.currentBounds = new Phaser.Rectangle(-this.mapInfo.width * 2, -this.mapInfo.height * 2, this.mapInfo.width * 4, this.mapInfo.height * 4);
-        //  this.game.camera.bounds =  this.currentBounds;
 
         this.game.camera.bounds = null;
 
@@ -298,7 +296,6 @@ class GameState extends Phaser.State {
         } else if (this.cursors.right.isDown) {
           this.game.camera.x += (this.utils.TILESIZE / this.zoomLevel);
         }
-
       }
       // move camera / pan
       if (this.game.input.activePointer.isDown && !this.game.input.pointer2.isDown) {
@@ -316,14 +313,11 @@ class GameState extends Phaser.State {
 
         if (this.isMouseOut()) {
 
-          //this.zoompoint.x = this.game.input.mousePointer.worldX;
-          //this.zoompoint.y = this.game.input.mousePointer.worldY;
+          this.zoompoint.x = this.game.input.mousePointer.worldX;
+          this.zoompoint.y = this.game.input.mousePointer.worldY;
 
           this.marker.x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel) * this.utils.TILESIZE / this.zoomLevel;
           this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.utils.TILESIZE / this.zoomLevel;
-
-          this.zoompoint.x = this.marker.x;
-          this.zoompoint.y = this.marker.y;
         }
         this.oldcamera = null;
       }
@@ -369,10 +363,7 @@ class GameState extends Phaser.State {
     this.mapInfo.topTerrainGrid = this.utils.mapTextures(this.mapInfo.topTerrainGrid, "terrain", this.mapInfo.underTerrainGrid);
     this.mapInfo.stuffGrid = json.savegame.game.maps.li.things.thing;
 
-    this.mapInfo.snowGridLayer = this.utils.decompress(json.savegame.game.maps.li.snowGrid.depthGridDeflate);
-
-    console.log(this.mapInfo.snowGridLayer);
-
+    //this.mapInfo.snowGridLayer = this.utils.decompress(json.savegame.game.maps.li.snowGrid.depthGridDeflate);
   }
 
   renderBitmap(group, center) {
@@ -443,8 +434,7 @@ class GameState extends Phaser.State {
     tileMap.addTilesetImage('tiles', 'tiles', this.utils.TILESIZE, this.utils.TILESIZE);
     //  0 is important
     this.topTerrainGridLayer = tileMap.createLayer(0);
-    this.topTerrainGridLayer.renderSettings.enableScrollDelta = false;
-
+    this.topTerrainGridLayer.smoothed = false;
     this.topTerrainGridLayer.resizeWorld();
   }
   renderStuff() {

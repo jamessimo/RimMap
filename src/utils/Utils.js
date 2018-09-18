@@ -1484,7 +1484,7 @@ class Utils {
             //TODO SOFTSAND
           default:
             console.log(iArray[i]);
-            iArray[i] = 1000;
+            //iArray[i] = iArray[i];
         }
         iArray[i] = iArray[i] -= 1; //fix for index offset
       }

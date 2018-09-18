@@ -94,13 +94,22 @@
 
 					<p>Upload your Rimworld save to the cloud and share it via a URL</p>
 					<br>
-					<button class="buttonload" onclick="uploadFileIO()">
+					<button class="uploadBtn" onclick="uploadFileIO()">
 					<i class="fa fa-circle-o-notch fa-spin"></i>	Upload & share <span id="uploadFileName">RIMWORLDSAVE</span>
 
 					</button>
 					<br>
-					<p>Click the URL to copy it to your clipboard!</p><br>
-					<input type="text" id="generatedURL" value=""><br>
+					<div id="clip" class="input-group">
+					<p>Click <img src="assets/ui/clippy.svg" width="12px" /> button to copy it to your clipboard!</p><br>
+
+						<input id="generatedURL" type="text" readonly value="Press the upload button">
+						<span class="input-group-button">
+							<button class="copyBtn" type="button" data-clipboard-target="#generatedURL">
+								<img class="clippy" src="assets/ui/clippy.svg" width="13" alt="Copy to clipboard">
+							</button>
+						</span>
+					</div>
+					<!--<input type="text" id="generatedURL" value="" readonly><br>-->
 
 				</div>
 
@@ -173,6 +182,7 @@
 	</div>
 	<script src="scripts/phaser.min.js"></script>
 	<script src="scripts/game.js"></script>
+	<script src="scripts/clipboard.min.js"></script>
 	<script src="scripts/frontend.js"></script>
 </body>
 
