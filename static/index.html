@@ -9,7 +9,7 @@
 	<meta http-equiv="Access-Control-Expose-Headers" content="Content-Length">
 
 
-	<title>Rimmap - Web based Rimworld map viewer!</title>
+	<title>Rimmap - a Web based Rimworld map viewer!</title>
 	<link rel="stylesheet" href="styles/main.css">
 	<link rel="stylesheet" href="styles/ui.css">
 </head>
@@ -33,9 +33,9 @@
 			<div id="topbar">
 				<span id="FileName"><span id="MapName"></span> <span id="MapSize"></span></span>
 
-				<button id="reloadButton" onclick="parent.location = 'https://jamessimo.itch.io/rimmap'">Upload new</button>
+				<button id="reloadButton" onclick="parent.location = 'https://jamessimo.itch.io/rimmap'">Load new save</button>
 
-				<button id="shareButton" onclick="toggleShareBox()">Share map</button>
+				<button id="shareButton" onclick="toggleShareBox()">Share save</button>
 
 			</div>
 
@@ -54,7 +54,7 @@
 					    </g>
 					</svg>
 				</label>
-					<h3>Upload Rimworld save file</h3>
+				<h3>Load Rimworld save file</h3>
 
 				</div>
 				<!--Filemanager-->
@@ -81,7 +81,7 @@
 					<span class="slider round"></span>
 				</label>
 				</div>
-				<div class="versionNum">RimMap v4.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.0 - @james_simo</div>
 			</div>
 
 
@@ -92,16 +92,24 @@
 				<div class="modal-content">
 					<span id="closeModal" onclick="toggleShareBox()" class="close">&times;</span>
 
-
 					<p>Upload your Rimworld save to the cloud and share it via a URL</p>
 					<br>
-					<button class="buttonload" onclick="uploadFileIO()">
+					<button class="uploadBtn" onclick="uploadFileIO()">
 					<i class="fa fa-circle-o-notch fa-spin"></i>	Upload & share <span id="uploadFileName">RIMWORLDSAVE</span>
 
 					</button>
 					<br>
-					<p>Click the URL to copy it to your clipboard!</p><br>
-					<input type="text" id="generatedURL" value=""><br>
+					<div id="clip" class="input-group">
+					<p>Click <img src="assets/ui/clippy.svg" width="12px" /> button to copy it to your clipboard!</p><br>
+
+						<input id="generatedURL" type="text" readonly value="Press the upload button">
+						<span class="input-group-button">
+							<button class="copyBtn" type="button" data-clipboard-target="#generatedURL">
+								<img class="clippy" src="assets/ui/clippy.svg" width="13" alt="Copy to clipboard">
+							</button>
+						</span>
+					</div>
+					<!--<input type="text" id="generatedURL" value="" readonly><br>-->
 
 				</div>
 
@@ -158,14 +166,14 @@
 				<div class="tileInfoContain">
 					<div id="tileData">
 						<ul>
-							<li><span id="terrainName"></span></li>
 							<li><span id="stuffName"></span></li>
+							<li><span id="terrainName"></span></li>
 							<li><span id="resourceName"></span></li>
 							<li><span id="deepResourceName"></span></li>
 						</ul>
 					</div>
 				</div>
-				<div class="versionNum">RimMap v4.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.0 - @james_simo</div>
 
 			</div>
 		</div>
@@ -174,6 +182,7 @@
 	</div>
 	<script src="scripts/phaser.min.js"></script>
 	<script src="scripts/game.js"></script>
+	<script src="scripts/clipboard.min.js"></script>
 	<script src="scripts/frontend.js"></script>
 </body>
 

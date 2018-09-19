@@ -1,3 +1,5 @@
+import Utils from 'utils/Utils';
+
 class DynamicLoad extends Phaser.State {
 
   create() {
@@ -11,21 +13,17 @@ class DynamicLoad extends Phaser.State {
     };
     this.loadingDelta = 0;
     this.game.hd = false;
+    this.utils = new Utils(this.game);
   }
 
   loadWorld(json) {
-
     //SETUP LOADING
-  //  console.log('File In DynamicLoad');
-
     let rawSizes = null;
-    //FETCH META DATA
+
     //IF MANY MAPS
     if (json.savegame.game.maps.li.length) {
       json.savegame.game.maps.li = json.savegame.game.maps.li[0];
     }
-
-    //console.log(json.savegame.game.maps.li);
 
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
     //TODO CHECK VERSION AND SWAP OUT allAssets
@@ -37,44 +35,21 @@ class DynamicLoad extends Phaser.State {
 
     const toLoadAssets = this.getUniqueStuff(json.savegame.game.maps.li.things.thing);
 
-    let allAssets = this.game.cache.getJSON("assets");
+    let allAssets = this.game.cache.getJSON("vanillaAssets"); //Add more
     let regex = new RegExp('\_(.*)');
     let preRegex = new RegExp('(.*)\_');
 
     for (let i = 0; i < toLoadAssets.length; i++) {
 
       //  toLoadJson.push(allAssets.image[toLoadAssets[i]])
-      let filterName = null;
-
-      if (regex.exec(toLoadAssets[i])) {
-
-        if(preRegex.exec(toLoadAssets[i])[1] == "Shell" ||
-        preRegex.exec(toLoadAssets[i])[1] == "TrapIED"){
-          filterName = toLoadAssets[i];
-        }else if( preRegex.exec(toLoadAssets[i])[1] == "Plant"){ //VERSION 0.19
-          filterName =  preRegex.exec(toLoadAssets[i])[1] + regex.exec(toLoadAssets[i])[1];
-        }else{
-          filterName =  regex.exec(toLoadAssets[i])[1];
-        }
-      } else {
-        filterName = toLoadAssets[i];
-      }
+      let filterName = this.utils.getStuffName(toLoadAssets[i]);
 
       //Loop through all the unique assets sound
       if (allAssets.image[filterName] !== undefined) {
-        var assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
-
-        // console.log(assetString);
-        this.toLoadJson.image[filterName] = allAssets.image[filterName] //JSON.parse(assetString);
-
-        //console.log(filterName + " " + allAssets.image[filterName]);
+        let assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
+        this.toLoadJson.image[filterName] = allAssets.path + allAssets.image[filterName];
       }
-
     }
-
-
-    //console.log(this.toLoadJson.image);
-    //new AssetLoader(this.game, this.game.cache.getJSON("toLoadJson"));
     this.startMap(json);
   }
 

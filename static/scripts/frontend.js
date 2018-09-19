@@ -18,7 +18,6 @@ let mapSize = document.getElementById("MapSize");
 
 let mapName = document.getElementById("MapName");
 
-
 let hdCheckbox = document.getElementById('hdCheckbox');
 let stuffCheckbox = document.getElementById('stuffCheckbox');
 let mountainCheckbox = document.getElementById('mountainCheckbox');
@@ -31,6 +30,8 @@ let terrainName = document.getElementById("terrainName");
 let stuffName = document.getElementById("stuffName");
 let resourceName = document.getElementById("resourceName");
 let deepResourceName = document.getElementById("deepResourceName");
+
+let clipBoard = new ClipboardJS('.copyBtn');
 
 let loadedMapName = "";
 
@@ -54,17 +55,14 @@ function updateTick() {
         } else {
           url = new URL(document.location); //window.document.referrer;//document.location;
         }
-
         if (url != null) {
           params = new URLSearchParams(url.search.substring(1))
           let urlMapId = params.get("mapid")
-
           if (urlMapId !== null) {
             loadSave(urlMapId, false);
           }
         }
       }
-
       break;
     case "PreloadAssets":
       ui.style.display = "none";
@@ -76,6 +74,7 @@ function updateTick() {
       if (phaserState.callbackContext.currentTile) {
         updateTileText();
       }
+
       if (phaserState.callbackContext.loadingFinished == true) {
         blackout.style.display = "none";
 
@@ -101,7 +100,6 @@ function updateTick() {
             mapSize.textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
           }
         }
-
       }
       break;
   }
@@ -166,7 +164,6 @@ let toggleResource = function() {
   }
 }
 let toggleDeepResource = function() {
-
   //blackout.style.display = "block";
   phaserState.callbackContext.loadingFinished = false;
   loadingMsg.textContent = "Loading deep resources...";
@@ -291,7 +288,6 @@ parseXml = function(xmlStr) {
 
 let uploadFileIO = function() {
   if (file) {
-
     let formData = new FormData();
     formData.append("rwsFile", file);
 
@@ -303,6 +299,7 @@ let uploadFileIO = function() {
 
     req.onloadstart = function() {
       blackout.style.display = "block";
+      phaserState.callbackContext.loadingFinished = false;
       loadingMsg.textContent = "Uploading file...";
     }
     req.onreadystatechange = req.onprogress = function() {
@@ -310,11 +307,10 @@ let uploadFileIO = function() {
       if (req.readyState === 4 && req.status === 200) {
         console.log(req.response);
         let jsonRespose = JSON.parse(req.response);
-
         document.getElementById("generatedURL").value = "https://jamessimo.itch.io/rimmap/?mapid=" + jsonRespose.filename;
-
+        document.getElementById("clip").style.display = "block";
       }
-
+      phaserState.callbackContext.loadingFinished = true;
       blackout.style.display = "none";
 
     }
@@ -324,10 +320,10 @@ let uploadFileIO = function() {
 
 let toggleShareBox = function() {
 
-  if (shareBox.style.display == "none") {
-    shareBox.style.display = "block";
-  } else {
+  if (shareBox.style.display == "block") {
     shareBox.style.display = "none";
+  } else {
+    shareBox.style.display = "block";
   }
 }
 

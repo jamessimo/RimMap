@@ -17,8 +17,6 @@ class PreloadAssets extends Phaser.State {
 
     this.text = this.game.add.text(256, this.game.world.centerY + 64, 'Click to start load', { font: "normal 18px Arial", align: 'left', fill: '#ffffff'});
 
-
-
     if(this.game.hd == false){
       this.game.load.image('tiles', 'assets/ShiftTilemap16.bmp');
     }else{
@@ -38,13 +36,12 @@ class PreloadAssets extends Phaser.State {
 
   }
   create() {
-
     let tween = this.add.tween(this.preloadBar).to({
       alpha: 0
     }, 250, Phaser.Easing.Linear.None, true);
     //tween.onComplete.add(this.startMainRender, this);
-
   }
+
   fileComplete(progress, cacheKey, success, totalLoaded, totalFiles) {
 	   this.text.setText("Downloading assets: " + progress + "% - " + totalLoaded + " out of " + totalFiles);
   }
@@ -53,10 +50,6 @@ class PreloadAssets extends Phaser.State {
     this.text.setText("Downloaded all assets! Start rendering...");
     this.game.json = this.json;
     this.game.state.start('GameState');
-
-  }
-
-  startMainRender() {
 
   }
 
