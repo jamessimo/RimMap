@@ -21,6 +21,8 @@ class Preload extends Phaser.State {
     this.game.load.image('resourceTint', 'assets/resourceTint.png');
 
     this.game.load.script('pako', 'assets/pako.min.js');
+    this.game.load.script('base64js', 'assets/base64js.min.js');
+
 
     //new AssetLoader(this.game, this.game.cache.getJSON("assets"));
 

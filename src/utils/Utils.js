@@ -12,9 +12,11 @@ class Utils {
       if (this.game.hd == false) {
         this.TILESIZE = 16;
         this.SCALESIZE = 0.25;
+        this.BLOWUP = 4;
       } else {
         this.TILESIZE = 32; //orginal 64, cut in half to save memory.
         this.SCALESIZE = 0.5;
+        this.BLOWUP = 2;
       }
 
       this.GRANITE = 0x635e5b;
@@ -29,8 +31,8 @@ class Utils {
       this.PLASTEEL = 0x7bafae;
       this.COMPONENTS = 0x755808;
       this.GOLD = 0xD0B703;
-      this.SILVER = 0xAEA290;
-      this.URANIUM = 0x768451;
+      this.SILVER = 0x939086;
+      this.URANIUM = 0x727272;
       this.JADE = 0x438347;
 
       this.ALPACA = 0xedd8ae;
@@ -181,19 +183,19 @@ class Utils {
       case 19: //Marble tile
         output = "Marble Tile";
         break;
-      case 20: //slate flag
-        output = "Slate Flagstone";
-        break;
-      case 21: //sandstone flag
+      case 20: //Sandstone flag
         output = "Sandstone Flagstone";
         break;
-      case 22: //granite flag
+      case 21: //Granite flag
         output = "Granite Flagstone";
         break;
-      case 23: //limestone flag
+      case 22: //Limestone flag
         output = "Limestone Flagstone";
         break;
-      case 24: //marble flagstone
+      case 23: //Slate flag
+        output = "Slate Flagstone";
+        break;
+      case 24: //Marble flagstone
         output = "Marble Flagstone";
         break;
       case 25: //sand
@@ -412,6 +414,40 @@ class Utils {
     return (this.delaceArray(output));
   }
 
+/*  //EXPERIMENTAL DONT USE
+newDecompress(rawGrid) {
+    //TOPGRID
+    //DECODE BASE 64 TO BINARY
+    let binary = atob(rawGrid);
+    let output = [];
+    //INFLATE/DECOMPRESS TOPGRID
+    try {
+      output = pako.inflate(binary, {
+        windowBits : 0,
+        raw: true
+      });
+
+    } catch (err) {
+      console.log(err);
+    }
+
+    //output =  this.Base64Encode(output);
+    return output;
+  }
+
+
+  Base64Encode(str, encoding = 'utf-8') {
+    var bytes = new (TextEncoder || TextEncoderLite)(encoding).encode(str);
+    return base64js.fromByteArray(bytes);
+  }
+
+  Base64Decode(str, encoding = 'utf-8') {
+    var bytes = base64js.toByteArray(str);
+    return new (TextDecoder || TextDecoderLite)(encoding).decode(bytes);
+  }
+  */
+
+
   getPosition(raw) {
     //Remove the () + comma seperate the x y z
     let formattedSize = raw.replace(/[(-)]/g, '');
@@ -485,42 +521,39 @@ class Utils {
       }
       switch (currentSprite) {
         case "ChunkSandstone":
-          sprite.tint = this.SANDSTONE;
-          break;
-        case "ChunkGranite":
-          sprite.tint = this.GRANITE;
-          break;
-        case "ChunkSlate":
-          sprite.tint = this.SLATE;
-          break;
-        case "ChunkLimestone":
-          sprite.tint = this.LIMESTONE;
-          break;
-        case "ChunkMarble":
-          sprite.tint = this.MARBLE;
-          break;
+        case "SmoothedSandstone":
         case "BlocksSandstone":
           sprite.tint = this.SANDSTONE;
           break;
+        case "ChunkGranite":
+        case "SmoothedGranite":
         case "BlocksGranite":
           sprite.tint = this.GRANITE;
           break;
+        case "ChunkSlate":
+        case "SmoothedSlate":
         case "BlocksSlate":
           sprite.tint = this.SLATE;
           break;
+        case "ChunkLimestone":
+        case "SmoothedLimestone":
         case "BlocksLimestone":
           sprite.tint = this.LIMESTONE;
           break;
+        case "ChunkMarble":
+        case "SmoothedMarble":
         case "BlocksMarble":
           sprite.tint = this.MARBLE;
           break;
         case "WoodLog":
-          sprite.tint = 0xBF6C2A;
+          sprite.tint = this.WOOD;
           break;
         case "Cloth":
           sprite.tint = this.CLOTH;
           break;
-
+        case "ToolCabinet":
+          sprite.tint = 0x60725f;
+          break;
         case "Leather_Bluefur":
         case "WoolMuffalo":
         case "Muffalo_Leather":
@@ -873,27 +906,29 @@ class Utils {
 
     let outputSprite = sprite;
 
-    /*
-      let debugSprite = this.game.add.sprite(outputSprite.x, outputSprite.y, 'resourceTint');
-      debugSprite.scale.setTo(this.SCALESIZE);
-      debugSprite.tint = 0xff00ff;
-    */
-
+    if (data.rot) {
+      if (data.rot == 1) {
+        outputSprite.angle = 90;
+      }
+      if (data.rot == 2) {
+        outputSprite.angle = 180;
+      }
+      if (data.rot == 3) {
+        outputSprite.angle = -90;
+      }
+    }
 
     //1X1
     if (outputSprite.height == this.TILESIZE && outputSprite.width == this.TILESIZE) {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(1, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(1, 0);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90;
           outputSprite.anchor.setTo(0, 0);
         }
       }
@@ -904,15 +939,12 @@ class Utils {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(1, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180; //ok
           outputSprite.anchor.setTo(1, 0.5);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90;
           outputSprite.anchor.setTo(0, 0.5);
         }
       }
@@ -923,51 +955,58 @@ class Utils {
       outputSprite.anchor.setTo(0, 0.75);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(1, 0.75);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180; //ok
           outputSprite.anchor.setTo(1, 0.5);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90;
           outputSprite.anchor.setTo(0, 0.5);
         }
       }
-      //1x2
+      //2x1
     } else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 2)) {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(0.5, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(0.5, 0);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90; //good
           outputSprite.anchor.setTo(0, 0);
         }
       }
-      //2x4
-    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      //4x2
+    } else if (outputSprite.height == (this.TILESIZE * 4) &&
+      outputSprite.width == (this.TILESIZE * 2)) {
+      outputSprite.anchor.setTo(0, 0.75);
+      outputSprite.tint = 0xf0fff0;
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.anchor.setTo(0.6, 0.6);
+        }
+        if (data.rot == 3) {
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+      }
+      //4x2
+    }else if (outputSprite.height == (this.TILESIZE * 2) &&
       outputSprite.width == (this.TILESIZE * 4)) {
       outputSprite.anchor.setTo(0.4, 0.75);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(0.5, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(0.6, 0.6);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90; //good
           outputSprite.anchor.setTo(1, 0.5);
         }
       }
@@ -978,50 +1017,74 @@ class Utils {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(0.5, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(0.5, 0.5);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90; //good
           outputSprite.anchor.setTo(0, 0.5);
         }
       }
-      //3x3
+      //3x2
+    } else if (outputSprite.height == (this.TILESIZE * 2) &&
+      outputSprite.width == (this.TILESIZE * 3)) {
+
+      outputSprite.anchor.setTo(0.35, 1);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.anchor.setTo(0.5, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.anchor.setTo(0.35, 0.6);
+        }
+      }
+      //2x3
     } else if (outputSprite.height == (this.TILESIZE * 3) &&
+      outputSprite.width == (this.TILESIZE * 2)) {
+
+      outputSprite.anchor.setTo(0, 0.65);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.anchor.setTo(0.5, 0.5);
+        }
+        if (data.rot == 3) {
+          outputSprite.anchor.setTo(0, 0.5);
+        }
+      }
+
+      //3x3
+    }else if (outputSprite.height == (this.TILESIZE * 3) &&
       outputSprite.width == (this.TILESIZE * 3)) {
       outputSprite.anchor.setTo(0.35, 0.65);
 
       if (data.rot == 1) {
         outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = 90;
       }
       if (data.rot == 2) {
         outputSprite.anchor.setTo(0.65, 0.35);
-        outputSprite.angle = 180;
       }
       if (data.rot == 3) {
         outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = -90; //good
       }
-      //1x3
+      //3X1
     } else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.4, 1);
+      outputSprite.anchor.setTo(0.35, 1);
       if (data.rot == 1) {
-        outputSprite.angle = 90;
-        outputSprite.anchor.setTo(0.6, 1);
+        outputSprite.anchor.setTo(0.65, 1);
       }
       if (data.rot == 2) {
-        outputSprite.angle = 180;
-        outputSprite.anchor.setTo(0.6, 0);
+        outputSprite.anchor.setTo(0.65, 0);
       }
       if (data.rot == 3) {
-        outputSprite.angle = -90; //good
-        outputSprite.anchor.setTo(0.3, 0);
+        outputSprite.anchor.setTo(0.35, 0);
       }
       //4x4
     } else if (outputSprite.height == (this.TILESIZE * 4) &&
@@ -1031,53 +1094,59 @@ class Utils {
       }
       if (data.rot == 1) {
         outputSprite.anchor.setTo(0.5, 0.75);
-        outputSprite.angle = 90;
       }
       if (data.rot == 2) {
         outputSprite.anchor.setTo(0.5, 0.5);
-        outputSprite.angle = 180;
       }
       if (data.rot == 3) {
         outputSprite.anchor.setTo(0.75, 0.25);
-        outputSprite.angle = -90; //good
       }
-      //8x8
-    } else if (outputSprite.height == (this.TILESIZE * 8) &&
-      outputSprite.width == (this.TILESIZE * 8)) {
-      outputSprite.anchor.setTo(0.4, 0.65);
-      //2x5
+      //6x6
+    } else if (outputSprite.height == (this.TILESIZE * 6) &&
+      outputSprite.width == (this.TILESIZE * 6)) {
+      outputSprite.anchor.setTo(0.35, 0.65);
+      //5x2
     } else if (outputSprite.height == (this.TILESIZE * 2) &&
       outputSprite.width == (this.TILESIZE * 5)) {
-      outputSprite.anchor.setTo(0.4, 0);
+      outputSprite.anchor.setTo(0.4, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(0.5, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(0.6, 0.5);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90; //good
+          outputSprite.anchor.setTo(1, 0.5);
+        }
+      }
+      //3x4
+    } else if (outputSprite.height == (this.TILESIZE * 4) &&
+      outputSprite.width == (this.TILESIZE * 3)) {
+      outputSprite.anchor.setTo(0.35, 0);
+      if (data.rot) {
+        if (data.rot == 1) {
+          outputSprite.anchor.setTo(0.5, 1);
+        }
+        if (data.rot == 2) {
+          outputSprite.anchor.setTo(0.65, 0.5);
+        }
+        if (data.rot == 3) {
           outputSprite.anchor.setTo(1, 0.5);
         }
       }
       //1x4
-    } else if (outputSprite.height == this.TILESIZE &&
+    }else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 4)) {
       outputSprite.anchor.setTo(0, 1);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.angle = 90;
           outputSprite.anchor.setTo(0.5, 1);
         }
         if (data.rot == 2) {
-          outputSprite.angle = 180;
           outputSprite.anchor.setTo(0.5, 0);
         }
         if (data.rot == 3) {
-          outputSprite.angle = -90; //good
           outputSprite.anchor.setTo(0, 0);
         }
       }
@@ -1184,6 +1253,7 @@ class Utils {
       case "SlagRubble":
       case "Centipede":
       case "Scyther":
+      case "Lancer":
       case "ActiveDropPod":
       case "Fire":
       case "Spark":
@@ -1481,10 +1551,11 @@ class Utils {
           case 71: //Bridge
             iArray[i] = 3;
             break;
-            //TODO SOFTSAND
+          case 153: //Softsand
+            iArray[i] = 25;
+            break;
           default:
             console.log(iArray[i]);
-            //iArray[i] = iArray[i];
         }
         iArray[i] = iArray[i] -= 1; //fix for index offset
       }

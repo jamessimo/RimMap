@@ -6,6 +6,8 @@
   "resetLocked": false,
 
   "image": {
+
+    "Agarilux": "AgariluxA.png",
     "PlantGrass": "GrassA.png",
     "PlantTallGrass": "GrassA.png",
     "PlantShrubLow": "ShrubLowA.png",
@@ -52,7 +54,7 @@
     "PlantAmbrosia": "Ambrosia_2.png",
     "PlantRafflesia": "RafflesiaA.png",
     "GlowPod": "GlowPod.png",
-
+    "PlantTreeCocoa":"TreeCocoaA.png",
     "RawAgave": "AgaveFruit.png",
     "RawFungus": "RawFungus.png",
     "RawBerries": "Berries.png",
@@ -69,7 +71,9 @@
     "MealSimple": "Simple.png",
     "MealFine": "Fine.png",
     "MealLavish": "Lavish.png",
+    "MealNutrientPaste":"NutrientPaste.png",
     "NutrientPaste": "NutrientPaste.png",
+    "Chocolate" : "Chocolate.png",
     "Pemmican": "Pemmican.png",
     "Kibble": "Kibble.png",
     "Milk": "Milk.png",
@@ -91,6 +95,8 @@
     "Penoxycyline": "Penoxycyline_b.png",
     "Beer": "Beer_b.png",
     "WakeUp": "WakeUp_b.png",
+
+    "PsychiteTea": "Tea_c.png",
     "PsychoidPekoe": "Pekoe_b.png",
     "GoJuice": "GoJuice_b.png",
     "Neutroamine": "Neutroamine.png",
@@ -162,24 +168,39 @@
     "DoomsdayRocket": "DoomsdayLauncher.png",
     "TripleRocket": "RocketLauncher.png",
     "Gladius": "Gladius.png",
-    "Kidney": "Organ.png",
-    "Lung": "Organ.png",
-    "Liver": "Organ.png",
-    "Heart": "Organ.png",
-    "BionicLeg": "Implant.png",
-    "BionicArm": "Implant.png",
-    "BionicEye": "Implant.png",
-    "BionicSpine": "Implant.png",
-    "Joywire": "Implant.png",
-    "SimpleProstheticArm": "Implant.png",
-    "SimpleProstheticLeg": "Implant.png",
-    "PowerClaw": "Implant.png",
-    "Painstopper": "Implant.png",
+
+    "Kidney": "HealthItemNatural.png",
+    "Lung": "HealthItemNatural.png",
+    "Liver": "HealthItemNatural.png",
+    "Heart": "HealthItemNatural.png",
+    "BionicLeg": "HealthItemBionic.png",
+    "BionicArm": "HealthItemBionic.png",
+    "BionicEye": "HealthItemBionic.png",
+    "BionicSpine": "HealthItemBionic.png",
+    "BionicHeart": "HealthItemBionic.png",
+    "BionicStomach": "HealthItemBionic.png",
+    "BionicEar": "HealthItemBionic.png",
+
+    "Joywire": "HealthItemBionic.png",
+    "SimpleProstheticArm": "HealthItemProsthetic.png",
+    "SimpleProstheticLeg": "HealthItemProsthetic.png",
+    "SimpleProstheticHeart": "HealthItemProsthetic.png",
+    "CochlearImplant" :  "HealthItemProsthetic.png",
+
+    "PowerClaw": "HealthItemBionic.png",
+    "Painstopper": "HealthItemBionic.png",
+
+    "ArchotechEye":"HealthItemArchotech.png",
+    "ArchotechArm":"HealthItemArchotech.png",
+    "ArchotechLeg":"HealthItemArchotech.png",
+
+
     "PsychicInsanityLance": "PsychicInsanityLance.png",
     "PsychicShockLance": "PsychicShockLance.png",
     "PsychicAnimalPulser": "PsychicAnimalPulser.png",
     "PsychicSoothePulser": "PsychicSoothePulser.png",
     "MechSerumNeurotrainer": "MechSerumNeurotrainer.png",
+
     "ElephantTusk": "ElephantTusk.png",
     "ThrumboHorn": "ThrumboHorn.png",
     "Door": "Door.png",
@@ -240,7 +261,7 @@
 
     "MultiAnalyzer": "MultiAnalyzer.png",
     "ElectricCrematorium": "Crematorium.png",
-    "ElectricSmithy": "TableSmithingElectric_back.png",
+    "ElectricSmithy": "TableSmithingElectric.png",
 
     "HydroponicsBasin": "HydroponicsBasin.png",
     "MoisturePump": "MoisturePump.png",
@@ -288,16 +309,23 @@
     "SimpleResearchBench": "ResearchBenchSimple_back.png",
     "HiTechResearchBench": "ResearchBenchHiTech_back.png",
     "DrugLab": "TableDrugLab_back.png",
-    "ElectricStove": "TableStoveElectric_back.png",
+    "ElectricStove": "TableStoveElectric.png",
     "TableMachining": "TableMachining_back.png",
-    "ElectricSmelter": "ElectricSmelter_back.png",
-    "ElectricTailoringBench": "TableTailorHand_back.png",
+
+    "ElectricSmelter": "ElectricSmelter.png",
+
+    "ElectricTailoringBench": "TableTailorElectric.png",
+
     "TableSmithingElectric": "TableSmithingElectric.png",
 
-    "Brewery": "TableBrewery_back.png",
-    "TableSculpting": "TableSculpting_back.png",
+    "Brewery": "TableBrewery.png",
+    "TableSculpting": "TableSculpting.png",
     "TableStonecutter": "TableStonecutter.png",
+
     "TableTailorHand": "TableTailorHand.png",
+
+    "TableTailorElectric": "TableTailorElectric.png",
+
     "TableButcher": "TableButcher_back.png",
     "Battery": "Battery_back.png",
     "Bed": "Bed_back.png",
@@ -333,7 +361,9 @@
     "MechSerumHealer": "MechSerumHealer.png",
 
     "MegascreenTelevision": "MegascreenTelevision_front.png",
+
     "Refinery": "Refinery.png",
+    "BiofuelRefinery": "Refinery.png",
     "CryptosleepCasket": "ShipCryptosleepCasket_back.png",
     "ShipComputerCore": "ShipComputerCore_back.png",
     "Wort": "Wort.png",
@@ -374,11 +404,10 @@
     "WatermillGenerator": "WatermillGenerator.png",
     "Autocannon": "Autocannon.png",
     "FabricationBench": "FabricationBench.png",
-    "HandTailoringBench": "TableTailorHand.png"
-
-
-
-
-
+    "HandTailoringBench": "TableTailorHand.png",
+    "PsychicEmanator": "PsychicEmanator.png",
+    "VanometricPowerCell" : "VanometricPowerCell.png",
+    "Snowman" : "Snowman_A.png",
+    "FlakJacket":"FlakJacket.png"
   }
 }

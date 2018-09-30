@@ -40,6 +40,13 @@ to start the build and watch process, will rebuild the entire /build folder when
 
 ## Changelog 
 
+### (5.1.0)
+* Added all new B19 items
+* Tweaks to colors
+* Added "Plan" view
+* Refined resources code
+
+
 ### (5.0.0)
 * You can now drag the map and use your mouse wheel to zoom (like the base game)
 * Updated some of the old textures to use new Beta 0.19 items 

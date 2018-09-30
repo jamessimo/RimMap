@@ -302,7 +302,14 @@ let uploadFileIO = function() {
       phaserState.callbackContext.loadingFinished = false;
       loadingMsg.textContent = "Uploading file...";
     }
-    req.onreadystatechange = req.onprogress = function() {
+
+
+    req.onreadystatechange = req.onprogress = function(data) {
+
+      if (data.lengthComputable) {
+        var progress = parseInt(((data.loaded / data.total) * 100), 10);
+        loadingMsg.textContent = "Uploading " + loadedMapName + " (" + Math.round((data.loaded / data.total) * 100) + "%)";
+      }
 
       if (req.readyState === 4 && req.status === 200) {
         console.log(req.response);

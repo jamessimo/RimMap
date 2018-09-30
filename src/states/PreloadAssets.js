@@ -19,8 +19,11 @@ class PreloadAssets extends Phaser.State {
 
     if(this.game.hd == false){
       this.game.load.image('tiles', 'assets/ShiftTilemap16.bmp');
+      this.game.load.spritesheet('tileMap', 'assets/ShiftTilemap16.bmp', 16, 16);
     }else{
       this.game.load.image('tiles', 'assets/ShiftTilemap32.bmp');
+      this.game.load.spritesheet('tileMap', 'assets/ShiftTilemap32.bmp', 32, 32);
+
     }
 
    new AssetLoader(this.game, this.toLoadJson);
