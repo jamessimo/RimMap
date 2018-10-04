@@ -983,7 +983,6 @@ newDecompress(rawGrid) {
     } else if (outputSprite.height == (this.TILESIZE * 4) &&
       outputSprite.width == (this.TILESIZE * 2)) {
       outputSprite.anchor.setTo(0, 0.75);
-      outputSprite.tint = 0xf0fff0;
       if (data.rot) {
         if (data.rot == 1) {
           outputSprite.anchor.setTo(0.5, 1);

@@ -17,6 +17,7 @@ class Preload extends Phaser.State {
     this.game.load.image('chunk', 'assets/vanilla/RockLowA.png');
     this.game.load.image('slag', 'assets/vanilla/MetalDebrisA.png');
 
+    this.game.load.image('Plan', 'assets/Plan.png');
     this.game.load.image('rockTint', 'assets/rockTint.png');
     this.game.load.image('resourceTint', 'assets/resourceTint.png');
 

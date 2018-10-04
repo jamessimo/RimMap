@@ -177,6 +177,20 @@ let toggleDeepResource = function() {
     }, 1000);
   }
 }
+let togglePlanning = function() {
+  //blackout.style.display = "block";
+  phaserState.callbackContext.loadingFinished = false;
+  loadingMsg.textContent = "Loading Planning...";
+  if (planningCheckbox.checked) {
+    setTimeout(() => {
+      phaserState.callbackContext.showPlanning();
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      phaserState.callbackContext.hidePlanning();
+    }, 1000);
+  }
+}
 let toggleStuff = function() {
   blackout.style.display = "block";
   loadingMsg.textContent = "Loading stuff...";
