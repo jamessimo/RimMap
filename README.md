@@ -40,10 +40,15 @@ to start the build and watch process, will rebuild the entire /build folder when
 
 ## Changelog 
 
+### (5.2.0)
+* Vastly improved zoom + removed old tilemap code
+* Added colors to deep resources
+* Code cleanup
+
 ### (5.1.0)
 * Added all new B19 items
 * Tweaks to colors
-* Added "Plan" view
+* Crisper graphics (anti-aliasing)
 * Refined resources code
 
 

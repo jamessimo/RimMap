@@ -1196,6 +1196,7 @@ newDecompress(rawGrid) {
       case "MineableSilver":
       case "MineableComponents":
       case "MineableComponentsIndustrial":
+      case "MineablePlasteel":
         return true;
         break;
       default:

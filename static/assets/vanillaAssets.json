@@ -246,6 +246,7 @@
     "UnfinishedBelt": "UnfinishedBelt.png",
     "UnfinishedApparel": "UnfinishedApparel.png",
     "UnfinishedComponent": "UnfinishedComponent.png",
+    "UnfinishedMetallicTechArmor": "UnfinishedTechArmor.png",
     "UnfinishedTechArmor": "UnfinishedTechArmor.png",
     "UnfinishedGun": "UnfinishedGun.png",
     "UnfinishedWeapon": "UnfinishedWeapon.png",
@@ -408,6 +409,7 @@
     "PsychicEmanator": "PsychicEmanator.png",
     "VanometricPowerCell" : "VanometricPowerCell.png",
     "Snowman" : "Snowman_A.png",
-    "FlakJacket":"FlakJacket.png"
+    "FlakJacket":"FlakJacket.png",
+    "PsychicFoilHelmet": "PsychicFoilHelmet.png"
   }
 }
