@@ -46,6 +46,7 @@ class GameState extends Phaser.State {
       "resourceRefGrid": [],
       "deepResourceGrid": [],
       "deepResourceCount": [],
+      "planningGridLayer" : [],
       "roofGrid": [],
       "stuffGrid": [],
       "stuffRefGrid": []
@@ -60,12 +61,13 @@ class GameState extends Phaser.State {
       this.deepResourceGridLayer =
       this.rocksGridLayer =
       this.snowGridLayer =
-      this.planGridLayer =
+      this.planningGridLayer =
       this.rocksLayer =
       this.mountainsLayer =
       this.stuffLayer =
       this.resourceLayer =
       this.deepResourceLayer =
+      this.planningLayer =
       this.roofGridLayer =
       this.centerMarker =
       this.currentBounds =
@@ -106,8 +108,6 @@ class GameState extends Phaser.State {
     this.scrollZoomRate = 1024 * this.utils.SCALESIZE;
     this.scrolling = true;
     this.padding = 2;
-
-
   }
 
   update() {
@@ -121,9 +121,9 @@ class GameState extends Phaser.State {
 
       let url = null;
       if (window.document.referrer) {
-        url = new URL(window.document.referrer); //window.document.referrer;//document.location;
+        url = new URL(window.document.referrer);
       } else {
-        url = new URL(document.location); //window.document.referrer;//document.location;
+        url = new URL(document.location);
       }
       if (url != null) {
         params = new URLSearchParams(url.search.substring(1))
@@ -133,11 +133,10 @@ class GameState extends Phaser.State {
         }
       }
 
-
       if (this.exp) {
-        this.renderNewTileMap();
-      } else {
         this.renderTerrainTileMap();
+      } else {
+        this.renderTerrain();
       }
 
     }
@@ -160,6 +159,7 @@ class GameState extends Phaser.State {
         this.stuffGridLayer = this.game.add.group();
         this.resourceGridLayer = this.game.add.group();
         this.deepResourceGridLayer = this.game.add.group();
+        this.planningGridLayer = this.game.add.group();
 
         for (let i = 0; i < this.worldSize.x; i++) {
           if (!this.rockGrid[i]) {
@@ -176,7 +176,7 @@ class GameState extends Phaser.State {
         this.renderMountain();
 
         //this.renderPlanTileMap();
-        if (this.exp) {
+        if (!this.exp) {
           this.terrainLayer = this.renderBitmap(this.terrainGridLayer);
         }
         this.markerInit();
@@ -296,29 +296,31 @@ class GameState extends Phaser.State {
 
       // wheelzoom
       if (this.isMouseOut()) {
+
+        let scrollRate = this.utils.TILESIZE / this.zoomLevel;
+
         if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS) {
-          this.game.camera.x += (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.x += scrollRate;
         }
         if (this.game.input.mousePointer.x < 0 + this.MOUSEBOUNDS) {
-          this.game.camera.x -= (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.x -= scrollRate;
         }
         if (this.game.input.mousePointer.y > this.SCREENHEIGHT - this.MOUSEBOUNDS) {
-          this.game.camera.y += (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.y += scrollRate;
         }
         if (this.game.input.mousePointer.y < 0 + this.MOUSEBOUNDS) {
-          this.game.camera.y -= (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.y -= scrollRate;
         }
         if (this.cursors.up.isDown) {
-          this.game.camera.y -= (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.y -= scrollRate;
         } else if (this.cursors.down.isDown) {
-          this.game.camera.y += (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.y += scrollRate;
         }
         if (this.cursors.left.isDown) {
-          this.game.camera.x -= (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.x -= scrollRate;
         } else if (this.cursors.right.isDown) {
-          this.game.camera.x += (this.utils.TILESIZE / this.zoomLevel);
+          this.game.camera.x += scrollRate;
         }
-
       }
       // move camera / pan
       if (this.game.input.activePointer.isDown && !this.game.input.pointer2.isDown) {
@@ -329,11 +331,7 @@ class GameState extends Phaser.State {
           }
         }
         this.oldcamera = this.game.input.activePointer.position.clone();
-
       } else {
-
-        // adjust camera center and zoom here
-
         if (this.isMouseOut()) {
 
           this.zoompoint.x = this.game.input.mousePointer.worldX;
@@ -344,19 +342,13 @@ class GameState extends Phaser.State {
             this.marker.y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel) * this.utils.TILESIZE / this.zoomLevel;
           } else {
 
-            let x = (this.game.input.activePointer.worldX / this.utils.TILESIZE) * this.zoomLevel;
-            let y = (this.game.input.activePointer.worldY / this.utils.TILESIZE) * this.zoomLevel;
-            let flippedY = Math.abs(y - this.worldSize.y);
+            let x = Phaser.Math.snapTo(this.game.input.activePointer.worldX-((this.utils.TILESIZE/2)/ this.zoomLevel),this.utils.TILESIZE / this.zoomLevel);
+            let y = Phaser.Math.snapTo(this.game.input.activePointer.worldY-((this.utils.TILESIZE/2)/ this.zoomLevel),this.utils.TILESIZE / this.zoomLevel);
 
-
-            this.marker.x  = (this.game.input.activePointer.worldX * this.zoomLevel) * this.utils.TILESIZE;
-            this.marker.y  = (this.game.input.activePointer.worldX * this.zoomLevel) * this.utils.TILESIZE;
-
+            this.marker.x  = x;
+            this.marker.y  = y;
           }
-
         }
-
-
         this.oldcamera = null;
       }
       this.scrolling = false;
@@ -407,18 +399,10 @@ class GameState extends Phaser.State {
 
   renderBitmap(group, center) {
 
-    const BMPCHUNKS = 1;
-    const CHUNK_WIDTH = this.mapInfo.width / BMPCHUNKS;
-    const CHUNK_HEIGHT = this.mapInfo.height / BMPCHUNKS;
-
     let outputGroup = this.game.add.group();
-
     let groupPosX = 0;
     let groupPosY = 0;
-
-    let renderdChunks = [];
     let renderOutput = null;
-
     let bmd = null;
 
     if (center) {
@@ -433,50 +417,32 @@ class GameState extends Phaser.State {
       group.pivot.y = 0;
     }
 
-    for (let i = 0; i < BMPCHUNKS; i++) {
-      group.position.x = groupPosX;
-      for (let j = 0; j < BMPCHUNKS; j++) {
-        group.position.y = groupPosY;
+    group.position.x = groupPosX;
+    group.position.y = groupPosY;
 
-        //This is the BitmapData we're going to be drawing to
-        bmd = this.game.add.bitmapData(CHUNK_WIDTH, CHUNK_HEIGHT, false);
-        renderOutput = bmd.addToWorld(CHUNK_HEIGHT * i, CHUNK_HEIGHT * j, 0, 0, 0.5, 0.5);
+    //This is the BitmapData we're going to be drawing to
+    bmd = this.game.add.bitmapData(this.mapInfo.width, this.mapInfo.height, false);
+    renderOutput = bmd.addToWorld(0,0, 0, 0, 0.5, 0.5);
 
-        this.game.stage.updateTransform();
-
-        bmd.baseTexture.resolution = 0.5;
-        bmd.disableTextureUpload = true;
-        bmd.drawGroup(group);
-
-        renderdChunks.push(renderOutput);
-
-        outputGroup.add(renderOutput);
-        groupPosY = CHUNK_HEIGHT;
-
-      }
-      groupPosY = this.mapInfo.height;
-      groupPosX = -CHUNK_WIDTH;
-    }
-
+    this.game.stage.updateTransform();
+    bmd.baseTexture.resolution = 0.5;
+    bmd.disableTextureUpload = true;
+    bmd.drawGroup(group);
+    outputGroup.add(renderOutput);
+    groupPosY = this.mapInfo.height;
+    groupPosX = -this.mapInfo.width;
     bmd = null;
-
     group.destroy(true, false);
 
     return outputGroup;
   }
 
-  renderNewTileMap() {
-
-    console.log(this.mapInfo.topTerrainGrid);
-
+  renderTerrain() {
     let masterIndex = 0;
     let terrainSprite = null;
-
     for (let i = 0; i < this.worldSize.x; i++) {
       for (let j = 0; j < this.worldSize.y; j++) {
-
         terrainSprite = this.game.add.sprite((j * this.utils.TILESIZE), -((i + 1) * this.utils.TILESIZE), 'tileMap', this.mapInfo.topTerrainGrid[masterIndex]);
-
         this.terrainGridLayer.add(terrainSprite);
         masterIndex++;
       }
@@ -545,6 +511,9 @@ class GameState extends Phaser.State {
             break;
           case "MineableSilver":
             mappedResource = 194;
+            break;
+          case "MineablePlasteel":
+            mappedResource = 17;
             break;
         }
 
@@ -664,7 +633,6 @@ class GameState extends Phaser.State {
               resourceGraphic = 'resourceTint';
               resourceTint = this.utils.SILVER;
               break;
-
             case 127: // Jade
               resourceGraphic = 'resourceTint';
               resourceTint = this.utils.JADE;
@@ -694,7 +662,32 @@ class GameState extends Phaser.State {
         if (this.mapInfo.deepResourceGrid[masterIndex] > 0) {
           deepResourceSprite = this.game.add.sprite((j * this.utils.TILESIZE), -((i + 1) * this.utils.TILESIZE), 'resourceTint');
           deepResourceSprite.scale.setTo(this.utils.SCALESIZE);
-          deepResourceSprite.tint = 0x00ff00;
+
+          switch (this.mapInfo.deepResourceGrid[masterIndex]) {
+            case 243: //Plasteel
+              deepResourceSprite.tint = this.utils.PLASTEEL;
+              break;
+            case 97: //Chemfuel
+              deepResourceSprite.tint = 0x00ff00;
+              break;
+            case 251: //Steel
+              deepResourceSprite.tint = this.utils.STEEL;
+              break;
+            case 160: //Uruianum
+              deepResourceSprite.tint = this.utils.URANIUM;
+              break;
+            case 125: //GOLD
+              deepResourceSprite.tint = this.utils.GOLD;
+              break;
+            case 80: // Sliver
+              deepResourceSprite.tint = this.utils.SILVER;
+              break;
+            case 22: // Jade
+              deepResourceSprite.tint = this.utils.JADE;
+              break;
+            default:
+              deepResourceSprite.tint = 0x00ff00;
+          }
           this.deepResourceGridLayer.add(deepResourceSprite);
         }
         masterIndex++;
@@ -718,7 +711,7 @@ class GameState extends Phaser.State {
     }
   }
 
-  renderPlanTileMap() {
+  renderPlanning() {
 
     let planPos = null;
     let planSprite = null;
@@ -727,11 +720,11 @@ class GameState extends Phaser.State {
       planPos = this.utils.getPosition(this.mapInfo.planGridLayer[i].target);
       planSprite = this.game.add.sprite(
         (planPos[0] * this.utils.TILESIZE), -(planPos[2] * this.utils.TILESIZE),
-        "resourceTint"
+        "Plan"
       );
       planSprite.tint = 0xffffff;
       planSprite.scale.setTo(this.utils.SCALESIZE);
-      this.stuffGridLayer.add(planSprite);
+      this.planningGridLayer.add(planSprite);
     }
   }
 
@@ -744,13 +737,13 @@ class GameState extends Phaser.State {
 
     let thingPos = null;
     //BUILD EMPTY WALL ARRAY
-    for (var i = 0; i < this.worldSize.x; i++) {
+    for (let i = 0; i < this.worldSize.x; i++) {
       if (!this.mapInfo.stuffRefGrid[i]) {
         this.mapInfo.stuffRefGrid[i] = [];
         walls[i] = [];
         sandbags[i] = [];
       }
-      for (var j = 0; j < this.worldSize.y; j++) {
+      for (let j = 0; j < this.worldSize.y; j++) {
         this.mapInfo.stuffRefGrid[i][j] = [];
         walls[i][j] = 0;
         sandbags[i][j] = 0;
@@ -769,7 +762,6 @@ class GameState extends Phaser.State {
 
     for (let i = this.mapInfo.stuffGrid.length - 1; i > 0; i--) {
       thingPos = this.utils.getPosition(this.mapInfo.stuffGrid[i].pos);
-
       if (this.utils.isWall(this.mapInfo.stuffGrid[i].def)) {
         let chunk = [];
         let direction = null;
@@ -803,17 +795,13 @@ class GameState extends Phaser.State {
           (thingPos[0] * this.utils.TILESIZE), -(thingPos[2] * this.utils.TILESIZE),
           wallStuff, direction
         );
-
         wallSprite = this.utils.colorSprite(wallSprite, this.mapInfo.stuffGrid[i]);
-
         wallSprite.scale.setTo(this.utils.SCALESIZE);
         wallSprite.anchor.setTo(0.1, 0.9);
         this.stuffGridLayer.add(wallSprite);
-
       } else if (this.mapInfo.stuffGrid[i].def == "Sandbags") {
         let chunk = [];
         let direction = null;
-
         if (sandbags[thingPos[0] + 1]) {
           chunk = [
             [0, sandbags[thingPos[0]][thingPos[2] + 1], 0],
@@ -834,7 +822,6 @@ class GameState extends Phaser.State {
     } //End For
   }
   renderMountain() {
-
     //IF WALL CHOOSE WALL SPRITE
     let chunk = [];
     let masterIndex = 0;
@@ -845,12 +832,11 @@ class GameState extends Phaser.State {
       for (let j = 0; j < this.worldSize.y; j++) {
         if (this.mapInfo.resourceRefGrid[masterIndex] > 0) {
           switch (this.mapInfo.resourceRefGrid[masterIndex]) {
-            //case 120: //?!?!?!?!? TODO
-            case 78: //Marble chunk
+            case 78:  //Marble chunk
             case 119: //Limestone chunk
             case 252: //Granite chunk
             case 102: //Slate chunk
-            case 47: //Sandstone chunk
+            case 47:  //Sandstone chunk
             case 241: //Metal Chunk
               this.rockGrid[i][j] = 0; //Ignore Rock chunks
               break;
@@ -887,7 +873,6 @@ class GameState extends Phaser.State {
             );
 
             rockSprite.anchor.setTo(0.1, 0.9);
-
             switch (this.mapInfo.resourceRefGrid[masterIndex]) { //USE TERRAIN
               case 67:
                 rockSprite.tint = this.utils.SANDSTONE;
@@ -929,10 +914,8 @@ class GameState extends Phaser.State {
             rockSprite.scale.setTo(this.utils.SCALESIZE);
             this.rocksGridLayer.add(rockSprite);
           }
-
           //Tint all rock tiles and add to mountain group
           rockTint = null;
-
           rockTint = this.game.add.sprite(
             (j * this.utils.TILESIZE), -((i + 1) * this.utils.TILESIZE),
             'rockTint'
@@ -1021,6 +1004,34 @@ class GameState extends Phaser.State {
     this.rocksLayer.alpha = 1;
   }
 
+  showPlanning() {
+    this.loadingFinished = false;
+    if (!this.planningLayer) {
+      let oldCam = {
+        x: this.game.camera.x,
+        y: this.game.camera.y
+      }
+      this.game.camera.x = 0;
+      this.game.camera.y = 0;
+      setTimeout(() => {
+        this.renderPlanning();
+        this.planningLayer = this.renderBitmap(this.planningGridLayer, true);
+        this.planningLayer.scale.set(1 / this.zoomLevel);
+        setTimeout(() => {
+          this.game.camera.x = oldCam.x;
+          this.game.camera.y = oldCam.y;
+          this.loadingFinished = true;
+        }, 500);
+      }, 500);
+    } else {
+      this.planningLayer.alpha = 1;
+      this.loadingFinished = true;
+    }
+  }
+  hidePlanning() {
+    this.planningLayer.alpha = 0;
+    this.loadingFinished = true;
+  }
   scaleMap(scale) {
 
     this.marker.scale.setTo(scale);
@@ -1028,11 +1039,9 @@ class GameState extends Phaser.State {
     if (this.topTerrainGridLayer) {
       this.topTerrainGridLayer.setScale(scale, scale);
       this.topTerrainGridLayer.resize(this.game.width / scale, this.game.height / scale);
-
       this.topTerrainGridLayer.resizeWorld();
     } else {
       this.terrainLayer.scale.set(scale);
-
     }
 
     this.stuffLayer.scale.set(scale);
@@ -1047,6 +1056,9 @@ class GameState extends Phaser.State {
     }
     if (this.deepResourceLayer) {
       this.deepResourceLayer.scale.set(scale);
+    }
+    if(this.planningLayer){
+      this.planningLayer.scale.set(scale);
     }
 
   }
@@ -1065,11 +1077,18 @@ class GameState extends Phaser.State {
     if (this.deepResourceLayer) {
       this.deepResourceLayer.scale.set(1 / this.zoomLevel);
     }
+    if(this.planningLayer){
+      this.planningLayer.scale.set(1 / this.zoomLevel);
+    }
     this.marker.scale.setTo(1 / this.zoomLevel);
 
-    this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
-    this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
-    this.topTerrainGridLayer.resizeWorld();
+    if(this.topTerrainGridLayer){
+      this.topTerrainGridLayer.setScale(1 / this.zoomLevel, 1 / this.zoomLevel);
+      this.topTerrainGridLayer.resize(this.game.width * this.zoomLevel, this.game.height * this.zoomLevel);
+      this.topTerrainGridLayer.resizeWorld();
+    }else{
+      this.terrainLayer.scale.set(1 / this.zoomLevel);
+    }
   }
 
   markerInit() {
@@ -1096,20 +1115,20 @@ class GameState extends Phaser.State {
       x = this.topTerrainGridLayer.getTileX(this.game.input.activePointer.worldX * this.zoomLevel); // 4 * ZOOM
       y = this.topTerrainGridLayer.getTileY(this.game.input.activePointer.worldY * this.zoomLevel);
       flippedY = Math.abs(y - this.worldSize.y);
-
+      flippedY = flippedY - 1;
       terrainTile = this.topTerrainGridLayer.map.getTile(x, y, this.topTerrainGridLayer);
     } else {
-      x = Math.round((this.game.input.activePointer.worldX / this.utils.TILESIZE) * this.zoomLevel);
-      y = Math.round((this.game.input.activePointer.worldY / this.utils.TILESIZE) * this.zoomLevel);
+      x = Phaser.Math.snapTo(this.game.input.activePointer.worldX-((this.utils.TILESIZE/2)/ this.zoomLevel),this.utils.TILESIZE / this.zoomLevel);
+      y = Phaser.Math.snapTo(this.game.input.activePointer.worldY-((this.utils.TILESIZE/2)/ this.zoomLevel),this.utils.TILESIZE / this.zoomLevel);
+
+      x = Math.round((x/this.utils.TILESIZE)*this.zoomLevel)
+      y = Math.round((y/this.utils.TILESIZE)*this.zoomLevel)
+
       flippedY = Math.abs(y - this.worldSize.y);
-
-      //console.log(this.mapInfo.topTerrainGrid[flippedY * this.worldSize.y + x]);
       flippedY = flippedY - 1;
-      terrainTile = this.utils.getTerrainName(this.mapInfo.topTerrainGrid[flippedY * this.worldSize.y + x]);
-      console.log(terrainTile + " - " + this.mapInfo.topTerrainGrid[flippedY * this.worldSize.y + x]);
+      terrainTile = this.mapInfo.topTerrainGrid[flippedY * this.worldSize.y + x];
+      //console.log(terrainTile + " - " + this.mapInfo.topTerrainGrid[flippedY * this.worldSize.y + x]);
     }
-
-    flippedY = flippedY - 1
     let stuffTile = null;
     let resourceTile = null;
     let deepResourceTile = null;
@@ -1121,8 +1140,12 @@ class GameState extends Phaser.State {
       deepResourceTile = this.mapInfo.deepResourceGrid[flippedY * this.worldSize.y + x];
     }
 
-    if (terrainTile) {
-      this.currentTile.terrainTile = this.utils.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
+    if (terrainTile != null) {
+      if(this.topTerrainGridLayer){
+        this.currentTile.terrainTile = this.utils.getTerrainName(terrainTile.index + 1) + " - " + (terrainTile.index + 1);
+      }else{
+        this.currentTile.terrainTile = this.utils.getTerrainName(terrainTile + 1) + " - " + (terrainTile + 1);
+      }
     }
     if (stuffTile) {
       this.oldStuffTile = stuffTile;
@@ -1130,16 +1153,6 @@ class GameState extends Phaser.State {
       if (stuffTile[0]) {
         console.log(stuffTile);
 
-        //Sanitze stuffTile to removed notAllowed Items
-        /*
-        for (let i = 0; i < stuffTile.length; i++) {
-          if (this.utils.isAllowedStuff(this.utils.getStuffName(stuffTile[i].def)) == false) {
-            let index = stuffTile.indexOf(i);
-            stuffTile.splice(index, 1);
-            this.clickIndex++;
-          }
-        }
-        */
         this.clickDepth = stuffTile.length;
 
         if (stuffTile != this.oldStuffTile) {
@@ -1188,8 +1201,6 @@ class GameState extends Phaser.State {
         return false;
       }
     }
-
-
   }
 }
 export default GameState;

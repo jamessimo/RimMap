@@ -82,10 +82,8 @@
 				</label>
 				</div>
 
-				<div class="versionNum">RimMap v5.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.2 - @james_simo</div>
 			</div>
-
-
 
 			<div id="shareBox" class="modal">
 
@@ -101,7 +99,6 @@
 					<br>
 					<div id="clip" class="input-group">
 					<p>Click <img src="assets/ui/clippy.svg" width="12px" /> button to copy it to your clipboard!</p><br>
-
 						<input id="generatedURL" type="text" readonly value="Press the upload button">
 						<span class="input-group-button">
 							<button class="copyBtn" type="button" data-clipboard-target="#generatedURL">
@@ -110,11 +107,8 @@
 						</span>
 					</div>
 					<!--<input type="text" id="generatedURL" value="" readonly><br>-->
-
 				</div>
-
 			</div>
-
 
 			<div id="mainGameBar" class="bottomBar">
 				<div class="switchContain">
@@ -159,9 +153,16 @@
 					</label>
 				</div>
 				<div class="switchContain">
+					<span class="sliderName">Planning</span>
+					</br>
+					<label id="planningSwitch" class="switch">
+						<input id="planningCheckbox" name="planningCheckbox" type="checkbox" onchange="togglePlanning()"  />
+						<span class="slider round"></span>
+					</label>
+				</div>
+				<div class="switchContain">
 					<!--<button class="buttonShowPawns">View colonists</button>-->
 				</div>
-
 
 				<div class="tileInfoContain">
 					<div id="tileData">
@@ -173,7 +174,7 @@
 						</ul>
 					</div>
 				</div>
-				<div class="versionNum">RimMap v5.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.2 - @james_simo</div>
 
 			</div>
 		</div>

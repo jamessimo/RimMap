@@ -177,6 +177,20 @@ let toggleDeepResource = function() {
     }, 1000);
   }
 }
+let togglePlanning = function() {
+  //blackout.style.display = "block";
+  phaserState.callbackContext.loadingFinished = false;
+  loadingMsg.textContent = "Loading Planning...";
+  if (planningCheckbox.checked) {
+    setTimeout(() => {
+      phaserState.callbackContext.showPlanning();
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      phaserState.callbackContext.hidePlanning();
+    }, 1000);
+  }
+}
 let toggleStuff = function() {
   blackout.style.display = "block";
   loadingMsg.textContent = "Loading stuff...";
@@ -224,13 +238,10 @@ let uploadSave = function(input) {
     }
     reader.onprogress = function(data) {
       if (data.lengthComputable) {
-        var progress = parseInt(((data.loaded / data.total) * 100), 10);
         loadingMsg.textContent = "Uploading " + loadedMapName + " (" + Math.round((data.loaded / data.total) * 100) + "%)";
-
       }
     }
     reader.onerror = function(evt) {
-
     }
   }
 }
@@ -303,13 +314,14 @@ let uploadFileIO = function() {
       loadingMsg.textContent = "Uploading file...";
     }
 
-
-    req.onreadystatechange = req.onprogress = function(data) {
-
-      if (data.lengthComputable) {
-        var progress = parseInt(((data.loaded / data.total) * 100), 10);
+    req.onprogress = function(data){
+      console.log(data);
+      if (data) {
         loadingMsg.textContent = "Uploading " + loadedMapName + " (" + Math.round((data.loaded / data.total) * 100) + "%)";
       }
+
+    }
+    req.onreadystatechange = function() {
 
       if (req.readyState === 4 && req.status === 200) {
         console.log(req.response);
