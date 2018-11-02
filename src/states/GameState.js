@@ -133,7 +133,6 @@ class GameState extends Phaser.State {
         }
       }
 
-
       if (this.exp) {
         this.renderTerrainTileMap();
       } else {
@@ -297,27 +296,30 @@ class GameState extends Phaser.State {
 
       // wheelzoom
       if (this.isMouseOut()) {
+
+        let scrollRate = this.utils.TILESIZE / this.zoomLevel;
+
         if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS) {
-          this.game.camera.x += (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.x += scrollRate;
         }
         if (this.game.input.mousePointer.x < 0 + this.MOUSEBOUNDS) {
-          this.game.camera.x -= (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.x -= scrollRate;
         }
         if (this.game.input.mousePointer.y > this.SCREENHEIGHT - this.MOUSEBOUNDS) {
-          this.game.camera.y += (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.y += scrollRate;
         }
         if (this.game.input.mousePointer.y < 0 + this.MOUSEBOUNDS) {
-          this.game.camera.y -= (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.y -= scrollRate;
         }
         if (this.cursors.up.isDown) {
-          this.game.camera.y -= (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.y -= scrollRate;
         } else if (this.cursors.down.isDown) {
-          this.game.camera.y += (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.y += scrollRate;
         }
         if (this.cursors.left.isDown) {
-          this.game.camera.x -= (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.x -= scrollRate;
         } else if (this.cursors.right.isDown) {
-          this.game.camera.x += (this.utils.TILESIZE * this.zoomLevel);
+          this.game.camera.x += scrollRate;
         }
       }
       // move camera / pan
@@ -660,7 +662,32 @@ class GameState extends Phaser.State {
         if (this.mapInfo.deepResourceGrid[masterIndex] > 0) {
           deepResourceSprite = this.game.add.sprite((j * this.utils.TILESIZE), -((i + 1) * this.utils.TILESIZE), 'resourceTint');
           deepResourceSprite.scale.setTo(this.utils.SCALESIZE);
-          deepResourceSprite.tint = 0x00ff00;
+
+          switch (this.mapInfo.deepResourceGrid[masterIndex]) {
+            case 243: //Plasteel
+              deepResourceSprite.tint = this.utils.PLASTEEL;
+              break;
+            case 97: //Chemfuel
+              deepResourceSprite.tint = 0x00ff00;
+              break;
+            case 251: //Steel
+              deepResourceSprite.tint = this.utils.STEEL;
+              break;
+            case 160: //Uruianum
+              deepResourceSprite.tint = this.utils.URANIUM;
+              break;
+            case 125: //GOLD
+              deepResourceSprite.tint = this.utils.GOLD;
+              break;
+            case 80: // Sliver
+              deepResourceSprite.tint = this.utils.SILVER;
+              break;
+            case 22: // Jade
+              deepResourceSprite.tint = this.utils.JADE;
+              break;
+            default:
+              deepResourceSprite.tint = 0x00ff00;
+          }
           this.deepResourceGridLayer.add(deepResourceSprite);
         }
         masterIndex++;
@@ -710,13 +737,13 @@ class GameState extends Phaser.State {
 
     let thingPos = null;
     //BUILD EMPTY WALL ARRAY
-    for (var i = 0; i < this.worldSize.x; i++) {
+    for (let i = 0; i < this.worldSize.x; i++) {
       if (!this.mapInfo.stuffRefGrid[i]) {
         this.mapInfo.stuffRefGrid[i] = [];
         walls[i] = [];
         sandbags[i] = [];
       }
-      for (var j = 0; j < this.worldSize.y; j++) {
+      for (let j = 0; j < this.worldSize.y; j++) {
         this.mapInfo.stuffRefGrid[i][j] = [];
         walls[i][j] = 0;
         sandbags[i][j] = 0;

@@ -113,7 +113,9 @@ class Utils {
       } else if (preRegex.exec(stuff)[1] == "Filth" ||
       preRegex.exec(stuff)[1] == "Dirt" ||
       preRegex.exec(stuff)[1] == "Blood" ||
-      preRegex.exec(stuff)[1] == "Leather"){
+      preRegex.exec(stuff)[1] == "Leather" ||
+      preRegex.exec(stuff)[1] == "Blueprint" ||
+      preRegex.exec(stuff)[1] == "Frame"){
         outputName = preRegex.exec(stuff)[1];
       }else {
         outputName = regex.exec(stuff)[1];
@@ -689,6 +691,8 @@ newDecompress(rawGrid) {
         case "Raccoon_Leather":
           sprite.tint = this.RACCOON;
           break;
+        case "Ratkin_Cloth":
+        case "Ratkin_Leather":
         case "Rat_Leather":
           sprite.tint = this.RAT;
           break;
@@ -769,6 +773,10 @@ newDecompress(rawGrid) {
           break;
         case "Synthread":
           sprite.tint = this.SYNTHREAD;
+          break;
+          case "Blueprint":
+            sprite.alpha = 0.5;
+            sprite.tint = 0x99eeff;
           break;
         default:
           //thingSprite.tint = 0xffffff;
@@ -1061,17 +1069,8 @@ newDecompress(rawGrid) {
       //3x3
     }else if (outputSprite.height == (this.TILESIZE * 3) &&
       outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.35, 0.65);
+      outputSprite.anchor.setTo(0.5, 0.5);
 
-      if (data.rot == 1) {
-        outputSprite.anchor.setTo(0.5, 0.5);
-      }
-      if (data.rot == 2) {
-        outputSprite.anchor.setTo(0.65, 0.35);
-      }
-      if (data.rot == 3) {
-        outputSprite.anchor.setTo(0.5, 0.5);
-      }
       //3X1
     } else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 3)) {
@@ -1209,7 +1208,7 @@ newDecompress(rawGrid) {
     let preRegex = new RegExp('(.*)\_')
 
     if (preRegex.exec(stuff)) { //0.19 Change everyhing to Filth_xxx
-      if (preRegex.exec(stuff)[1] == "Filth")
+      if (preRegex.exec(stuff)[1] == "Filth" || preRegex.exec(stuff)[1] == "Blueprint")
         return false;
     }
 

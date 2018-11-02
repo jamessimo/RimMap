@@ -8,6 +8,8 @@
   "image": {
 
     "Agarilux": "AgariluxA.png",
+    "Bryolux" : "BryoluxA.png",
+    "Glowstool" : "GlowstoolA.png",
     "PlantGrass": "GrassA.png",
     "PlantTallGrass": "GrassA.png",
     "PlantShrubLow": "ShrubLowA.png",
@@ -108,7 +110,7 @@
     "WoodLog": "WoodLog_b.png",
     "Cloth": "Cloth.png",
     "Leather": "Leather.png",
-    "DevilstrandCloth": "Cloth.png",
+    "DevilstrandCloth": "Devilstrand_c.png",
     "WoolAlpaca": "Wool.png",
     "WoolMuffalo": "Wool.png",
     "WoolMegasloth": "Wool.png",
@@ -372,7 +374,7 @@
     "TornadoGenerator": "OrbitalTargeter.png",
     "OrbitalTargeterBombardment": "OrbitalTargeter.png",
     "OrbitalTargeterPowerBeam" : "OrbitalTargeter.png",
-    "Ambrosia" : "Ambrosia_2.png",
+    "Ambrosia" : "Ambrosia_b.png",
     "AIPersonaCore": "AIPersonaCore.png",
     "InfiniteChemreactor": "InfiniteChemreactor.png",
     "HoopstoneRing": "HoopstoneRing.png",
