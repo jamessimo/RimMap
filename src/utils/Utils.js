@@ -1069,8 +1069,16 @@ newDecompress(rawGrid) {
       //3x3
     }else if (outputSprite.height == (this.TILESIZE * 3) &&
       outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.5, 0.5);
-
+        outputSprite.anchor.setTo(0.35, 0.65);
+        if (data.rot == 1) {
+          outputSprite.anchor.setTo(0.5, 0.5);
+        }
+        if (data.rot == 2) {
+          outputSprite.anchor.setTo(0.65, 0.35);
+        }
+        if (data.rot == 3) {
+          outputSprite.anchor.setTo(0.5, 0.5);
+        }
       //3X1
     } else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 3)) {
@@ -1121,19 +1129,19 @@ newDecompress(rawGrid) {
       //3x4
     } else if (outputSprite.height == (this.TILESIZE * 4) &&
       outputSprite.width == (this.TILESIZE * 3)) {
-      outputSprite.anchor.setTo(0.35, 0);
+      outputSprite.anchor.setTo(0.5, 0.35);
       if (data.rot) {
         if (data.rot == 1) {
-          outputSprite.anchor.setTo(0.5, 1);
+          outputSprite.anchor.setTo(0.5, 0.65);
         }
         if (data.rot == 2) {
           outputSprite.anchor.setTo(0.65, 0.5);
         }
         if (data.rot == 3) {
-          outputSprite.anchor.setTo(1, 0.5);
+          outputSprite.anchor.setTo(0.35, 0.5);
         }
       }
-      //1x4
+      //4x1
     }else if (outputSprite.height == this.TILESIZE &&
       outputSprite.width == (this.TILESIZE * 4)) {
       outputSprite.anchor.setTo(0, 1);

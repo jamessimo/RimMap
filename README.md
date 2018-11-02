@@ -15,6 +15,7 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 ![Rimmap screenshot](https://github.com/jamessimo/RimMap/blob/master/screenshots/Screenshot1_v4-1.png?raw=true)
 
 ## Known Issues
+* Ships don't render
 * Missing new depleted uranium turret
 * Unknown DeepResources IDs - Modconflict?
 * Mods don't render
