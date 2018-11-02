@@ -37,10 +37,9 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ## How to build
 Just run
-```
-npm install ``` then ```npm start
-```
-to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
+```npm install ``` then ```npm start``` to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
+
+------
 
 ## Changelog
 
