@@ -24,10 +24,11 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 * Map sharing **(in beta)**
 * Mod support
 * Full game save viewing (pawn & animal info)
-* ~~Refined Zooming and scrolling~~
 
 ## Future Planned Features
 * Show inner thing (minified furniture)
+* Show and edit zones
+* Show heat map
 * Better map sharing with auto thumbnail creation
 * Show the the entire world map
 * Integrate with steam to download your save straight from the cloud
@@ -36,7 +37,8 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ## How to build
 Just run
-```npm install ``` then ```npm start
+```
+npm install ``` then ```npm start
 ```
 to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
 
