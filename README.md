@@ -12,7 +12,7 @@ Rimmap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ✔ Example maps included
 
-![Rimmap screenshot](https://github.com/jamessimo/RimMap/blob/master/screenshots/Screenshot1_v4-1.png?raw=true)
+![Rimmap screenshot](https://github.com/jamessimo/RimMap/blob/master/screenshots/Screenshot_V5.png?raw=true)
 
 ## Known Issues
 * Ships don't render
