@@ -4,7 +4,6 @@ let clickCount = 0;
 
 let phaserState = Phaser.GAMES[0].state;
 
-
 let loadingMsg = document.getElementById("loadingMsg");
 let ui = document.getElementById("ui");
 let blackout = document.getElementById("blackout");
@@ -14,9 +13,11 @@ let mainGameBar = document.getElementById("mainGameBar");
 let settingsBar = document.getElementById("settingsBar");
 let reloadButton = document.getElementById("reloadButton");
 let fileManager = document.getElementById("filemanager");
-let mapSize = document.getElementById("MapSize");
 
-let mapName = document.getElementById("MapName");
+let mapSize = document.getElementById("MapSize");
+let saveName = document.getElementById("FileName");
+let versionNumber = document.getElementById("MapVersion");
+let colonyName = document.getElementById("ColonyName");
 
 let hdCheckbox = document.getElementById('hdCheckbox');
 let stuffCheckbox = document.getElementById('stuffCheckbox');
@@ -98,6 +99,8 @@ function updateTick() {
           if (loadedMapName != "") {
             loadingMsg.textContent = "Rendering " + loadedMapName + " " + "(" + (phaserState.callbackContext.loadingDelta * 20) + "%)";
             mapSize.textContent = phaserState.callbackContext.worldSize.x + " x " + phaserState.callbackContext.worldSize.y;
+            versionNumber.textContent = phaserState.callbackContext.mapInfo.gameVersion;
+            colonyName.textContent = phaserState.callbackContext.mapInfo.colonyName;
           }
         }
       }
@@ -123,7 +126,7 @@ let toggleHD = function() {
 }
 
 let updateTileText = function() {
-  var currentTile = phaserState.callbackContext.currentTile;
+  let currentTile = phaserState.callbackContext.currentTile;
   if (currentTile != oldTile) {
     oldTile = currentTile;
     terrainName.textContent = currentTile.terrainTile;
@@ -213,14 +216,14 @@ let uploadSave = function(input) {
   if (file) {
     blackout.style.display = "block";
 
-    var reader = new FileReader();
+    let reader = new FileReader();
     //SHOW BLACKOUT
     fileManager.style.display = "none";
 
     reader.readAsText(file, "UTF-8");
     reader.onload = function(evt) {
       loadedMapName = file.name;
-      mapName.textContent = file.name;
+      saveName.textContent = file.name;
 
       //REMOVE WHITESPACE
       let data = evt.target.result.replace(/\n[\s]*\n?/gm, "");
@@ -246,13 +249,13 @@ let uploadSave = function(input) {
   }
 }
 
-function loadSave(mapName, local) {
+function loadSave(fileName, local) {
 
-  var req = new XMLHttpRequest();
+  let req = new XMLHttpRequest();
   if (local) {
-    req.open("GET", "maps/" + mapName, true);
+    req.open("GET", "maps/" + fileName, true);
   } else {
-    req.open("GET", "https://api.jamessimo.com/rws-storage/" + mapName, true);
+    req.open("GET", "https://api.jamessimo.com/rws-storage/" + fileName, true);
   }
   blackout.style.display = "block";
   fileManager.style.display = "none";
@@ -262,16 +265,16 @@ function loadSave(mapName, local) {
     loadingMsg.textContent = "Downloading file...";
   }
   req.onreadystatechange = req.onprogress = function() {
-    var length = this.getResponseHeader("Content-Length"); //console.log(length);
+    let length = this.getResponseHeader("Content-Length"); //console.log(length);
     if (length != null) {
-      loadingMsg.textContent = "Downloading " + mapName + " (" + Math.round((this.responseText.length / length) * 100) + "%)";
+      loadingMsg.textContent = "Downloading " + fileName + " (" + Math.round((this.responseText.length / length) * 100) + "%)";
     }
   }
   req.onload = function() {
 
     if (req.status == 200) {
-      loadedMapName = mapName;
-      mapName.textContent = mapName;
+      loadedMapName = fileName;
+      saveName.textContent = fileName;
       //console.log(this.responseText);
 
       let data = this.responseText.replace(/\n[\s]*\n?/gm, "");
@@ -348,14 +351,14 @@ let toggleShareBox = function() {
 
 function xmlToJson(xml) {
   // Create the return object
-  var obj = {};
+  let obj = {};
 
   if (xml.nodeType == 1) { // element
     // do attributes
     if (xml.attributes.length > 0) {
       obj["@attributes"] = {};
-      for (var j = 0; j < xml.attributes.length; j++) {
-        var attribute = xml.attributes.item(j);
+      for (let j = 0; j < xml.attributes.length; j++) {
+        let attribute = xml.attributes.item(j);
         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
       }
     }
@@ -368,14 +371,14 @@ function xmlToJson(xml) {
   if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
     obj = xml.childNodes[0].nodeValue;
   } else if (xml.hasChildNodes()) {
-    for (var i = 0; i < xml.childNodes.length; i++) {
-      var item = xml.childNodes.item(i);
-      var nodeName = item.nodeName;
+    for (let i = 0; i < xml.childNodes.length; i++) {
+      let item = xml.childNodes.item(i);
+      let nodeName = item.nodeName;
       if (typeof(obj[nodeName]) == "undefined") {
         obj[nodeName] = xmlToJson(item);
       } else {
         if (typeof(obj[nodeName].push) == "undefined") {
-          var old = obj[nodeName];
+          let old = obj[nodeName];
           obj[nodeName] = [];
           obj[nodeName].push(old);
         }

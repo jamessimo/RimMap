@@ -1,6 +1,6 @@
 ![Rimmap banner](https://github.com/jamessimo/RimMap/blob/master/banner.png?raw=true)
 
-RimMap lets you view & share your Rimworld save in your web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap)
+Rimmap lets you view & share your Rimworld save in your web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap)
 
 ## Current Features
 
@@ -37,11 +37,31 @@ RimMap lets you view & share your Rimworld save in your web browser! Check it ou
 
 ## How to build
 Just run
-```npm install ``` then ```npm start``` to start the build and watch process, will rebuild the entire /build folder when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
+```
+npm install
+npm start
+```
+
+This will start the build and watch process, should open a new browser window at http://localhost:3000 and will refresh with changes.
+
+The entire /build folder will rebuild when anything inside /src and /static changes. If you have to add new assets (images, files) then you need to re-run npm start.
+
+If you want to make a production build please run
+```
+npm run production
+```
 
 ------
 
-## Changelog
+## Change log
+
+### (5.3.0)
+* Added more save info in top left corner (colony/tribe name & version number)
+* **Technical**
+* Updated Phaser CE, BrowserSync and Browserify
+* Fixed Pre Regex to only get string before _
+* Added "Install" to no-render list
+* Cleaned up redundant code
 
 ### (5.2.0)
 * Finalize for Rimworld v1.0
@@ -49,7 +69,7 @@ Just run
 * Vastly improved zoom
 * Added colors to deep resources
 * No longer try to render blueprints or frames
-**Technical**
+* **Technical**
 * Code cleanup
 * Removed old tilemap code
 
@@ -57,7 +77,7 @@ Just run
 * Added all new B19 items
 * Tweaks to colors
 * Crisper graphics (anti-aliasing)
-**Technical**
+* **Technical**
 * Refined resources code
 
 
@@ -68,7 +88,7 @@ Just run
 * Added all deep resources names
 * Fixed "mineable X" (resources that are damaged)
 * Changed wording around "upload" and "load"
-**Technical**
+* **Technical**
 * Now takes into account resources in stuff and places them in resources (also optimized resource loading)
 * Partial Mod support (broke out texture load logic)
 * Modularized code better

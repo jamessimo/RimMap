@@ -10,13 +10,11 @@ class Utils {
       };
 
       if (this.game.hd == false) {
-        this.TILESIZE = 16;
+        this.TILESIZE = 16; //default
         this.SCALESIZE = 0.25;
-        this.BLOWUP = 4;
       } else {
         this.TILESIZE = 32; //orginal 64, cut in half to save memory.
         this.SCALESIZE = 0.5;
-        this.BLOWUP = 2;
       }
 
       this.GRANITE = 0x635e5b;
@@ -102,7 +100,7 @@ class Utils {
 
   getStuffName(stuff) {
     let regex = new RegExp('\_(.*)'); /// after _
-    let preRegex = new RegExp('(.*)\_'); /// before _
+    let preRegex = new RegExp('^(.+?)_'); /// before _
     let outputName = null;
     if (regex.exec(stuff)) {
       if (preRegex.exec(stuff)[1] == "Shell" ||
@@ -110,13 +108,16 @@ class Utils {
         outputName = stuff;
       } else if (preRegex.exec(stuff)[1] == "Plant")  { //VERSION 0.19
         outputName = preRegex.exec(stuff)[1] + regex.exec(stuff)[1];
-      } else if (preRegex.exec(stuff)[1] == "Filth" ||
-      preRegex.exec(stuff)[1] == "Dirt" ||
-      preRegex.exec(stuff)[1] == "Blood" ||
-      preRegex.exec(stuff)[1] == "Leather" ||
-      preRegex.exec(stuff)[1] == "Blueprint" ||
-      preRegex.exec(stuff)[1] == "Frame"){
-        outputName = preRegex.exec(stuff)[1];
+      } else if (
+        preRegex.exec(stuff)[1] == "Filth" ||
+        preRegex.exec(stuff)[1] == "Dirt" ||
+        preRegex.exec(stuff)[1] == "Blood" ||
+        preRegex.exec(stuff)[1] == "Leather" ||
+        preRegex.exec(stuff)[1] == "Blueprint" ||
+        preRegex.exec(stuff)[1] == "Install" ||
+        preRegex.exec(stuff)[1] == "Frame" ||
+        preRegex.exec(stuff)[1] == "Meat"){
+          outputName = preRegex.exec(stuff)[1];
       }else {
         outputName = regex.exec(stuff)[1];
       }
@@ -1241,7 +1242,6 @@ newDecompress(rawGrid) {
       case "FilthFireFoam":
       case "FilthSand":
       case "Blight":
-      case "Human":
       case "PowerConduit":
       case "SandbagRubble":
       case "Corpse_Leather":
@@ -1253,6 +1253,7 @@ newDecompress(rawGrid) {
       case "Short":
       case "Blueprint":
       case "Blueprint_Install":
+      case "Install":
       case "RectTrigger":
       case "RockRubble":
       case "RubbleRock":
@@ -1264,6 +1265,9 @@ newDecompress(rawGrid) {
       case "ActiveDropPod":
       case "Fire":
       case "Spark":
+        return false;
+        break;
+      case "Human":
         return false;
         break;
       default:
@@ -1279,7 +1283,6 @@ newDecompress(rawGrid) {
       case "Fox_Arctic":
       case "WolfArctic":
       case "Wolf_Arctic":
-
       case "Boomalope":
       case "Boomrat":
       case "Capybara":
@@ -1333,7 +1336,6 @@ newDecompress(rawGrid) {
       case "YorkshireTerrier":
       case "Grizzly":
       case "Timber":
-
         return false;
         break;
       default:
@@ -1348,7 +1350,6 @@ newDecompress(rawGrid) {
 
     for (let y = 0; y < this.worldSize.y; y++) {
       for (let x = 0; x < this.worldSize.x; x++) {
-        //this.game.rnd.between(0, 64).toString();
         if (dataArray[y][x] == undefined) {
           console.log('No data @ ' + ' ' + y + ' ' + x);
         }
