@@ -41,12 +41,14 @@ class GameState extends Phaser.State {
       "height": 0,
       "width": 0,
       "name": null,
+      "colonyName" : "",
+      "gameVersion" : "",
       "topTerrainGrid": [],
       "underTerrainGrid": [],
       "resourceRefGrid": [],
       "deepResourceGrid": [],
       "deepResourceCount": [],
-      "planningGridLayer" : [],
+      "planningGrid" : [],
       "roofGrid": [],
       "stuffGrid": [],
       "stuffRefGrid": []
@@ -61,14 +63,13 @@ class GameState extends Phaser.State {
       this.deepResourceGridLayer =
       this.rocksGridLayer =
       this.snowGridLayer =
-      this.planningGridLayer =
       this.rocksLayer =
       this.mountainsLayer =
       this.stuffLayer =
       this.resourceLayer =
       this.deepResourceLayer =
       this.planningLayer =
-      this.roofGridLayer =
+      this.roofLayer =
       this.centerMarker =
       this.currentBounds =
       this.marker = null;
@@ -159,7 +160,7 @@ class GameState extends Phaser.State {
         this.stuffGridLayer = this.game.add.group();
         this.resourceGridLayer = this.game.add.group();
         this.deepResourceGridLayer = this.game.add.group();
-        this.planningGridLayer = this.game.add.group();
+        this.planningLayer = this.game.add.group();
 
         for (let i = 0; i < this.worldSize.x; i++) {
           if (!this.rockGrid[i]) {
@@ -356,7 +357,7 @@ class GameState extends Phaser.State {
   }
 
   render() {
-    this.game.debug.text(this.game.time.fps || '--', 20, 44, "#ffca42");
+    this.game.debug.text(this.game.time.fps || '--', 20, 50, "#ffffff");
   }
 
   buildMapInfo(json) {
@@ -381,6 +382,16 @@ class GameState extends Phaser.State {
     this.mapInfo.width = this.utils.TILESIZE * this.worldSize.x;
     this.mapInfo.height = this.utils.TILESIZE * this.worldSize.y;
 
+    this.mapInfo.gameVersion = json.savegame.meta.gameVersion;
+
+    //GET COLONY NAME
+    for(let i = 0; i < json.savegame.game.world.factionManager.allFactions.li.length ; i++){
+      if(json.savegame.game.world.factionManager.allFactions.li[i].def == "PlayerColony" ||
+         json.savegame.game.world.factionManager.allFactions.li[i].def == "PlayerTribe"){
+        this.mapInfo.colonyName = json.savegame.game.world.factionManager.allFactions.li[i].name;
+      }
+    }
+
     this.mapInfo.topTerrainGrid = this.utils.decompress(json.savegame.game.maps.li.terrainGrid.topGridDeflate);
     this.mapInfo.underTerrainGrid = this.utils.decompress(json.savegame.game.maps.li.terrainGrid.underGridDeflate);
     //this.mapInfo.roofTerrainGrid = this.utils.decompress(json.savegame.game.maps.li.roofGrid);
@@ -389,11 +400,14 @@ class GameState extends Phaser.State {
     this.mapInfo.deepResourceGrid = this.utils.decompress(json.savegame.game.maps.li.deepResourceGrid.defGridDeflate);
     this.mapInfo.deepResourceCount = this.utils.decompress(json.savegame.game.maps.li.deepResourceGrid.countGridDeflate);
 
-    this.mapInfo.planGridLayer = json.savegame.game.maps.li.designationManager.allDesignations.li;
+    this.mapInfo.planningGrid = json.savegame.game.maps.li.designationManager.allDesignations.li;
 
     this.mapInfo.topTerrainGrid = this.utils.mapTextures(this.mapInfo.topTerrainGrid, "terrain", this.mapInfo.underTerrainGrid);
     this.mapInfo.stuffGrid = json.savegame.game.maps.li.things.thing;
 
+    console.log(json.savegame);
+
+    //this.temperatureCache.temperaturesDeflate
     //this.mapInfo.snowGridLayer = this.utils.decompress(json.savegame.game.maps.li.snowGrid.depthGridDeflate);
   }
 
@@ -450,7 +464,7 @@ class GameState extends Phaser.State {
   }
 
   renderTerrainTileMap() {
-
+    //Deprecated due to zoom in out being choppy
     this.game.cache.addTilemap('dynamicMap', null, this.utils.makeCSV(this.mapInfo.topTerrainGrid), Phaser.Tilemap.CSV);
     let tileMap = this.game.add.tilemap('dynamicMap', this.utils.TILESIZE, this.utils.TILESIZE);
     tileMap.addTilesetImage('tiles', 'tiles', this.utils.TILESIZE, this.utils.TILESIZE);
@@ -554,6 +568,10 @@ class GameState extends Phaser.State {
           } else {
             thingSprite.scale.setTo(this.mapInfo.stuffGrid[i].growth * (this.utils.SCALESIZE));
           }
+        }
+
+        if(this.mapInfo.stuffGrid[i].def == "Human"){
+          console.log(this.mapInfo.stuffGrid[i].faction);
         }
 
         if (thingSprite) {
@@ -688,6 +706,7 @@ class GameState extends Phaser.State {
             default:
               deepResourceSprite.tint = 0x00ff00;
           }
+
           this.deepResourceGridLayer.add(deepResourceSprite);
         }
         masterIndex++;
@@ -716,15 +735,15 @@ class GameState extends Phaser.State {
     let planPos = null;
     let planSprite = null;
 
-    for (let i = this.mapInfo.planGridLayer.length - 1; i > 0; i--) {
-      planPos = this.utils.getPosition(this.mapInfo.planGridLayer[i].target);
+    for (let i = this.mapInfo.planningGrid.length - 1; i > 0; i--) {
+      planPos = this.utils.getPosition(this.mapInfo.planningGrid[i].target);
       planSprite = this.game.add.sprite(
         (planPos[0] * this.utils.TILESIZE), -(planPos[2] * this.utils.TILESIZE),
         "Plan"
       );
       planSprite.tint = 0xffffff;
       planSprite.scale.setTo(this.utils.SCALESIZE);
-      this.planningGridLayer.add(planSprite);
+      this.planningLayer.add(planSprite);
     }
   }
 
@@ -1015,7 +1034,7 @@ class GameState extends Phaser.State {
       this.game.camera.y = 0;
       setTimeout(() => {
         this.renderPlanning();
-        this.planningLayer = this.renderBitmap(this.planningGridLayer, true);
+        this.planningLayer = this.renderBitmap(this.planningLayer, true);
         this.planningLayer.scale.set(1 / this.zoomLevel);
         setTimeout(() => {
           this.game.camera.x = oldCam.x;

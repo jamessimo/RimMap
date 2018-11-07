@@ -26,9 +26,9 @@ class DynamicLoad extends Phaser.State {
     }
 
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
-    //TODO CHECK VERSION AND SWAP OUT allAssets
 
-    let sizes = this.getPosition(rawSizes);
+    let sizes = this.utils.getPosition(rawSizes);
+    
     this.worldSize.x = sizes[0];
     this.worldSize.y = sizes[2];
     this.worldSize.z = sizes[1];
@@ -36,17 +36,13 @@ class DynamicLoad extends Phaser.State {
     const toLoadAssets = this.getUniqueStuff(json.savegame.game.maps.li.things.thing);
 
     let allAssets = this.game.cache.getJSON("vanillaAssets"); //Add more
-    let regex = new RegExp('\_(.*)');
-    let preRegex = new RegExp('(.*)\_');
 
     for (let i = 0; i < toLoadAssets.length; i++) {
 
-      //  toLoadJson.push(allAssets.image[toLoadAssets[i]])
       let filterName = this.utils.getStuffName(toLoadAssets[i]);
 
-      //Loop through all the unique assets sound
+      //Loop through all the unique assets and add to array
       if (allAssets.image[filterName] !== undefined) {
-        let assetString = '{"' + filterName + '": "' + allAssets.image[filterName] + '"}';
         this.toLoadJson.image[filterName] = allAssets.path + allAssets.image[filterName];
       }
     }
@@ -57,18 +53,6 @@ class DynamicLoad extends Phaser.State {
     return [...new Set(allStuff.map(stuff => stuff.def))];
   }
 
-  getPosition(raw) {
-    //Remove the () + comma seperate the x y z
-    let formattedSize = raw.replace(/[(-)]/g, '');
-    //Split out into an array
-    formattedSize = formattedSize.split(",");
-    //Loop through the array to make it all ints
-    for (let i = 0; i < formattedSize.length; i++) {
-      formattedSize[i] = parseInt(formattedSize[i]);
-    }
-    return formattedSize;
-  }
-
   showHD(){
     this.game.hd = true;
   }
@@ -77,7 +61,6 @@ class DynamicLoad extends Phaser.State {
   }
   startMap(json) {
     this.game.state.start('PreloadAssets', true, false, this.toLoadJson, json);
-
   }
 
 }
