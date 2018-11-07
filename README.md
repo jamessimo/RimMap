@@ -2,6 +2,8 @@
 
 Rimmap lets you view & share your Rimworld save in your web browser! Check it out on [itch.io here](http://jamessimo.itch.io/rimmap)
 
+Talk about Rimmap on the [Ludeon forums](https://ludeon.com/forums/index.php?topic=46751.0)
+
 ## Current Features
 
 ✔ Shows all terrain, items, plants & walls
