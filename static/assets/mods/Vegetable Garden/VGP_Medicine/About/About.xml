@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>VGP Garden Medicine</name>
+  <author>dismarzero</author>
+  <url>https://ludeon.com/forums/index.php?topic=36926.msg378133#msg378133</url>
+  <targetVersion>1.0.0</targetVersion>
+  <description>
+
+Garden Medicine (Does not require Vegetable Garden)
+
+Adds new Medicines and Drugs. 
+
+-Flu Ez a drug for blocking flu.
+-Ibuprofen a drug for reducing pain.
+-Antibiotics for reducing the amount of time for being sick.
+
+Make Neutroamine. Grow Neutro-Flowers to refine neutroamine from at the drug lab.
+
+Hydroponic Ambrosia. Used in glitterworld medicine.
+Make ultratech medicine.
+Make Bandage kits. Used in make medicines.
+Grow Tobacco and make Cigarillos.
+
+Research Bulk recipes:
+-Medicine kits
+-Garden Medicines: Flu Ez, Ibuprofen, and Antibiotics.
+-Penoxycyline, go-juice, flake, yayo, wake-up, and smokeleaf joints.
+
+
+ </description>
+</ModMetaData>
+
+
+

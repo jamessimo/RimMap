@@ -1243,6 +1243,8 @@ newDecompress(rawGrid) {
       case "FilthSand":
       case "Blight":
       case "PowerConduit":
+      case "PowerConduitInvisible": //COMMON MOD
+      case "sewagePipeStuff": //MOD
       case "SandbagRubble":
       case "Corpse_Leather":
       case "Centipede_Corpse":

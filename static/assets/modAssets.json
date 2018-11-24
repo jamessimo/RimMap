@@ -1,0 +1,38 @@
+{
+  "baseURL": "",
+  "crossOrigin": true,
+  "enableParallel": true,
+  "path": "assets/mods/",
+  "resetLocked": false,
+
+  "image": {
+    "MURWallLightVII_Glower": "MUR/MURWallLight_south.png",
+    "MURWallLightVII": "MUR/MURWallLight_south.png",
+
+    "PlantCarrot": "Vegetable Garden/VGP_More Veggies/Textures/Things/Plants/CarrotPlant.png",
+    "Planteggplant": "Vegetable Garden/VGP_More Veggies/Textures/Things/Plants/eggplantPlant.png",
+    "Plantpumpkin": "Vegetable Garden/VGP_More Veggies/Textures/Things/Plants/pumpkinPlant.png",
+    "Plantsquash": "Vegetable Garden/VGP_More Veggies/Textures/Things/Plants/squashPlant.png",
+    "PlantTomato": "Vegetable Garden/VGP_More Veggies/Textures/Things/Plants/TomatoPlant.png",
+    "RawCarrot": "Vegetable Garden/VGP_More Veggies/Textures/Things/Veg/Carrot.png",
+    "Raweggplant": "Vegetable Garden/VGP_More Veggies/Textures/Things/Veg/eggplant.png",
+    "Rawpumpkin": "Vegetable Garden/VGP_More Veggies/Textures/Things/Veg/pumpkin.png",
+    "Rawsquash": "Vegetable Garden/VGP_More Veggies/Textures/Things/Veg/squash.png",
+    "RawTomatoes": "Vegetable Garden/VGP_More Veggies/Textures/Things/Veg/Tomato.png",
+
+    "antibiotics": "Vegetable Garden/VGP_Medicine/Textures/Things/Item/antibiotics.png",
+    "Bandagekit": "Vegetable Garden/VGP_Medicine/Textures/Things/Item/Bandagekit.png",
+    "Cigarillos": "Vegetable Garden/VGP_Medicine/Textures/Things/Item/Cigarillos/Cigarillos_b.png",
+    "FluEz":      "Vegetable Garden/VGP_Medicine/Textures/Things/Item/Drug/FluEz/FluEz_b.png",
+    "Ibuprofen":  "Vegetable Garden/VGP_Medicine/Textures/Things/Item/Drug/Ibuprofen/Ibuprofen_b.png",
+    "NeutroPetals": "Vegetable Garden/VGP_Medicine/Textures/Things/Item/NeutroPetals.png",
+    "RawTobacco": "Vegetable Garden/VGP_Medicine/Textures/Things/Item/RawTobacco.png",
+    "PlantNeutroFlower": "Vegetable Garden/VGP_Medicine/Textures/Things/Plants/NeutroFlower.png",
+    "PlantTobacco": "Vegetable Garden/VGP_Medicine/Textures/Things/Plants/TobaccoPlant.png"
+
+
+
+
+
+  }
+}

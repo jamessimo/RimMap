@@ -57,6 +57,10 @@ npm run production
 
 ## Change log
 
+### (5.3.1)
+* Added MurmurSix Wall Lights Mod (MUR_WallLight)
+* Added Invisible PowerConduit Mod support (PowerConduitInvisible)
+
 ### (5.3.0)
 * Added more save info in top left corner (colony/tribe name & version number)
 * **Technical**

@@ -28,23 +28,42 @@ class DynamicLoad extends Phaser.State {
     rawSizes = json.savegame.game.maps.li.mapInfo.size;
 
     let sizes = this.utils.getPosition(rawSizes);
-    
+
     this.worldSize.x = sizes[0];
     this.worldSize.y = sizes[2];
     this.worldSize.z = sizes[1];
 
-    const toLoadAssets = this.getUniqueStuff(json.savegame.game.maps.li.things.thing);
+    let allAssets = null;
+    let thingList = json.savegame.game.maps.li.things.thing;
+    let furnitureList = [];
+    //MAKE FURNITURE LIST
+    for(let i = 0 ; i < json.savegame.game.maps.li.things.thing.length ; i++){
 
-    let allAssets = this.game.cache.getJSON("vanillaAssets"); //Add more
+      if(json.savegame.game.maps.li.things.thing[i].def == "MinifiedThing" ||
+      json.savegame.game.maps.li.things.thing[i].def == "MinifiedFurniture" ||
+      json.savegame.game.maps.li.things.thing[i].def == "MinifiedSculpture"){
+      furnitureList.push(json.savegame.game.maps.li.things.thing[i].innerContainer.innerList.li);
+      }
+    }
+
+    let totalAssets = thingList.concat(furnitureList);
+    const toLoadAssets = this.getUniqueStuff(totalAssets);
+
+
+    let vanillaAssets = this.game.cache.getJSON("vanillaAssets"); //Add more
+    let modAssets = this.game.cache.getJSON("modAssets"); //Add more
+
 
     for (let i = 0; i < toLoadAssets.length; i++) {
 
       let filterName = this.utils.getStuffName(toLoadAssets[i]);
+        //Loop through all the unique assets and add to array
 
-      //Loop through all the unique assets and add to array
-      if (allAssets.image[filterName] !== undefined) {
-        this.toLoadJson.image[filterName] = allAssets.path + allAssets.image[filterName];
-      }
+        if (vanillaAssets.image[filterName] !== undefined) {
+          this.toLoadJson.image[filterName] = vanillaAssets.path + vanillaAssets.image[filterName];
+        } else if(modAssets.image[filterName] !== undefined){
+          this.toLoadJson.image[filterName] = modAssets.path + modAssets.image[filterName];
+        }
     }
     this.startMap(json);
   }

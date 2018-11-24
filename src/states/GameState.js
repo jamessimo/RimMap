@@ -561,7 +561,35 @@ class GameState extends Phaser.State {
 
         //Rotate the thing correctly
         thingSprite.scale.setTo(this.utils.SCALESIZE);
+
         thingSprite = this.utils.thingAlign(thingSprite, this.mapInfo.stuffGrid[i]);
+        //IF MINIFIED
+        if(this.mapInfo.stuffGrid[i].def == "MinifiedThing" ||
+        this.mapInfo.stuffGrid[i].def == "MinifiedFurniture" ||
+        this.mapInfo.stuffGrid[i].def == "MinifiedSculpture"){
+
+          if(this.mapInfo.stuffGrid[i].innerContainer.innerList.li.def){
+            let innerThingName = this.utils.getStuffName(this.mapInfo.stuffGrid[i].innerContainer.innerList.li.def);
+
+            let innerThingSprite = this.game.add.sprite(
+              (thingPos[0] * this.utils.TILESIZE), -(thingPos[2] * this.utils.TILESIZE),
+              innerThingName
+            );
+
+
+            innerThingSprite.height = this.utils.TILESIZE;
+            innerThingSprite.width = this.utils.TILESIZE;
+
+            innerThingSprite = this.utils.colorSprite(innerThingSprite, this.mapInfo.stuffGrid[i].innerContainer.innerList.li);
+            //innerThingSprite.scale.setTo(this.utils.SCALESIZE);
+            innerThingSprite = this.utils.thingAlign(innerThingSprite, this.mapInfo.stuffGrid[i]);
+
+            this.stuffGridLayer.add(innerThingSprite);
+          }
+
+
+        }
+          //IF GROWTH
         if (this.mapInfo.stuffGrid[i].growth) {
           if (this.mapInfo.stuffGrid[i].growth <= 0.1) {
             thingSprite.destroy();
