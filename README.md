@@ -24,11 +24,11 @@ Talk about Rimmap on the [Ludeon forums](https://ludeon.com/forums/index.php?top
 
 ## WIP Features
 * Map sharing **(in beta)**
-* Mod support
+* Mod support **(in progress)**
 * Full game save viewing (pawn & animal info)
 
 ## Future Planned Features
-* Show inner thing (minified furniture)
+* ~~Show inner thing (minified furniture)~~ Done!
 * Show and edit zones
 * Show heat map
 * Better map sharing with auto thumbnail creation
@@ -57,9 +57,12 @@ npm run production
 
 ## Change log
 
-### (5.3.1)
+### (5.4.0)
+* Now Renders packed "minified" things (including furniture & statues)
+* Added partial Vegetable Garden
 * Added MurmurSix Wall Lights Mod (MUR_WallLight)
-* Added Invisible PowerConduit Mod support (PowerConduitInvisible)
+* Hide Invisible PowerConduit Mod support (PowerConduitInvisible)
+* Hide Sewage Mod
 
 ### (5.3.0)
 * Added more save info in top left corner (colony/tribe name & version number)
