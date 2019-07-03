@@ -14,16 +14,18 @@ Talk about Rimmap on the [Ludeon forums](https://ludeon.com/forums/index.php?top
 
 ✔ Example maps included
 
+**[NOTE]** Due to bandwidth and budget, since version 5.4.2 the file hosting portion of this app is currently disabled. If you are interested in helping me host saves feel free to reach out!
+
 ![Rimmap screenshot](https://github.com/jamessimo/RimMap/blob/master/screenshots/Screenshot_V5.png?raw=true)
 
 ## Known Issues
 * Ships don't render
 * Missing new depleted uranium turret
-* Unknown DeepResources IDs - Modconflict?
+* Unknown DeepResources IDs *Modconflict?*
 * Mods don't render
 
 ## WIP Features
-* Map sharing **(in beta)**
+* ~~Map sharing~~ *(Currently disabled due to server costs)*
 * Mod support **(in progress)**
 * Full game save viewing (pawn & animal info)
 
@@ -57,14 +59,28 @@ npm run production
 
 ## Change log
 
-### (5.4.0)
+## (5.5.0)
+* Inverted scroll rates (now scrolls slower when zoomed in)
+* Upgraded Phaser CE from 2.11.2 to 2.13.2
+* Updated social links
+* Added warning before using HD graphics
+* Added some integrated ad tests (DevMode only)
+
+### (5.4.2)
+* Disabled map upload/sharing screen until a new host server can be found.
+
+### (5.4.1)
+* Minor tweaks to way mods are handled
+* Thinned out mod assets due to upload constraints
+
+## (5.4.0)
 * Now Renders packed "minified" things (including furniture & statues)
-* Added partial Vegetable Garden
+* Added partial Vegetable Garden support
 * Added MurmurSix Wall Lights Mod (MUR_WallLight)
 * Hide Invisible PowerConduit Mod support (PowerConduitInvisible)
 * Hide Sewage Mod
 
-### (5.3.0)
+## (5.3.0)
 * Added more save info in top left corner (colony/tribe name & version number)
 * **Technical**
 * Updated Phaser CE, BrowserSync and Browserify
@@ -72,7 +88,7 @@ npm run production
 * Added "Install" to no-render list
 * Cleaned up redundant code
 
-### (5.2.0)
+## (5.2.0)
 * Finalize for Rimworld v1.0
 * Added Planning view
 * Vastly improved zoom
@@ -82,7 +98,7 @@ npm run production
 * Code cleanup
 * Removed old tilemap code
 
-### (5.1.0)
+## (5.1.0)
 * Added all new B19 items
 * Tweaks to colors
 * Crisper graphics (anti-aliasing)
@@ -90,7 +106,7 @@ npm run production
 * Refined resources code
 
 
-### (5.0.0)
+## (5.0.0)
 * You can now drag the map and use your mouse wheel to zoom (like the base game)
 * Updated some of the old textures to use new Beta 0.19 items
 * Added smoothed walls

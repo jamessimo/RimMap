@@ -16,6 +16,9 @@
     width: 100%;
     text-shadow: black 1px 1px 1px;
     a{
+      &:visted{
+        color:white;
+      }
       color:white;
     }
 
@@ -168,7 +171,13 @@
     display: none;
 
     text-shadow: black 1px 1px 1px;
-
+    a{
+      pointer-events:all;
+      &:visted{
+        color:white;
+      }
+      color:white;
+    }
     #tileData ul{
       list-style: none;
     }

@@ -31,6 +31,7 @@ class GameState extends Phaser.State {
       this.minZoom = 0.5;
       this.maxZoom = 2;
     } else {
+      console.warn('HD Graphics is experimental and may melt your PC');
       this.zoomLevel = 1;
       this.zoomRate = 0.5;
       this.minZoom = 1;
@@ -117,7 +118,7 @@ class GameState extends Phaser.State {
 
       this.terrainGridLayer = this.game.add.group();
 
-      console.log(this.loadingDelta);
+      console.log("loaded chunk " + this.loadingDelta + "/4");
       this.buildMapInfo(this.json);
 
       let url = null;
@@ -153,7 +154,7 @@ class GameState extends Phaser.State {
     if (this.loading && this.loadingFinished == false) {
       if (this.loadingDelta == 1) {
 
-        console.log(this.loadingDelta);
+        console.log("loaded chunk " + this.loadingDelta + "/4");
 
         this.rocksGridLayer = this.game.add.group();
         this.mountainsLayer = this.game.add.group();
@@ -187,7 +188,7 @@ class GameState extends Phaser.State {
         this.loading = false;
 
       } else if (this.loadingDelta == 2) {
-        console.log(this.loadingDelta);
+        console.log("loaded chunk " + this.loadingDelta + "/4");
 
         this.stuffLayer = this.renderBitmap(this.stuffGridLayer);
 
@@ -196,7 +197,7 @@ class GameState extends Phaser.State {
         this.loading = false;
 
       } else if (this.loadingDelta == 3) {
-        console.log(this.loadingDelta);
+        console.log("loaded chunk " + this.loadingDelta + "/4");
 
         //for scrolling
         this.groupScale = this.stuffLayer.scale.x;
@@ -213,7 +214,7 @@ class GameState extends Phaser.State {
         this.scaleMap(this.groupScale);
 
       } else if (this.loadingDelta == 4) {
-        console.log(this.loadingDelta);
+        console.log("loaded chunk " + this.loadingDelta + "/4");
 
         this.mapSizeMax = this.mapInfo.width;
         this.mapSizeCurrent = this.mapSizeMax;
@@ -298,7 +299,7 @@ class GameState extends Phaser.State {
       // wheelzoom
       if (this.isMouseOut()) {
 
-        let scrollRate = this.utils.TILESIZE / this.zoomLevel;
+        let scrollRate = this.utils.TILESIZE * this.zoomLevel;
 
         if (this.game.input.mousePointer.x > this.SCREENWIDTH - this.MOUSEBOUNDS) {
           this.game.camera.x += scrollRate;
@@ -405,7 +406,7 @@ class GameState extends Phaser.State {
     this.mapInfo.topTerrainGrid = this.utils.mapTextures(this.mapInfo.topTerrainGrid, "terrain", this.mapInfo.underTerrainGrid);
     this.mapInfo.stuffGrid = json.savegame.game.maps.li.things.thing;
 
-    console.log(json.savegame);
+    //console.log(json.savegame);
 
     //this.temperatureCache.temperaturesDeflate
     //this.mapInfo.snowGridLayer = this.utils.decompress(json.savegame.game.maps.li.snowGrid.depthGridDeflate);
@@ -599,7 +600,7 @@ class GameState extends Phaser.State {
         }
 
         if(this.mapInfo.stuffGrid[i].def == "Human"){
-          console.log(this.mapInfo.stuffGrid[i].faction);
+          //console.log(this.mapInfo.stuffGrid[i].faction);
         }
 
         if (thingSprite) {
@@ -1198,7 +1199,7 @@ class GameState extends Phaser.State {
       this.oldStuffTile = stuffTile;
 
       if (stuffTile[0]) {
-        console.log(stuffTile);
+        //console.log(stuffTile);
 
         this.clickDepth = stuffTile.length;
 

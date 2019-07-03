@@ -12,6 +12,7 @@
 	<title>Rimmap - a Web based Rimworld map viewer!</title>
 	<link rel="stylesheet" href="styles/main.css">
 	<link rel="stylesheet" href="styles/ui.css">
+
 </head>
 
 <body>
@@ -36,7 +37,7 @@
 				</div>
 
 				<button id="reloadButton" onclick="parent.location = 'https://jamessimo.itch.io/rimmap'">Load new save</button>
-				<button id="shareButton" onclick="toggleShareBox()">Share save</button>
+				<!--<button id="shareButton" onclick="toggleShareBox()">Share save</button>-->
 
 			</div>
 
@@ -55,7 +56,11 @@
 					    </g>
 					</svg>
 				</label>
-				<h3>Load Rimworld save file</h3>
+					<h3>Load Rimworld save file</h3>
+
+					<!-- Rimmap home AD-->
+					<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-5164527156102232" data-ad-slot="9525098746">
+					</ins>
 
 				</div>
 				<!--Filemanager-->
@@ -83,7 +88,7 @@
 				</label>
 				</div>
 
-				<div class="versionNum">RimMap v5.3.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.5.0 - <a href="https://twitter.com/jamessimo" target="_blank"> @jamessimo</a></div>
 			</div>
 
 			<div id="shareBox" class="modal">
@@ -99,7 +104,7 @@
 					</button>
 					<br>
 					<div id="clip" class="input-group">
-					<p>Click <img src="assets/ui/clippy.svg" width="12px" /> button to copy it to your clipboard!</p><br>
+						<p>Click <img src="assets/ui/clippy.svg" width="12px" /> button to copy it to your clipboard!</p><br>
 						<input id="generatedURL" type="text" readonly value="Press the upload button">
 						<span class="input-group-button">
 							<button class="copyBtn" type="button" data-clipboard-target="#generatedURL">
@@ -175,17 +180,24 @@
 						</ul>
 					</div>
 				</div>
-				<div class="versionNum">RimMap v5.3.1 - @james_simo</div>
+				<div class="versionNum">RimMap v5.5.0 - <a href="https://twitter.com/jamessimo" target="_blank"> @jamessimo</a></div>
 
 			</div>
+
 		</div>
 		<!-- UI -->
-
 	</div>
+
+
+
 	<script src="scripts/phaser.min.js"></script>
 	<script src="scripts/game.js"></script>
 	<script src="scripts/clipboard.min.js"></script>
 	<script src="scripts/frontend.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
 </body>
 
 </html>

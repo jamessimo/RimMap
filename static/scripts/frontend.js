@@ -113,6 +113,8 @@ let toggleHD = function() {
   loadingMsg.textContent = "Loading HD...";
 
   if (hdCheckbox.checked) {
+    alert("HD graphics are experimental and may crash your web browser.\nProcede with caution");
+
     setTimeout(() => {
       blackout.style.display = "none";
       phaserState.callbackContext.showHD();
@@ -123,6 +125,8 @@ let toggleHD = function() {
       phaserState.callbackContext.hideHD();
     }, 1000);
   }
+
+
 }
 
 let updateTileText = function() {
